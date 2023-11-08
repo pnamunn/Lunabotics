@@ -1,8 +1,6 @@
 # Lunabotics 2024 - team ARES for SDSU
 
-Take note that we're currently using these distros:
- Ubuntu 20.04 LTS
- ROS2 foxy
+Take note that we're currently using these distros:  Ubuntu 20.04 LTS, ROS2 foxy
 
 
 ## To learn more about how to use Linux terminals & the CLI (Command Line Interface):
