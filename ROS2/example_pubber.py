@@ -1,5 +1,5 @@
 ''' Example code for learning '''
-''' This code will publish Howdy every 0.5 seconds '''
+''' This code will create a node that will publish Howdy every 0.5 seconds '''
 
 
 import rclpy                    # ROS2-Python API lib
@@ -16,13 +16,13 @@ class Pubber(Node):     # is a child class of Node
         super().__init__('pubber')  # names your node pubber when its constructed
 
         # creates a publisher that is made to publish msg_type=String, sent over the topic 
-        # topicName='my_pubber_topic' and has QoS(queue_size)=10
-        self.pubber = self.create_publisher(String, 'my_pubber_topic', 10)
+        # topicName='example_topic' and has QoS(queue_size)=10
+        self.pubber = self.create_publisher(String, 'example_topic', 10)
 
         self.get_logger().info("Pubber node instance created")
         
         TIMER_PERIOD = 0.5
-        self.timer = self.create_timer(TIMER_PERIOD)    # creates timer to flag every 0.5 seconds
+        self.timer = self.create_timer(TIMER_PERIOD, self.timer_callback)    # creates timer to flag every 0.5 seconds
 
         self.i = 0
 
@@ -31,9 +31,9 @@ class Pubber(Node):     # is a child class of Node
         '''This function is called every 0.5 sec & publishes msgs'''
         msg = String()
 
-        msg.data = "Howdy %d" % self.i      # creates msg data that will be sent to pubber's topic (my_pubber_topic)
+        msg.data = "Howdy %d" % self.i      # creates msg data that will be sent to the topic example_topic
 
-        self.pubber.publish(msg)        # publishes msg data to the pubber's topic (my_pubber_topic)
+        self.pubber.publish(msg)        # publishes msg data to the topic example_topic
 
         self.get_logger().info(f"Publishing: {msg.data}")    # prints msg data to terminal, just so you can see it
         # if you eliminate this from your code, you can always see what a publisher is publishing by using ros2 topic echo </topic_name>

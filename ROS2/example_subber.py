@@ -15,9 +15,9 @@ class Subber(Node):     # is a child class of Node
     def __init__(self):     # Constructor
         super().__init__('subber')      # names your node subber when its constructed
 
-        # creates a subscriber that can subscribe to msg_type=String, has topicName='my_subber_topic',
+        # creates a subscriber that can subscribe to msg_type=String, from the topic topicName='example_topic',
         # uses the callback function listening_callback(), and has QoS(queue_size)=10
-        self.subber = self.create_subscriber(String, 'my_subber_topic', self.listening_callback, 10)
+        self.subber = self.create_subscription(String, 'example_topic', self.listening_callback, 10)
 
         self.get_logger().info("Subber node instance created")
 
