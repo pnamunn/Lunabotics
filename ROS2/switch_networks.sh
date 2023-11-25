@@ -8,7 +8,7 @@
 if [ "$#" -ne 2 ]
 then
     echo -e "Improper usage >> Script takes in 2 args & must be run in sudo to work.
-    \nExample of proper usage: sudo bash switch_networks.sh <network_to_disconnect_from> <network_to_connect_to>"
+    Example of proper usage: sudo bash switch_networks.sh <network_to_disconnect_from> <network_to_connect_to>"
     exit 1
 fi
 
