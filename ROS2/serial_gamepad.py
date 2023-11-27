@@ -40,15 +40,38 @@ class GamepadSubber(Node):
         self.axes_values = msg.axes
         self.get_logger().info(f'Subber received axes = {self.axes_values}')
 
-        # if-else logic
-        # if button is pressed
-        #   drive forward by sending ascii letter (this also serves to change the 32 bit button value to an 8 bit value)
-        if (self.axes_values[1] == -0.0):      # No presses on Dpad north or south
+
+        ''' Sends serial ascii letters (this also serves to change the axes float 32 bit value to an 8 bit value) '''
+        
+        # Controls Dpad forward & backward
+        if (self.axes_values[1] == -0.0):      # No presses on Dpad up or down
             self.ser.write(b'm')        # send stop by sending an unused ASCII value
-        elif (self.axes_values[1] == 1.0):      # Dpad north is pressed
+        elif (self.axes_values[1] == 1.0):      # Dpad up is pressed
             self.ser.write(b'w')        # move forward
-        elif (self.axes_values[1] == -1.0):      # Dpad south is pressed
+        elif (self.axes_values[1] == -1.0):      # Dpad down is pressed
             self.ser.write(b's')        # move backward
+
+        # Controls Dpad left & right
+        if (self.axes_values[0] == -0.0):      # No presses on Dpad left or right
+            self.ser.write(b'm')        # send stop by sending an unused ASCII value
+        elif (self.axes_values[0] == 1.0):      # Dpad left is pressed
+            self.ser.write(b'a')        # skid steer left
+        elif (self.axes_values[1] == -1.0):      # Dpad right is pressed
+            self.ser.write(b'd')        # skid steer right
+
+
+        # Controls buttons for excavation subsystem
+
+        # controls linear actuator extend
+        if (self.button_values[4]):      # LB pressed
+            self.ser.write(b'U')        # extend linear actuators
+        else:
+            # self.ser.write(b'm')        # send stop by sending an unused ASCII value
+            pass
+
+        # controls linear actuator retract
+        if (self.axes_values[2] < 1.0)    # LT pressed
+            self.ser.write(b'D')
 
 
 def main(args=None):
