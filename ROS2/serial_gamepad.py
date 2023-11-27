@@ -4,7 +4,10 @@
 is packaged std_msgs/Header header, float32[] axes, int32[] buttons'''
 
 ''' What code is doing right now: subbing to /joy topic & printing to console the
-gamepad's buttonA value '''
+gamepad's buttonA value'''
+'''To have telecom gamepad control: Run joy_node on Linux laptop to pub /joy topic.
+Then run this code on the Jetson create a gamepad_subber_node that will sub to the
+/joy topic.'''
 
 
 import serial
@@ -25,7 +28,7 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
-        #  self.ser = serial.Serial('/dev/ttcyACM0', 9600, timeout=1)
+        self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)      # for Nano currently on the Zyn mobile
 
 
     def joy_callback(self, msg):
@@ -40,6 +43,13 @@ class GamepadSubber(Node):
         # if-else logic
         # if button is pressed
         #   drive forward by sending ascii letter (this also serves to change the 32 bit button value to an 8 bit value)
+        if (self.axes_values[1] == -0.0):      # No presses on Dpad north or south
+            self.ser.write(b'm')        # send stop by sending an unused ASCII value
+        elif (self.axes_values[1] == 1.0):      # Dpad north is pressed
+            self.ser.write(b'w')        # move forward
+        elif (self.axes_values[1] == -1.0):      # Dpad south is pressed
+            self.ser.write(b's')        # move backward
+
 
 def main(args=None):
     
@@ -51,6 +61,8 @@ def main(args=None):
 
     subber.destroy_node()   
     rclpy.shutdown()
+
+    self.ser.close()
 
 
 if __name__ == '__main__':
