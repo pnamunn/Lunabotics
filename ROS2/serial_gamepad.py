@@ -1,3 +1,4 @@
+
 ''' Will take in the values being published by /joy topic & convert them
     to a smaller data size.  Then the data is serially sent to the Arduino. '''
 ''' /joy topic publishes a msg type of sensor_msgs/msg/Joy, inside which
@@ -26,31 +27,34 @@ class GamepadSubber(Node):
         ''' Creates a subber node of msg_type=Joy, topic_name=my_subber_topic, callback_function=joy_callback() '''
         self.subber = self.create_subscription(Joy, 'joy',self.joy_callback, 10)
 
-        self.get_logger().info("GamepadSubber(Node) instance created")
+   #     self.get_logger().info("GamepadSubber(Node) instance created")
 
         self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)      # for Nano currently on the Zyn mobile
 
+
+    def send(self, cmd):
+        self.ser.write(cmd.encode())
 
 
     def joy_callback(self, msg):
         ''' Callback grabs some of the values being published by /joy topic '''
 
         self.button_values = msg.buttons
-        self.get_logger().info(f'Subber received buttons = {self.button_values}')
+ #1       self.get_logger().info(f'Subber received buttons = {self.button_values}')
 
         self.axes_values = msg.axes
-        self.get_logger().info(f'Subber received axes = {self.axes_values}')
+#        self.get_logger().info(f'Subber received axes = {self.axes_values}')
 
 
         ''' Sends serial ascii letters (this also serves to change the axes float 32 bit value to an 8 bit value) '''
         
         # Controls Dpad forward & backward
-        if (self.axes_values[1] == -0.0):      # No presses on Dpad up or down
-            self.ser.write(b'm')        # send stop by sending an unused ASCII value
-        elif (self.axes_values[1] == 1.0):      # Dpad up is pressed
-            self.ser.write(b'w')        # move forward
-        elif (self.axes_values[1] == -1.0):      # Dpad down is pressed
-            self.ser.write(b's')        # move backward
+        if (self.axes_values[7] == -0.0):      # No presses on Dpad up or down
+           self.send('m')        # send stop by sending an unused ASCII value
+        elif (self.axes_values[7] == 1.0):      # Dpad up is pressed
+            self.send('w')        # move forward
+        elif (self.axes_values[7] == -1.0):      # Dpad down is pressed
+             self.send('s')        # move backward
 
         # # Controls Dpad left & right
         # if (self.axes_values[0] == -0.0):      # No presses on Dpad left or right
