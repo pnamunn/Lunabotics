@@ -1,33 +1,30 @@
 
-''' Will take in the values being published by /joy topic & convert them
-    to a smaller data size.  Then the data is serially sent to the Arduino. '''
-''' /joy topic publishes a msg type of sensor_msgs/msg/Joy, inside which
-is packaged std_msgs/Header header, float32[] axes, int32[] buttons'''
+''' Creates a node that converts gamepad input to rover motor commands. '''
 
-''' What code is doing right now: subbing to /joy topic & printing to console the
-gamepad's buttonA value'''
-'''To have telecom gamepad control: Run joy_node on Linux laptop to pub /joy topic.
-Then run this code on the Jetson create a gamepad_subber_node that will sub to the
-/joy topic.'''
+''' Takes in the 32 bit float values being published by /joy topic & converts 
+them to 8 bit ASCII values.  Then sends ASCII data serially to Arduino Nano. '''
+
+''' To use this code: Run joy_node on Linux laptop to publish /joy topic.
+Then run this code on the Jetson to create a gamepad_subber_node that will sub to the
+/joy topic.  Logitech F310 gamepad must be flipped to D mode & have the Mode button light on. '''
 
 
 import serial
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 
 # Node that subs to /joy pubber
 class GamepadSubber(Node):
 
-    def __init__(self):
+    def __init__(self):     # Constructor
 
         super().__init__('gamepad_subber_node')  
 
-        ''' Creates a subber node of msg_type=Joy, topic_name=my_subber_topic, callback_function=joy_callback() '''
-        self.subber = self.create_subscription(Joy, 'joy',self.joy_callback, 10)
+        ''' Creates a subber node of msg_type=Joy, topic_name=joy, callback_function=joy_callback() '''
+        self.subber = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
 
-   #     self.get_logger().info("GamepadSubber(Node) instance created")
+        self.get_logger().info("GamepadSubber(Node) instance created")
 
         self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)      # for Nano currently on the Zyn mobile
 
@@ -37,54 +34,35 @@ class GamepadSubber(Node):
 
 
     def joy_callback(self, msg):
-        ''' Callback grabs some of the values being published by /joy topic '''
+        ''' Callback function grabs some of the values being published by /joy topic, converts
+        them to ASCII values, and sends serially to Arduino. '''
 
         self.button_values = msg.buttons
- #1       self.get_logger().info(f'Subber received buttons = {self.button_values}')
+        self.get_logger().info(f'Subber received buttons = {self.button_values}')
 
         self.axes_values = msg.axes
-#        self.get_logger().info(f'Subber received axes = {self.axes_values}')
-
-
-        ''' Sends serial ascii letters (this also serves to change the axes float 32 bit value to an 8 bit value) '''
+        self.get_logger().info(f'Subber received axes = {self.axes_values}')
         
-        # Controls Dpad forward & backward
-        if (self.axes_values[7] == -0.0):      # No presses on Dpad up or down
-           self.send('m')        # send stop by sending an unused ASCII value
-        elif (self.axes_values[7] == 1.0):      # Dpad up is pressed
+
+        if (self.axes_values[1] == -0.0 and self.axes_values[0] == -0.0):      # No presses on Dpad occurring
+            if (self.button_values[4] == 1):      # LB pressed
+                self.send('1')        # retract
+            # elif (self.button_values[5] == 1):    # RB pressed
+            #     self.send('2')      # stop actuator
+            elif (self.button_values[6] == 1):    # LT pressed
+                self.send('3')      # extend
+            else:
+                self.send('m')        # send stop by sending an unused ASCII value
+
+        elif (self.axes_values[1] == 1.0):      # Dpad up is pressed
             self.send('w')        # move forward
-        elif (self.axes_values[7] == -1.0):      # Dpad down is pressed
+        elif (self.axes_values[1] == -1.0):      # Dpad down is pressed
              self.send('s')        # move backward
+        elif (self.axes_values[0] == 1.0):      # Dpad left is pressed
+            self.send('a')        # skid steer left
+        elif (self.axes_values[0] == -1.0):      # Dpad right is pressed
+            self.send('d')        # skid steer right
 
-<<<<<<< HEAD
-        # Controls Dpad left & right
-=======
-        # # Controls Dpad left & right
->>>>>>> 6c50fc652dba03b1fc7c573cd5b78a624a9bd185
-        # if (self.axes_values[0] == -0.0):      # No presses on Dpad left or right
-        #     self.ser.write(b'm')        # send stop by sending an unused ASCII value
-        # elif (self.axes_values[0] == 1.0):      # Dpad left is pressed
-        #     self.ser.write(b'a')        # skid steer left
-<<<<<<< HEAD
-        # elif (self.axes_values[1] == -1.0):      # Dpad right is pressed
-=======
-        # elif (self.axes_values[0] == -1.0):      # Dpad right is pressed
->>>>>>> 6c50fc652dba03b1fc7c573cd5b78a624a9bd185
-        #     self.ser.write(b'd')        # skid steer right
-
-
-        # # Controls buttons for excavation subsystem
-
-        # # controls linear actuator extend
-        # if (self.button_values[4]):      # LB pressed
-        #     self.ser.write(b'U')        # extend linear actuators
-        # else:
-        #     # self.ser.write(b'm')        # send stop by sending an unused ASCII value
-        #     pass
-
-        # # controls linear actuator retract
-        # if (self.axes_values[2] < 1.0):    # LT pressed
-        #     self.ser.write(b'D')
 
 
 def main(args=None):
@@ -97,7 +75,6 @@ def main(args=None):
 
     subber.destroy_node()   
     rclpy.shutdown()
-
     self.ser.close()
 
 
