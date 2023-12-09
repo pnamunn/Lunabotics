@@ -3,23 +3,19 @@ PINB5 is Timer 1 Compare Match A PWM	-	Drivetrain Left  Motors
 PINB6 is Timer 1 Compare Match B PWM	-	Drivetrain Right Motors
 PINB7 is Timer 1 Compare Match C PWM	-	Deposition Tilt Lin Actuators
 					
-PINH3 is Timer 4 Compare Match A PWM
-PINH4 is Timer 4 Compare Match B PWM
-PINH5 is Timer 4 Compare Match C PWM
+PINH3 is Timer 4 Compare Match A PWM	-	Excavation Tilt  Motors
+PINH4 is Timer 4 Compare Match B PWM	-	Excavation Drive Motors
+PINH5 is Timer 4 Compare Match C PWM	-	Excavation Depth Motors
 
-PINL3 is Timer 0 Compare Match A PWM
-PINL4 is Timer 0 Compare Match B PWM
-PINL5 is Timer 0 Compare Match C PWM
+PINL3 is Timer 5 Compare Match A PWM	-	Available PWM Channels	
+PINL4 is Timer 5 Compare Match B PWM	-	Available PWM Channels
+PINL5 is Timer 5 Compare Match C PWM	-	Available PWM Channels
 
-PORT C Pin 1										**Used for IN1A
-PORT C Pin 2										**Used for IN2A
+PINE5 is the Proximity Sensor Due North
+PINE4 is the Proximity Sensor Due South
 
-PORT C PIN 3										**Used for IN1B
-PORT D PIND 3										**used for IN2B
-
-PD 6 OCR0A TIMER INTERRUPT
-PD
-
+PINL6 is the Arduino capture of the Data Out pin of the HX711 
+PINL7 is the Arduino's output SCK signal to the HX711
 
 Author:												Stuart Pollmann
 Program:											ATMEGA 2560 Processor
@@ -43,7 +39,7 @@ Functionality:
 		to a low signal. Upon the falling edge of the ready signal, this program
 		detects such a state, requests the data output from the module via a clock
 		signal's rising generated edge from the arduino, to the hx711. A compare
-		match is performed in the aqcuisition state of the program which stores
+		match is performed in the acquisition state of the program which stores
 		each bit of the requested data. No less than 200 nano seconds shall pass
 		before an attempt is made to read the sensor's data. to optimize the timing
 		in-line assembly language instructions sufficiently delay the ATMEGA's 
@@ -57,10 +53,6 @@ Functionality:
 													
 */
 
-#define F_CPU 16000000
-#define BAUD_9_6K 9600								// define baud
-#define BAUD_115K	115200
-#define BAUDRATE ((F_CPU/(16UL*BAUD_9_6K))-1)		// set baud rate
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -76,17 +68,17 @@ volatile uint8_t	SouthIsClear = 1;
 //-----PROXIMITY SENSOR MACROS------------------------------//
 
 //-----HXX711 LOAD CELL MACROS------------------------------//
-#define SCK_SIG_OUT			(DDRB |=	  (1<<PINB5));
-#define HX711_DAT_IN		(DDRB &=	 ~(1<<PINB4));
-
-#define HX711_DATA_LINE		  PINB4
-#define HX711_DATA_RDY	   (!(PINB  &	  (1<<PINB4) )     )
-#define HX711_DAT_PENDING	 (PINB  &	  (1<<PINB4) )
-#define HX711_DATA_VALUE   ( (PINB  &	  (1<<PINB4) ) >> 4) 
-
-#define SCK_LINE			  PINB5
-#define SCK_HIGH			 (PORTB |=    (1<<PINB5) )
-#define SCK_LOW				 (PORTB &=   ~(1<<PINB5) )
+#define SCK_SIG_OUT			 (DDRL |=	  (1<<PINL7));
+#define HX711_DAT_IN		 (DDRL &=	 ~(1<<PINL6));
+								 				  
+#define HX711_DATA_LINE		  PINL6				  
+#define HX711_DATA_RDY	   (!(PINL  &	  (1<<PINL6) )     )
+#define HX711_DAT_PENDING	 (PINL  &	  (1<<PINL6) )
+#define HX711_DATA_VALUE   ( (PINL  &	  (1<<PINL6) ) >> 4) 
+								 				 
+#define SCK_LINE			  PINL7
+#define SCK_HIGH			 (PORTL |=    (1<<PINL7) )
+#define SCK_LOW				 (PORTL &=   ~(1<<PINL7) )
 
 #define GAIN128					1
 #define GAIN32					2
@@ -95,19 +87,15 @@ volatile uint8_t	SouthIsClear = 1;
 volatile uint32_t	hx711_data		= 0;
 volatile uint8_t	DepBinLoading	= 1;
 
-//-----END OF HXX711 LOAD CELL MACROS-----------------------//
-
 //-----TIMER 1 FAST PWM SETTING MACROS----------------------//
 
-#define	T1_TCCRA_FPWM	(TCCR1A |= 0b10101010);
-							    
-#define T1B_WGM_HI		(TCCR1B |=   (1<<WGM13) |  (1<<WGM12));
-#define T1B_CS_LO		(TCCR1B &=   ~(1<<CS12) & ~(1<< CS10));
-#define	T1B_CS_HI		(TCCR1B |=    (1<<CS11));
-#define T1_CS			   T1B_CS_HI	   T1B_CS_LO 
-#define T1_TCCRB_FPWM	   T1_CS		   T1B_WGM_HI
-										   
-#define T1_FPWM_SET		(   (T1_TCCRA_FPWM)  (T1_TCCRB_FPWM))
+#define T1A_COM_HI		(TCCR1A	|=  (1<<COM1A1)	| (1<<COM1B1)| (1<<COM1C1));
+#define T1A_COM_LO		(TCCR1A	&= ~(1<<COM1A0)	&~(1<<COM1B0)&~(1<<COM1C0));								   
+#define T1A_WGM_HI		(TCCR1A	|=	(1<<WGM11));
+#define T1A_WGM_LO		(TCCR1A	&= ~(1<<WGM10));
+#define T1B_WGM_HI		(TCCR1B	|=	(1<<WGM12) |  (1<<WGM13));
+#define T1A_CS__LO		(TCCR1B	&= ~(1<< CS12)	&~(1<<CS10));
+#define T1B_CS__HI		(TCCR1B	|=	(1<< CS11));
 
 #define FPWM_1A_OUT		(DDRB	|=	(1<<PINB5));
 #define FPWM_1B_OUT		(DDRB	|=	(1<<PINB6));
@@ -115,13 +103,13 @@ volatile uint8_t	DepBinLoading	= 1;
 
 //-----TIMER 4 FAST PWM SETTING MACROS----------------------//
 
-#define	T4_TCCRA_FPWM	(TCCR4A|=0b10101010);
-#define T4B_WGM_HI		(TCCR4B|=   (1<<WGM43) |  (1<<WGM42));
-#define T4B_CS_LO		(TCCR4B&=   ~(1<<CS42) & ~(1<< CS40));
-#define	T4B_CS_HI		(TCCR4B|=    (1<<CS41));
-#define T4_CS			(   T4B_CS_HI	  T4B_CS_LO )
-#define T4_TCCRB_FPWM	(   T4_CS		  T4B_WGM_HI)
-#define T4_FPWM_SET		(   T4_TCCRA_FPWM T4_TCCRB_FPWM)
+#define T4A_COM_HI		(TCCR4A	|=  (1<<COM4A1)	| (1<<COM4B1)| (1<<COM4C1));
+#define T4A_COM_LO		(TCCR4A	&= ~(1<<COM4A0)	&~(1<<COM4B0)&~(1<<COM4C0));
+#define T4A_WGM_HI		(TCCR4A	|=	(1<<WGM41));
+#define T4A_WGM_LO		(TCCR4A	&= ~(1<<WGM40));
+#define T4B_WGM_HI		(TCCR4B	|=	(1<<WGM42) |  (1<<WGM43));
+#define T4A_CS__LO		(TCCR4B	&= ~(1<< CS42)	&~(1<< CS40));
+#define T4B_CS__HI		(TCCR4B	|=	(1<< CS41));
 
 #define FPWM_2A_OUT		(DDRH	|=	(1<<PINH3));
 #define FPWM_2B_OUT		(DDRH	|=	(1<<PINH4));
@@ -129,13 +117,13 @@ volatile uint8_t	DepBinLoading	= 1;
 
 //-----TIMER 5 FAST PWM SETTING MACROS----------------------//
 
-#define	T5_TCCRA_FPWM	(TCCR5A	|=0b10101010);
-#define T5B_WGM_HI		(TCCR5B	|=   (1<<WGM53) |  (1<<WGM52));
-#define T5B_CS_LO		(TCCR5B	&=   ~(1<<CS52) & ~(1<< CS50));
-#define	T5B_CS_HI		(TCCR5B	|=    (1<<CS51));
-#define T5_CS			(   T5B_CS_HI	  T5B_CS_LO )
-#define T5_TCCRB_FPWM	(   T5_CS		  T5B_WGM_HI)
-#define T5_FPWM_SET		(   T5_TCCRA_FPWM T5_TCCRB_FPWM)
+#define T5A_COM_HI		(TCCR5A	|=  (1<<COM5A1)	| (1<<COM5B1)| (1<<COM5C1));
+#define T5A_COM_LO		(TCCR5A	&= ~(1<<COM5A0)	&~(1<<COM5B0)&~(1<<COM5C0));
+#define T5A_WGM_HI		(TCCR5A	|=	(1<<WGM51));
+#define T5A_WGM_LO		(TCCR5A	&= ~(1<<WGM50));
+#define T5B_WGM_HI		(TCCR5B	|=	(1<<WGM52) |  (1<<WGM53));
+#define T5A_CS__LO		(TCCR5B	&= ~(1<< CS52)	&~(1<< CS50));
+#define T5B_CS__HI		(TCCR5B	|=	(1<< CS51));
 
 #define FPWM_3A_OUT		(DDRL	|=	(1<<PINL3));
 #define FPWM_3B_OUT		(DDRL	|=	(1<<PINL4));
@@ -169,85 +157,86 @@ volatile	uint8_t		WatchToken =		  0;
 
 //-----UART FUNCTIONS-------------------------------------//
 
-void uart_init (void)							//initialize UART
+void uart_init (void)						//initialize UART
 {
 
-	UBRR0L = 8;
+	UBRR0L = 8;								//BAUD 115200
 	
 	UCSR0B	|=	(1<<	TXEN0)
 			|	(1<<	RXEN0)					
-			|	(1<<	RXCIE0);				//EN: Interrupt
-												//EN: receiver/transmitter
+			|	(1<<	RXCIE0);			//EN: Interrupt
+											//EN: receiver/transmitter
 	
 	UCSR0C	|=	(1<<	UCSZ00)
-			|	(1<<	UCSZ01);				//8-bit char size
+			|	(1<<	UCSZ01);			//8-bit char size
 
 }
 
-void serial_transmit (unsigned char data)		//Tx serial
+void serial_transmit (unsigned char data)	//Tx serial
 {
 
-	while (!( UCSR0A & (1<<UDRE0)));			//w8 b4 read;
-												//UDREn is read when 1
-	UDR0 = data; 								//write the data in register
+	while (!( UCSR0A & (1<<UDRE0)));		//w8 b4 read;
+											//UDREn is read when 1
+	UDR0 = data; 							//write the data in register
 
 }
 
-unsigned char uart_recieve (void)				//Rx serial
+unsigned char uart_recieve (void)			//Rx serial
 {
 	
-	while(!((UCSR0A) & (1<<RXC0)));				//w8t while data being received
-	return UDR0;								//return 8-bit data read
+	while(!((UCSR0A) & (1<<RXC0)));			//w8t while data being received
+	return UDR0;							//return 8-bit data read
 
 }
 
-void term_Send_Val_as_Digits(uint8_t val)		//Decimal
+void term_Send_Val_as_Digits(uint8_t val)	//Decimal
 {
-	uint8_t digit = '0';						//Initialize
+	uint8_t digit = '0';					//Initialize
 	
-	while(val >= 100)							//incoming hundred's
+	while(val >= 100)						//incoming hundred's
 	{
-		digit	+= 1;							//count
-		val		-= 100;							//chunks of hundred
+		digit	+= 1;						//count
+		val		-= 100;						//chunks of hundred
 	}
 	
-	serial_transmit(digit);						//Send to serial
+	serial_transmit(digit);					//Send to serial
 
-	digit = '0';								//initialize
+	digit = '0';							//initialize
 	
-	while(val >= 10)							//Remaining ten's
+	while(val >= 10)						//Remaining ten's
 	{
-		digit	+= 1;							//count
-		val		-= 10;							//chunks of ten
+		digit	+= 1;						//count
+		val		-= 10;						//chunks of ten
 	}
 	
-	serial_transmit(digit);						//Send to Serial
+	serial_transmit(digit);					//Send to Serial
 	
-	serial_transmit('0' + val);					//Send remainder Value
-	//from ascii: '0'
+	serial_transmit('0' + val);				//Send remainder Value
+											//from ascii: '0'
 }
 
-void printBin8(uint8_t stuff)					//Binary Print
+void printBin8(uint8_t stuff)				//Binary Print
 {
-	for(uint8_t n = 0; n < 8; n++)				//Print data: MSB to LSB
+	for(uint8_t n = 0; n < 8; n++)			//Print data: MSB to LSB
 	{
 		uint8_t tm_ = (stuff >> (7 - n)) & (0x01);
-												//shift highest
-												//AND remaining
+		
+											//shift highest
+											//AND remaining
 		if(tm_)
 		{
-			serial_transmit('1');				//Send 1
+			serial_transmit('1');			//Send 1
 		}
 		else
 		{
-			serial_transmit('0');				//Send 0
+			serial_transmit('0');			//Send 0
 		}
 	}
 }
 
 //-----END OF UART FUNCTIONS------------------------------//
 
-void gpio_init()								//in's and out's
+void gpio_init()							//in's and out's
 {
 	SCK_SIG_OUT
 	HX711_DAT_IN
@@ -268,11 +257,11 @@ void gpio_init()								//in's and out's
 	FPWM_3C_OUT
 }
 
-void Prox_ISR_EN()								//EXT interrupt
+void Prox_ISR_EN()							//EXT interrupt
 {
 	EICRB |=  (ISC50) |  (1<<ISC40);
 	EICRB &= ~(ISC51) & ~(1<<ISC41);
-	EIMSK |=  (INT5)  |	 (INT4);				//North and South
+	EIMSK |=  (INT5)  |	 (INT4);			//North and South
 }
 
 void use_HX711()
@@ -370,40 +359,40 @@ void init_DIR()
 	EX_DESCEND	= STOP_DUTY16;
 }
 
-void setDIR_serial(char input)					//And speed atm
+void setDIR_serial(char input)				//And speed atm
 {
-	char tosend='A';							//Place holder
+	char tosend='A';						//Place holder
 	
-//-----DRIVETRAIN COMMAND FUNCTIONS------------------------------//
+	//-----DRIVETRAIN COMMAND FUNCTIONS------------------------------//
 	
 	if(input=='a')
-	{											//Crck Scrw L
+	{										//Crck Scrw L
 		
 		DRIVE_L = FWD_DUTY16;
 		DRIVE_R = RVRS_DUTY16;
 		
-		DIRencoder = 0x01;						//Encrypt DIR set
-		tosend='L';								//Encrypt State Measure
+		DIRencoder = 0x01;					//Encrypt DIR set
+		tosend='L';							//Encrypt State Measure
 		
 	}
 	
 	else if (input=='d')
-	{											//Crck Scrw R
+	{										//Crck Scrw R
 		DRIVE_L = RVRS_DUTY16;
 		DRIVE_R= FWD_DUTY16;
 		
-		DIRencoder = 0X08;						//Encrypt DIR set
-		tosend='R';								//Encrypt State Measure
+		DIRencoder = 0X08;					//Encrypt DIR set
+		tosend='R';							//Encrypt State Measure
 
 	}
 	
 	else if (input=='w' && NorthIsClear)
-	{											//Forward
+	{										//Forward
 		DRIVE_L = FWD_DUTY16;
 		DRIVE_R = FWD_DUTY16;
 		
-		DIRencoder	=	0X0D;					//Encrypt DIR set
-		tosend		=	'F';					//Encrypt State Measure
+		DIRencoder	=	0X0D;				//Encrypt DIR set
+		tosend		=	'F';				//Encrypt State Measure
 		
 	}
 	
@@ -413,68 +402,68 @@ void setDIR_serial(char input)					//And speed atm
 		DRIVE_L = RVRS_DUTY16;
 		DRIVE_R = RVRS_DUTY16;
 		
-		DIRencoder = 0X0C;						//Encrypt DIR set
-		tosend='B';								//Encrypt State Measure
+		DIRencoder = 0X0C;					//Encrypt DIR set
+		tosend='B';							//Encrypt State Measure
 	}
 	
-//-----EXCAVATION COMMAND FUNCTIONS------------------------------//	
+	//-----EXCAVATION COMMAND FUNCTIONS------------------------------//
 	
-		else if (input == '1')
-		{
-			EX_ACTUATOR = RVRS_DUTY16;
-			tosend='D';						//down
-		}
-		
-		else if (input == '2')
-		{
-			EX_ACTUATOR = STOP_DUTY16;
-			tosend='S';						//stop
-		}
-		
-		else if (input == '3')
-		{
-			EX_ACTUATOR =	FWD_DUTY16;
-			tosend='U';						//up
-		}
-		
-			else if (input == '7' && DepBinLoading)
-			{
-				EX_DRIVE = FWD_DUTY16;
-				tosend='W';					//CW
-			}
-			else if (input == '8')
-			{
-				EX_DRIVE =	RVRS_DUTY16;
-				tosend='C';					//CCW
-			}
-			else if (input == '9')
-			{
-				EX_DRIVE = STOP_DUTY16;
-				tosend='S';					//stop
-			}
-			
-				else if (input == 'j')
-				{
-					DEPOS_TILT = FWD_DUTY16;
-					tosend='U';				//up
-				}
-				else if (input == 'k')
-				{
-					DEPOS_TILT = STOP_DUTY16;
-					tosend='S';				//stop
-				}
-				else if (input == 'l')
-				{
-					DEPOS_TILT = RVRS_DUTY16;
-					tosend='D';				//down
-				}
+	else if (input == '1')
+	{
+		EX_ACTUATOR = RVRS_DUTY16;
+		tosend='D';							//down
+	}
+	
+	else if (input == '2')
+	{
+		EX_ACTUATOR = STOP_DUTY16;
+		tosend='S';							//stop
+	}
+	
+	else if (input == '3')
+	{
+		EX_ACTUATOR =	FWD_DUTY16;
+		tosend='U';							//up
+	}
+	
+	else if (input == '7' && DepBinLoading)
+	{
+		EX_DRIVE = FWD_DUTY16;
+		tosend='W';							//CW
+	}
+	else if (input == '8')
+	{
+		EX_DRIVE =	RVRS_DUTY16;
+		tosend='C';							//CCW
+	}
+	else if (input == '9')
+	{
+		EX_DRIVE = STOP_DUTY16;
+		tosend='S';							//stop
+	}
+	
+	else if (input == 'j')
+	{
+		DEPOS_TILT = FWD_DUTY16;
+		tosend='U';							//up
+	}
+	else if (input == 'k')
+	{
+		DEPOS_TILT = STOP_DUTY16;
+		tosend='S';							//stop
+	}
+	else if (input == 'l')
+	{
+		DEPOS_TILT = RVRS_DUTY16;
+		tosend='D';							//down
+	}
 	
 	else
 	{
 		init_DIR();
 		
-		DIRencoder = 0X00;						//Encrypt DIR set
-		tosend='S';								//Encrypt State Measure
+		DIRencoder = 0X00;					//Encrypt DIR set
+		tosend='S';							//Encrypt State Measure
 	}
 	
 	serial_transmit(tosend);				//Send State to serial
@@ -483,74 +472,89 @@ void setDIR_serial(char input)					//And speed atm
 	
 }
 
-void BewareOfDog()							//watchdog
+void BewareOfDog()//watchdog
 {
 	if(WatchToken == 240)					//kill operations
 	{
 		init_DIR();
 		
-		WatchToken	=		HeelDog
+		WatchToken	=		HeelDog			//Job Done
 		
-		serial_transmit('Z');
+		serial_transmit('Z');				//notify Terminal
 		serial_transmit('O');
 		serial_transmit('I');
 		serial_transmit('N');
 		serial_transmit('K');
 		serial_transmit('S');
 
-		serial_transmit('\n');
-		serial_transmit('\r');
+		serial_transmit('\n');				//Print nxt on
+		serial_transmit('\r');				//new line
 	}
 	
-	WatchToken++;
+	WatchToken++;							//Condition Count
 }
 
-void timer1_init()
+void timer1_init()							//For Drive n Dep
 {
-	T1_FPWM_SET									//Fast PWM
-												//P.S. 8
-												//compare match
-												//A:C non-invrt
 
-	ICR1	=	TOP_40HZ;
+	T1A_WGM_HI								//FPWM Mode
+	T1A_WGM_LO
+	T1B_WGM_HI
+	T1A_CS__LO								//P.S. 8
+	T1B_CS__HI	
+	T1A_COM_HI								//Match:Clear
+	T1A_COM_LO								//Bottom:Set
 	
-	OCR1A	=	STOP_DUTY16;
-	OCR1B	=	STOP_DUTY16;						
-	OCR1C	=	STOP_DUTY16;
+	
+	ICR1	=	TOP_40HZ;					//40Hz 1.5ms Pulse
+	
+	OCR1A	=	STOP_DUTY16;				//DriveTrain Left
+	OCR1B	=	STOP_DUTY16;				//DriveTrain Right		
+	OCR1C	=	STOP_DUTY16;				//Deposition Tilt
 	
 }
 
-void timer4_init()
+void timer4_init()							//For Excavation
 {
-	T4_FPWM_SET									//Fast PWM
-												//P.S. 8
-												//compare match
-												//A:C non-invrt
+	
+	T4A_WGM_HI								//FPWM Mode
+	T4A_WGM_LO
+	T4B_WGM_HI
+	T4A_CS__LO								//P.S. 8
+	T4B_CS__HI
+	T4A_COM_HI								//Match:Clear
+	T4A_COM_LO								//Bottom:Set
 
-	ICR4	=	TOP_40HZ;	
-	OCR4A	=	STOP_DUTY16;
-	OCR4B	=	STOP_DUTY16;
-	OCR4C	=	STOP_DUTY16;
+	ICR4	=	TOP_40HZ;					//40Hz 1.5ms Pulse
+	
+	OCR4A	=	STOP_DUTY16;				//Excavation Tilt
+	OCR4B	=	STOP_DUTY16;				//Excavation Drive
+	OCR4C	=	STOP_DUTY16;				//Excavation Depth
 	
 }
 
 void timer5_init()
 {
-	T5_FPWM_SET									//Fast PWM
-												//P.S. 8
-												//compare match
-												//A:C non-invrt
+	
+	T5A_WGM_HI								//FPWM Mode
+	T5A_WGM_LO
+	T5B_WGM_HI
+	T5A_CS__LO								//P.S. 8
+	T5B_CS__HI
+	T5A_COM_HI								//Match:Clear
+	T5A_COM_LO								//Bottom:Set
 
-	WATCH_DOG_EN								//Watchdog on
+	WATCH_DOG_EN							//Watchdog on
 
-	ICR5	=	TOP_40HZ;
-	OCR5A	=	STOP_DUTY16;
-	OCR5B	=	STOP_DUTY16;
-	OCR5C	=	STOP_DUTY16;
+	ICR5	=	TOP_40HZ;					//40Hz 1.5ms Pulse
+	
+	OCR5A	=	STOP_DUTY16;				//Available
+	OCR5B	=	STOP_DUTY16;				//Available
+	OCR5C	=	STOP_DUTY16;				//Available
 	
 }
 
-void ADC_init()									//Analogue Digital Conversion Set
+void ADC_init()								//Analogue Digital Conversion Set
 {
 	ADCSRA	|=	(1<<	ADEN)
 			|(1<<		ADPS0)
@@ -558,47 +562,43 @@ void ADC_init()									//Analogue Digital Conversion Set
 			|(1<<		ADPS2);			
 
 	ADMUX	&= ~(1<<	REFS1);
-	ADMUX	|=	(1<<	REFS0);					//Ref V cc setting
+	ADMUX	|=	(1<<	REFS0);				//Ref V cc setting
 
 	ADMUX	&= ~(1<<	MUX0)
 			&  ~(1<<	MUX3);
 	ADMUX	|=	(1<<	MUX1)
-			|	(1<<	MUX2);					//ADC6 single ended input for
-	ADMUX	|=	(1<<	ADLAR);					//Left justified
+			|	(1<<	MUX2);				//ADC6 single ended input for
+	ADMUX	|=	(1<<	ADLAR);				//Left justified
 	ADCSRB	&=	~(1<<	ADTS0)
 			&	~(1<<	ADTS1)
-			&	~(1<<	ADTS2);					//ADTS0:2 = 0X00
+			&	~(1<<	ADTS2);				//ADTS0:2 = 0X00
 }
 
-ISR(INT5_vect)									//for North
+ISR(INT5_vect)								//for North
 {
-	init_DIR();
-	NorthIsClear ^= 1;
+	init_DIR();								//Halt Motion
+	NorthIsClear ^= 1;						//toggle flag
 }
 
-ISR(INT4_vect)									//For South
+ISR(INT4_vect)								//For South
 {
-	init_DIR();
-	SouthIsClear ^= 1;
+	init_DIR();								//Halt Motion
+	SouthIsClear ^= 1;						//toggle flag
 }
 
-ISR(USART1_RX_vect)								//Serial In
+ISR(USART1_RX_vect)							//Serial In
 {
-	cli();
+	cli();									//disable interrupts
+	uint8_t datz;							//Temp Var for Capture
 	
-	uint8_t datz;
+	while ( !(UCSR0A & (1<<RXC0)) );		//w8 for buffer clear
+	datz=UDR0;								//then read data
+	key = datz;								//send for Global access
 	
-	while ( !(UCSR0A & (1<<RXC0)) );
+	setDIR_serial(key);						//process for motion
 	
-	datz=UDR0;
-	
-	key = datz;
-	
-	setDIR_serial(key);
-	
-	WatchToken = HeelDog;				//heel Watchdog
-	
-	use_HX711();
+	WatchToken = HeelDog;					//Acknowledge connection
+	use_HX711();							//spend ~20us LdCell
 	
 	sei();
 	
