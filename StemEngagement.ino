@@ -1,13 +1,14 @@
-int AI1 = 15; // physical pins correspond to integer values in arduino
-int AI2 = 16;
-int BI1 = 17;
-int BI2 = 4;
+              // Pins on Uno 3 with Pin on H Bridge
+int AI1 = 15; // A1  In1 
+int AI2 = 16; // A2 In2
+int BI1 = 17; // A3 In3
+int BI2 = 4;  // 4 In4
 
-int PWMA = 11; // Pulse Width Modulation (PWM) pins on 11 and 3
-int PWMB = 3;
+int PWMA = 11; // ~11 Pulse Width Modulation (PWM) pins on 11 and 3 Attach to ENA and ENB
+int PWMB = 3;  // ~3
 
 int userInput = 0; // variable to store serial input
-int motorSpeed = 0; // stores current motor speed
+int motorSpeed = 255; // motor runs full speed
 
 void setup() {
   pinMode(AI1, OUTPUT);       // set pin I/O for PWM Control
@@ -16,7 +17,7 @@ void setup() {
   pinMode(BI2, OUTPUT);
   pinMode(PWMA, OUTPUT);       
   pinMode(PWMB, OUTPUT);
-  analogWrite(PWMA, motorSpeed); // motors start off
+  analogWrite(PWMA, motorSpeed);
   analogWrite(PWMB, motorSpeed);
   Serial.begin(115200);    // setup serial monitor to read keyboard input
 
@@ -58,7 +59,7 @@ void loop() {
     }
     else if(userInput == 'r'){
       if(motorSpeed < 255){
-        motorSpeed++;
+        motorSpeed++; // increase motor speed by 1
         analogWrite(PWMA, motorSpeed);
         analogWrite(PWMB, motorSpeed);
         Serial.print("+\r\n");
@@ -66,7 +67,7 @@ void loop() {
     }
     else if(userInput == 'e'){
       if(motorSpeed > 0){
-        motorSpeed--;
+        motorSpeed--; // lower motor speed by 1
         analogWrite(PWMA, motorSpeed);
         analogWrite(PWMB, motorSpeed);
         Serial.print("-\r\n");
