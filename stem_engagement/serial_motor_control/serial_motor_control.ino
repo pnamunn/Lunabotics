@@ -29,14 +29,14 @@ void setup() {    // Setup code runs once at the beginning
 void loop() {   // Loop code keeps running
 
   if (Serial.available() > 0) { // if there's serial data coming in
-    serial_input = Serial.read();  // store received charcacter 
+    serial_input = Serial.read();  // read the received data 
     
     if(serial_input == 'w'){         // drive forward 
       digitalWrite(in1, HIGH);
       digitalWrite(in2, LOW);
       digitalWrite(in3, HIGH);
       digitalWrite(in4, LOW);
-      Serial.print("Forward\r\n"); // text formatting \r carriage return and \n newline
+      Serial.print("Forward\r\n");  // print "Forward"
     }
     else if(serial_input == 'a'){    // turn left 
       digitalWrite(in1, LOW);
