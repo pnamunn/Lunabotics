@@ -266,88 +266,48 @@ void Prox_ISR_EN()							//EXT interrupt
 
 void use_HX711()
 {
-	static uint8_t sensor_IP =1;					//flag
-	
-	static enum HX711_State {STANDBY, ACTIVE, SEND} hx711_state = STANDBY;
-	
-	while(sensor_IP)								//sensor stt mach
+	static uint8_t sensor_IP =1;
+
+	for (uint8_t i = 0; i < 24; i++)		//ACQUISITION
 	{
 		
-		switch(hx711_state)							//~2 ticks
-		{
-			
-			case STANDBY:							//max busy: 76us
-			while (HX711_DAT_PENDING);				//System vulnerable
-			hx711_state = ACTIVE;					//62.5 nano seconds
-			break;
-			
-			
-			case ACTIVE:							//ACQUISITION
-			for (uint8_t i = 0; i < 24; i++)		//7 ticks ~437.5ns
-			{
-				
-				SCK_HIGH;
-				
-				__asm__ __volatile__("nop");		//stall
-				__asm__ __volatile__("nop");
-				__asm__ __volatile__("nop");
-				__asm__ __volatile__("nop");		//250th nano sec
-				
-				
-				hx711_data   = HX711_DATA_VALUE;	//187.5 nano sec
-				hx711_data <<= 1;					//250th nano sec
-				
-				SCK_LOW;
-				
-				__asm__ __volatile__("nop");		//stall
-				__asm__ __volatile__("nop");
-				__asm__ __volatile__("nop");
-				__asm__ __volatile__("nop");
-				__asm__ __volatile__("nop");		//250th nano second
-			}										//Exit: 18 micro
-			
-			for (uint8_t i = 0; i < GAIN128; i++)	//7 ticks ~437.5ns
-			{
-				
-				SCK_HIGH;
-				__asm__ __volatile__("nop");
-				__asm__ __volatile__("nop");
-				__asm__ __volatile__("nop");
-				__asm__ __volatile__("nop");		//250th nano se
-				
-				SCK_LOW;
-				
-				__asm__ __volatile__("nop");		//62.5 nano sec
-				__asm__ __volatile__("nop");
-				__asm__ __volatile__("nop");
-				__asm__ __volatile__("nop");		//250th nano second
-				
-			}										//18.875  micro
-			hx711_state = SEND;						//1 tick
-			break;									//18.9375 micro
-			
-			
-			case SEND:								//print longest
-			 
-			 if(hx711_data&0xFFFFFF)
-			 DepBinLoading	=	0;					//clear flag
-			 
-			 else
-			 DepBinLoading	=	1;					//Not Full
-			
-			term_Send_Val_as_Digits((uint8_t)(hx711_data>>24));
-			term_Send_Val_as_Digits((uint8_t)(hx711_data>>16));
-			term_Send_Val_as_Digits((uint8_t)(hx711_data>> 8));
-			term_Send_Val_as_Digits((uint8_t)(hx711_data>> 0));
-			serial_transmit('\n');
-			serial_transmit('\r');
-			
-			hx711_state=STANDBY;
-			sensor_IP = 0;
-			break;
-		}
+		SCK_HIGH;
+		
+		
+		//asm volatile(" nop");				//62.5 nano seconds
+		//asm volatile(" nop");
+		//asm volatile(" nop");
+		//asm volatile(" nop");				//250th nano second
+		
+		
+		hx711_data   |= HX711_DATA_VALUE;		//3 ops to read
+		hx711_data <<= 1;						//4 Scooch for nxt rd
+		
+		SCK_LOW;
+		
+		asm volatile(" nop");				//62.5 nano seconds
+		asm volatile(" nop");
+		asm volatile(" nop");
+		asm volatile(" nop");				//250th nano second
 	}
+	
+	
+	SCK_HIGH;								//for Gain 128
+	asm volatile(" nop");				//62.5 nano seconds
+	asm volatile(" nop");
+	asm volatile(" nop");
+	asm volatile(" nop");				//250th nano second
+	
+	SCK_LOW;
+	
+	asm volatile(" nop");				//62.5 nano seconds
+	asm volatile(" nop");
+	asm volatile(" nop");
+	asm volatile(" nop");				//250th nano second
 
+	sensor_IP = 0;
+
+	
 }
 
 void init_DIR()
@@ -624,4 +584,5 @@ int main(void)
     }
 	
 }
+
 
