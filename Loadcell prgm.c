@@ -170,6 +170,7 @@ printPercentileState(25); // This would print "20%"
 
 volatile uint32_t	hx711_data32	= 0;
 
+
 //volatile uint8_t	powerUpInitFlag = 0;
 //volatile uint8_t	ovf_count		= 0;
 //volatile uint16_t	hx711_data16	= 0;
@@ -402,15 +403,19 @@ void printBin8(uint8_t data){
 	}
 }
 
-void term_Send_16_as_Digits(uint16_t val){
+void term_Send_16_as_Digits(int16_t val){
 	uint8_t digit = '0';
-	
+/*	
 	if(val&(1<<15)){
 		serial_transmit('-');
 		val=~val;
 		val+=1;
 	}
-	
+*/	
+	if (val < 0) {
+		val *= -1;
+		serial_transmit('-');
+	}
 	while(val >= 10000){
 		digit += 1;
 		val -= 10000;
@@ -444,6 +449,16 @@ void term_Send_16_as_Digits(uint16_t val){
 	serial_transmit('0' + val);
 }
 
+int16_t loadcell_offset() {
+	if(HX711_DATA_RDY) {
+		
+		use_HX711();
+		
+		int16_t *offset = (((uint8_t *)(&hx711_data32))+ 1u);	
+		return *offset;
+		}
+	};
+
 
 
 int main()
@@ -451,6 +466,8 @@ int main()
 	sei();
 	gpio_init();
 	uart_init();
+	int16_t offset = loadcell_offset();
+	
 	//timer0_start_one_shot();
 		
 	//while (!powerUpInitFlag) {	SCK_LOW;}	//peripheral device passive Power
@@ -461,28 +478,31 @@ int main()
 		{
 	
 		use_HX711();
-		/*
+		
 			uint8_t *peetee = (uint8_t *)&hx711_data32;
 			//term_Send_Val_as_Digits((uint8_t)(hx711_data>>24));
 			//term_Send_Val_as_Digits((uint8_t)(hx711_data>>16));
 			//term_Send_Val_as_Digits((uint8_t)(hx711_data>> 8));
 			//term_Send_Val_as_Digits((uint8_t)(hx711_data>> 0));
-			printBin8(peetee[3]);				//little-endian: LSB 1st
-			printBin8(peetee[2]);
-			printBin8(peetee[1]);
-			printBin8(peetee[0]);
+			//printBin8(peetee[3]);				//little-endian: LSB 1st
+			//printBin8(peetee[2]);
+			//printBin8(peetee[1]);
+			//printBin8(peetee[0]);
 			
-*/			
+		
 			//hx711_data32 -= 168;
 			hx711_data32 |= 0xFF000000;		//sign extnd?
-			hx711_data32 = ~hx711_data32;	//un-do complement
-			hx711_data32 +=1;				//add 1
+			//hx711_data32 = ~hx711_data32;	//un-do complement
+			//hx711_data32 +=1;				//add 1
 			
 			
-			uint8_t *weee = (((uint8_t *)(&hx711_data32))+ 1u);	//window trickery
-			term_Send_16_as_Digits(*((uint16_t *)weee));			//window extension
+			int16_t *weee = (((uint8_t *)(&hx711_data32))+ 1u);	//window trickery
+			//term_Send_16_as_Digits(*((uint16_t *)weee));			//window extension
 			
+			int16_t thonk = *weee - offset;
 			
+			term_Send_16_as_Digits(thonk);
+
 			serial_transmit('\n');
 			serial_transmit('\r');
 			hx711_data32 = 0;
