@@ -29,7 +29,7 @@ class GamepadSubber(Node):
         self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)      # for Nano currently on the Zyn mobile
 
 
-    def send(self, cmd):
+    def send(self, cmd):        # Used to serial write ASCII cmds
         self.ser.write(cmd.encode())
 
 
@@ -42,13 +42,29 @@ class GamepadSubber(Node):
 
         self.axes_values = msg.axes
         self.get_logger().info(f'Subber received axes = {self.axes_values}')
+
+        # Used to toggle between using Joysticks (0) and Dpad (1)
+        self.control_toggle = 0
         
 
+        ''' Motor control using the Joysticks '''
+        # if self.control_toggle == 0:
+        if (self.axes_values[7] == 0 and self.axes_values[6] == 0):   # if Left Joystick is in neutral
+            pass
+        elif (self.axes_values[7] == 1):    # moving Left Joystick up
+            self.send('w')
+        elif (self.axes_values[7] == -1):    # moving Left Joystick down
+            self.send('s')
+    
+
+
+
+
+        ''' Motor control using the Dpad '''
+        # if self.control_toggle == 1:
         if (self.axes_values[1] == -0.0 and self.axes_values[0] == -0.0):      # No presses on Dpad occurring
             if (self.button_values[4] == 1):      # LB pressed
                 self.send('1')        # retract
-            # elif (self.button_values[5] == 1):    # RB pressed
-            #     self.send('2')      # stop actuator
             elif (self.button_values[6] == 1):    # LT pressed
                 self.send('3')      # extend
             else:
@@ -62,6 +78,14 @@ class GamepadSubber(Node):
             self.send('a')        # skid steer left
         elif (self.axes_values[0] == -1.0):      # Dpad right is pressed
             self.send('d')        # skid steer right
+
+
+        ''' Depo bin controls '''
+        if (self.button_values[X] == 1):    # RB pressed
+            self.send('j')      # tilt up
+        elif (self.button_values[X] == 1):    # RT pressed
+            self.send('l')      # tilt down
+
 
 
 
