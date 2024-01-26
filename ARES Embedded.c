@@ -155,6 +155,71 @@ volatile	char	key		   =    0;
 #define		HeelDog							  0;
 volatile	uint8_t		WatchToken =		  0;
 
+//-----Communication Protocol-----------------------------//
+
+#define MSG_MAX_LENGTH	8
+#define CMD_BYTE		0
+
+struct message_heard						//this is
+	{
+		uint8_t werd_heard;					//Which word
+		uint8_t	data[MSG_MAX_LENGTH];		//and its magnitude
+	};
+
+enum CMND_TYPE
+{
+	KILL,
+	RES0,
+	CTRL_BUTT,
+	RES1,
+	CTRL_JOY_L_STICK,
+};
+
+struct message_heard rx_message;			//this is a global instance
+
+void RX_ISR_maybe ()
+{
+	if(rx_message.werd_heard < MSG_MAX_LENGTH)
+	{
+		//rx_message.data[rx_message.werd_heard++] = UDR0;
+		//note buffer overflow, 64bytes maybe
+	}
+	else if (rx_message.werd_heard == MSG_MAX_LENGTH)
+	{
+		//process(&rx_message);
+		//and clear? default case not handle that?
+	}
+
+}
+
+void MSG_handler (struct message_heard *boo_hoo)
+{
+	if (boo_hoo)
+	{
+		switch(boo_hoo->data[CMD_BYTE])			//The first word in
+		{
+		case KILL:
+		//handle_kill();
+		break;
+		
+		case CTRL_BUTT:
+		//handle_butts();
+		break;
+		
+		case CTRL_JOY_L_STICK:
+		//handle_motors(boo_hoo);
+		break;
+		
+		default
+		//didnt_hear(boo_hoo);	//reset message
+		break;
+			
+		}
+		
+	}
+}
+
+
 //-----UART FUNCTIONS-------------------------------------//
 
 void uart_init (void)						//initialize UART
