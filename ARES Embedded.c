@@ -157,16 +157,18 @@ volatile	uint8_t		WatchToken =		  0;
 
 //-----Communication Protocol-----------------------------//
 
-#define MSG_MAX_LENGTH	8
+//-----Communication Protocol-----------------------------//
+
+#define MAX_MSG_LENGTH	8
 #define CMD_BYTE		0
 
-struct message_heard						//this is
+struct message												//this is
 	{
-		uint8_t werd_heard;					//Which word
-		uint8_t	data[MSG_MAX_LENGTH];		//and its magnitude
+		uint8_t which_cmd_werd;								//type of directive
+		uint8_t	data[MAX_MSG_LENGTH];						//and its magnitude in breadth
 	};
 
-enum CMND_TYPE
+enum CMND_TYPE												//quick-defined immediates
 {
 	KILL,
 	RES0,
@@ -175,48 +177,55 @@ enum CMND_TYPE
 	CTRL_JOY_L_STICK,
 };
 
-struct message_heard rx_message;			//this is a global instance
+struct message heard;										//what's "heard" is a globally
+															//accessible instance of a msg.
+															//incoming data is stashed here
 
-void RX_ISR_maybe ()
+void MSG_handler (struct message *boo_hoo)
 {
-	if(rx_message.werd_heard < MSG_MAX_LENGTH)
-	{
-		//rx_message.data[rx_message.werd_heard++] = UDR0;
-		//note buffer overflow, 64bytes maybe
-	}
-	else if (rx_message.werd_heard == MSG_MAX_LENGTH)
-	{
-		//process(&rx_message);
-		//and clear? default case not handle that?
-	}
-
-}
-
-void MSG_handler (struct message_heard *boo_hoo)
-{
-	if (boo_hoo)
-	{
-		switch(boo_hoo->data[CMD_BYTE])			//The first word in
-		{
-		case KILL:
-		//handle_kill();
+	if (boo_hoo)											//the thing crying at the struct
+	{														//"message"
+		
+		switch(boo_hoo->data[CMD_BYTE])						//Serial # of the msg magnitude
+		{													//was the first word sent
+		
+		case KILL:											//if it was Kill
+		//handle_kill();									//Destroy the Child
 		break;
 		
-		case CTRL_BUTT:
-		//handle_butts();
+		case CTRL_BUTT:										//if it was a button
+		//handle_butts();									//handle them hammy's
 		break;
 		
-		case CTRL_JOY_L_STICK:
-		//handle_motors(boo_hoo);
+		case CTRL_JOY_L_STICK:								//if it was L joy
+		//handle_motors(boo_hoo);							//it's to handle drivetrain motors
 		break;
 		
-		default
-		//didnt_hear(boo_hoo);	//reset message
+		default												//assumption is otherwise invalid
+		//didnt_hear(boo_hoo);								//thus message is bunk, dump it
 		break;
 			
 		}
 		
 	}
+}
+
+void RX_ISR_maybe ()
+{
+	if(heard.which_cmd_werd < MAX_MSG_LENGTH)				//if not done listening
+	{
+	heard.data[heard.which_cmd_werd++] = UDR0;				//increment the expectation
+															//*note* buffer overflow-
+															//we defined 8 bytes here
+	}
+	else if (heard.which_cmd_werd == MAX_MSG_LENGTH)		//if finished
+	{
+		MSG_handler(&heard);								//send 9 bytes located at rx_message
+															//in memory
+															//and clear "heard.which_cmd_werd"?
+															//the default case not handle that?
+	}
+
 }
 
 
