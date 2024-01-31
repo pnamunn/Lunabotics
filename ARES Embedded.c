@@ -155,6 +155,100 @@ volatile	char	key		   =    0;
 #define		HeelDog							  0;
 volatile	uint8_t		WatchToken =		  0;
 
+//-----Communication Protocol-----------------------------//
+
+#define MAX_MSG_LENGTH					8
+#define CMD_BYTE						0
+
+volatile uint8_t D_PAD_ABXY[8]		=	0;					//button bit field 1
+volatile uint8_t TrigStrtSlct[8]	=	0;					//button bitfield 2
+volatile uint8_t jack_rip			=	0;					//logitech butt lolz
+
+
+struct message												//this is
+	{
+		uint8_t werd_count;									//type of directive
+		uint8_t	data[MAX_MSG_LENGTH];						//and its magnitude in breadth
+	};
+
+enum CMND_TYPE												//quick-defined immediates
+{
+	KILL,
+	RES0,
+	CTRL_BUTT,
+	RES1,
+	CTRL_JOY_L_STICK,
+};
+
+struct message heard;										//what's "heard" is a globally
+															//accessible instance of a msg.
+															//incoming data is stashed here
+
+void MSG_handler (struct message *boo_hoo)
+{
+	if (boo_hoo)											//the thing crying at the struct
+		{													//"message" is actually crying
+		
+		//check_sum()&data[CHK_SUM]); here					//best be a good reason
+		
+		switch(boo_hoo->data[CMD_BYTE])						//1st member it's squealing at is
+		{													//the directive ID, and dictates 
+															//response to terror
+		
+		case KILL:											//if it was Kill command
+		//handle_kill();									//Destroy the Child
+		break;
+		
+		
+		case CTRL_BUTT:										//if it was a button
+		//handle_butts();									//handle them hammy's
+		
+		for(uint8_t i=0; i<8; i++)
+		{
+			D_PAD_ABXY[i]	=	((heard.data[1] >> i) & 1);	//Bangin Bits out
+			TrigStrtSlct[i]	=	((heard.data[2] >> i) & 1);	//Bangin Bits out
+		}
+		
+			jack_rip		=	heard.data[3];				//idk- def enough room for both
+															//jack's on that door.
+		break;
+		
+		case CTRL_JOY_L_STICK:								//if it was L joy
+		//handle_motors(boo_hoo);							//it's to handle drivetrain motors
+		
+		DRIVE_L = (heard.data[1]<<8) | heard.data[2];		//High byte directive OR w/ Low byte
+		DRIVE_R = (heard.data[3]<<8) | heard.data[4];		//"									"
+															//expectation of message
+		
+		break;
+		
+		default												//assumption is otherwise invalid
+		//didnt_hear(boo_hoo);								//thus message is bunk, dump it
+		break;
+			
+		}
+		
+	}
+}
+
+void RX_ISR_maybe ()
+{
+	if(heard.werd_count < MAX_MSG_LENGTH)				//if not done listening
+	{
+	heard.data[heard.werd_count++] = UDR0;				//increment the expectation
+															//note buffer overflow
+															// we defined 8 bytes here
+	}
+	else if (heard.werd_count == MAX_MSG_LENGTH)		//if finished
+	{
+		MSG_handler(&heard);								//send 9 bytes located at rx_message
+															//in memory
+															//and clear "heard.which_cmd_werd"?
+															//the default case not handle that?
+	}
+
+}
+
 //-----UART FUNCTIONS-------------------------------------//
 
 void uart_init (void)						//initialize UART
