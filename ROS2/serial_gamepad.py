@@ -52,7 +52,7 @@ class GamepadSubber(Node):
         if (self.axes_values[x] == 0.0 and self.axes_values[y] == 0.0):   # if Left Joystick is in neutral
             pass
         elif (self.axes_values[y] > 0.0):    # moving Left Joystick up
-            self.send('w')
+            self.send('Normalized value to Arduino comms protocol')
         elif (self.axes_values[y] < 0.0):    # moving Left Joystick down
             self.send('s')
         elif (self.axes_values[x] > 0.0):    # moving Left Joystick left
