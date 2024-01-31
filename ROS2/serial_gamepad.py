@@ -49,12 +49,16 @@ class GamepadSubber(Node):
 
         ''' Motor control using the Joysticks '''
         # if self.control_toggle == 0:
-        if (self.axes_values[7] == 0 and self.axes_values[6] == 0):   # if Left Joystick is in neutral
+        if (self.axes_values[x] == 0.0 and self.axes_values[y] == 0.0):   # if Left Joystick is in neutral
             pass
-        elif (self.axes_values[7] == 1):    # moving Left Joystick up
+        elif (self.axes_values[y] > 0.0):    # moving Left Joystick up
             self.send('w')
-        elif (self.axes_values[7] == -1):    # moving Left Joystick down
+        elif (self.axes_values[y] < 0.0):    # moving Left Joystick down
             self.send('s')
+        elif (self.axes_values[x] > 0.0):    # moving Left Joystick left
+            self.send('a')
+        elif (self.axes_values[x] < 0.0):    # moving Left Joystick right
+            self.send('d')
     
 
 
