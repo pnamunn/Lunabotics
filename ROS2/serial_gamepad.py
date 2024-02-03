@@ -29,10 +29,16 @@ class GamepadSubber(Node):
         self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)      # for Nano currently on the Zyn mobile
 
         self.deadzone = 0.2
+        
+        self.axes_values_last = [0 for i in range(6)]   #idk if initializing like this matters/is correct
+        self.butt_values_last = [0 for i in range(6)]   
 
 
     def send(self, cmd):        # Used to serial write ASCII cmds
-        self.ser.write(cmd.encode())
+        if (type(cmd) == str):
+            self.ser.write(cmd.encode())
+        elif (type(cmd) == bytes):
+            self.ser.write(cmd)
 
 
     def joystick_math(self, x, y):
@@ -56,6 +62,24 @@ class GamepadSubber(Node):
                 self.left_motor = -(self.max)
                 self.right_motor = self.diff
 
+    def send_motor_data(self, left, right):      
+        self.left_high = left >> 8                  #splits flag values into 2 bytes
+        self.left_low = left & (255)
+        self.right_high = right >> 8
+        self.right_low = right & (255)
+
+        self.send(4)                                # i think this is the command for joystick control
+        self.send(self.left_high)                   # we send the flag
+        self.send(self.left_low)
+        self.send(self.right_high)
+        self.send(self.right_low)
+
+        self.send('l')                              # to fill the buffer on embedded side. Prob want to have it be end byte instead
+        self.send('o')
+        self.send('l')
+
+
+
 
     def joy_callback(self, msg):
         ''' Callback function grabs some of the values being published by /joy topic, converts
@@ -69,20 +93,37 @@ class GamepadSubber(Node):
         
 
         ''' Motor control using the Joysticks '''
-        # if left joystick is in deadzone, check for button presses
-        if (self.axes_values[0] > self.deadzone or self.axes_values[0] < -(self.deadzone)
-            or self.axes_values[1] > self.deadzone or self.axes_values[1] < -(self.deadzone)):   # if Left Joystick is in neutral
-            if (self.button_values[4] == 1):      # LB pressed
-                 self.send('1')        # tilt exc out
-            else (self.button_values[6] == 1):    # LT pressed
-                 self.send('3')      # tilt exc down
-
-        else:       # if left joystick is outside of deadzone
-            self.joystick_math(self.axes_values[0], self.axes_values[1])
+        if (self.axes_values == self.axes_values_last):     #checks for changes in controller input
+        # if left joystick is out of deadzone, math the flags
+            if (self.axes_values[0] > self.deadzone or self.axes_values[0] < -(self.deadzone)
+                or self.axes_values[1] > self.deadzone or self.axes_values[1] < -(self.deadzone)):   # if Left Joystick is in neutral
+                
+                self.joystick_math(self.axes_values[0], self.axes_values[1])   
+                self.send_motor_data(self.left,self.right)
 
 
+            else:       # if left joystick is inside of deadzone
+                self.send_motor_data(3000, 3000)
+
+        if (self.button_values != self.butt_values_last):
+            for p in range(8):                                  # convert button array into 1 byte
+                self.butt_bin += self.button_values[p] << p
+            
+            self.send(2)
+            self.send(self.butt_bin)
+
+            self.send('l')                              # same reason as the other one
+            self.send('o')
+            self.send('l')
+            self.send('o')
+            self.send('l')
+            self.send('o')
 
 
+
+        self.butt_values_last = self.button_values          # update the old array
+        self.axes_values_last = self.axes_values
+        self.butt_bin = 0
 
         ''' Motor control using the Dpad '''
         # if (self.axes_values[1] == -0.0 and self.axes_values[0] == -0.0):      # No presses on Dpad occurring
