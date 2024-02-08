@@ -11,13 +11,13 @@ int motor_speed = 128;    // current motor speed
 
 void setup() {    // Setup code runs once at the beginning
 
-  pinMode(enA, OUTPUT);       
-  pinMode(enB, OUTPUT);
+  pinMode(enA, __);       
+  pinMode(enB, __);
 
-  pinMode(in1, OUTPUT);    
-  pinMode(in2, OUTPUT);
-  pinMode(in3, OUTPUT);       
-  pinMode(in4, OUTPUT);
+  pinMode(in1, __);    
+  pinMode(in2, __);
+  pinMode(in3, __);       
+  pinMode(in4, __);
 
   analogWrite(enA, motor_speed);
   analogWrite(enB, motor_speed);
@@ -32,50 +32,49 @@ void loop() {   // Loop code keeps running
     serial_input = Serial.read();  // read the received data 
     
     if(serial_input == 'w'){         // drive forward 
-      digitalWrite(in1, HIGH);
-      digitalWrite(in2, LOW);
-
-      digitalWrite(in3, HIGH);
-      digitalWrite(in4, LOW);
+      digitalWrite(in1, __);
+      digitalWrite(in2, __);
+      digitalWrite(in3, __);
+      digitalWrite(in4, __);
       Serial.print("Forward\r\n");  // print "Forward"
     }
 
-    else if(serial_input == 'a'){    // turn left 
-      digitalWrite(in1, LOW);
-      digitalWrite(in2, HIGH);
-
-      digitalWrite(in3, HIGH);
-      digitalWrite(in4, LOW);
-      Serial.print("Left\r\n");
-    }
-
     else if(serial_input == 's'){    // drive backward 
-      digitalWrite(in1, LOW);
-      digitalWrite(in2, HIGH);
+      digitalWrite(in1, __);
+      digitalWrite(in2, __);
 
-      digitalWrite(in3, LOW);
-      digitalWrite(in4, HIGH);
+      digitalWrite(in3, __);
+      digitalWrite(in4, __);
       Serial.print("Reverse\r\n");
     }
 
-    else if(serial_input == 'd'){    // turn right
-      digitalWrite(in1, HIGH);
-      digitalWrite(in2, LOW);
+    else if(serial_input == 'a'){    // turn left 
+      digitalWrite(in1, __);
+      digitalWrite(in2, __);
 
-      digitalWrite(in3, LOW);
-      digitalWrite(in4, HIGH);
+      digitalWrite(in3, __);
+      digitalWrite(in4, __);
+      Serial.print("Left\r\n");
+    }
+
+    else if(serial_input == 'd'){    // turn right
+      digitalWrite(in1, __);
+      digitalWrite(in2, __);
+
+      digitalWrite(in3, __);
+      digitalWrite(in4, __);
       Serial.print("Right\r\n");
     }
-
+    
     else if (serial_input == 'q') {   // stop
-      digitalWrite(in1, LOW);
-      digitalWrite(in2, LOW);
+      digitalWrite(in1, __);
+      digitalWrite(in2, __);
 
-      digitalWrite(in3, LOW);
-      digitalWrite(in4, LOW);
+      digitalWrite(in3, __);
+      digitalWrite(in4, __);
       Serial.print("Stop\r\n");
     }
-    
+
     else if(serial_input == 'e'){    // increase speed
       if(motor_speed < 255){
         motor_speed = motor_speed + 1;
@@ -84,6 +83,7 @@ void loop() {   // Loop code keeps running
         Serial.print("+ speed\r\n");
       }
     }
+    
     else if(serial_input == 'r'){    // decrease speed
       if(motor_speed > 0){
         motor_speed = motor_speed - 1;

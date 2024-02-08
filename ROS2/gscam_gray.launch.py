@@ -11,7 +11,11 @@ def generate_launch_description():
          output='screen'
          parameters=[
             {'camera_info_url' : 'package://gscam/examples/uncalibrated_parameters.ini'},
-            {'gscam_config' : 'v4l2src do-timestamp=true ! video/x-raw,framerate=30/1 ! videobalance saturation=0.0 ! jpegenc ! multipartmux ! multipartdemux ! jpegparse'},
+            {'gscam_config' : 'v4l2src do-timestamp=true ! video/x-raw ! videobalance saturation=0.0 \
+             ! jpegenc ! multipartmux ! multipartdemux ! jpegparse'},
+# Pipeline is: 
+# v4l2 source with sync timestamps on  ->  outputs x-raw video  ->  takes all color out of the x-raw video
+#  ->  x-raw video is encoded into jpegs  ->  sequential jpegs are muxed into a buffer  ->  jpegs are demuxed  ->  outputs jpegs for sink
             {'camera_name' : 'default'},
             {'image_encoding' : 'jpeg'},
             {'use_gst_timestamps' : True},

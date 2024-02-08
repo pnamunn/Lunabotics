@@ -1,0 +1,26 @@
+On D, with mode light on:
+    left joystick has x and y axis values of [-1,1] with 0 being neutral
+    right joystick has x and y axis values of [0,255] with 127 or 128 being neutral
+
+USE THIS ONE :
+On D, with mode light off:
+    both joysticks have x and y axis values of [0,255] with 127 or 128 being neutral
+        in joy, this becomes [-1,1] 32 bit float with 16 decimal places with 0 being neutral
+    all buttons and triggers are boolean
+
+On X, with mode light on:
+    left joystick has x and y axis values of [-1,1] with 0 being neutral
+    right joystick has x and y axis values of [-32768, 32767] with 128 being neutral for x, -129 being neutral for y
+
+On X, with mode light off:
+    both joysticks have x and y axis values of [-32768, 32767] with 128 being neutral for x, -129 being neutral for y
+
+
+
+
+
+buttons_array={
+    [0] 
+    [1]
+    [2]
+} 
