@@ -66,6 +66,8 @@ class GamepadSubber(Node):
 
         # # TODO TEST ALTERNATIVE METHOD
         # ''' Or transmit 8 bit values to Arduino & then have Arduino normalize it on its end? '''
+        # TODO RESOLVED  This is actually less efficent and should not be implemented bc it costs no bandwidth to send
+        # data to the Arduino from the Jetson (where this code is running)
         # self.left_motor = int( (self.left_motor * 10) + 100 )
         # self.right_motor = int( (self.right_motor * 10) + 100 ) 
 
