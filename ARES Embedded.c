@@ -482,7 +482,7 @@ void setDIR_serial(char input)				//And speed atm
 		
 	}
 	
-	else if (input=='s' && SouthIsClear)
+	else if (input=='s' && SouthIsClear)	//Backward
 	{
 		
 		DRIVE_L = RVRS_DUTY16;
@@ -490,6 +490,11 @@ void setDIR_serial(char input)				//And speed atm
 		
 		DIRencoder = 0X0C;					//Encrypt DIR set
 		tosend='B';							//Encrypt State Measure
+	}
+	else if (input=='m')		// left joystick is in deadzone
+	{
+		DRIVE_L = STOP_DUTY16;
+		DRIVE_R = STOP_DUTY16;
 	}
 	
 	//-----EXCAVATION COMMAND FUNCTIONS------------------------------//
