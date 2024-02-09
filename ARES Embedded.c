@@ -167,8 +167,8 @@ volatile uint8_t jack_rip			=	0;					//logitech butt lolz
 
 struct message												//this is
 	{
-		uint8_t werd_count;									//type of directive
-		uint8_t	data[MAX_MSG_LENGTH];						//and its magnitude in breadth
+		uint8_t werd_count;									//the # of words you're gonna send
+		uint8_t	data[MAX_MSG_LENGTH];						//array to store all those words
 	};
 
 enum CMND_TYPE												//quick-defined immediates
@@ -216,8 +216,8 @@ void MSG_handler (struct message *boo_hoo)
 		case CTRL_JOY_L_STICK:								//if it was L joy
 		//handle_motors(boo_hoo);							//it's to handle drivetrain motors
 		
-		DRIVE_L = (heard.data[1]<<8) | heard.data[2];		//High byte directive OR w/ Low byte
-		DRIVE_R = (heard.data[3]<<8) | heard.data[4];		//"									"
+		DRIVE_L = (heard.data[0]<<8) | heard.data[1];		//High byte directive OR w/ Low byte
+		DRIVE_R = (heard.data[2]<<8) | heard.data[3];		//"									"
 															//expectation of message
 		
 		break;
@@ -248,6 +248,27 @@ void RX_ISR_maybe ()
 	}
 
 }
+
+
+void RX_joy_vals (heard)
+{
+	if(heard.werd_count <= MAX_MSG_LENGTH) 
+	{
+		for(uint8_t i=0; i < heard.werd_count; i++)
+		{
+		
+			heard.data[heard.werd_count--] = UDR0;				//store byte in index [heard.werd_count - 1]
+																//stores lowest bytes first, so expects to receive low byte first
+																//expects DRIVE_R low, DRIVE_R high, DRIVE_L low, DRIVE_L high
+		}
+	}
+	else
+	{
+		printf("Error: tried to send more than MAX_MSG_LENGTH words using RX_joy_vals()")
+	}
+
+}
+
 
 //-----UART FUNCTIONS-------------------------------------//
 
@@ -280,6 +301,17 @@ unsigned char uart_recieve (void)			//Rx serial
 	
 	while(!((UCSR0A) & (1<<RXC0)));			//w8t while data being received
 	return UDR0;							//return 8-bit data read
+
+}
+
+unsigned char uart_receive_16 (void)		// Rx serial for 16 bit values (i.e. joystick values)
+{
+
+	while(!((UCSR0A) & (1<<RXC0)));			//w8t while high data bits being received
+	uint16_t joy_data = UDR0 << 8;			//store 8-bit high data
+	while(!((UCSR0A) & (1<<RXC0)));			//w8t while low data bits being received
+	joy_data = joy_data | UDR0;				//store 8-bit low data
+
 
 }
 
