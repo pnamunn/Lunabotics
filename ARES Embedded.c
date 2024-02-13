@@ -56,6 +56,7 @@ Functionality:
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdio.h>
 
 //-----PROXIMITY SENSOR MACROS------------------------------//
 
@@ -152,27 +153,26 @@ volatile	char	key		   =    0;
 //-----WATCHDOG OVERRIDE MACROS---------------------------//
 
 #define		WATCH_DOG_EN		(TIMSK5|=(1<<TOIE5));
-#define		HeelDog							  0;
+#define		HeelDog							  0;	
 volatile	uint8_t		WatchToken =		  0;
 
 //-----Communication Protocol-----------------------------//
 
-#define MAX_MSG_LENGTH					8
+#define MAX_MSG_LENGTH					8		// max # of words in a msg
 #define CMD_BYTE						0
 
-volatile uint8_t D_PAD_ABXY[8]		=	0;					//button bit field 1
-volatile uint8_t TrigStrtSlct[8]	=	0;					//button bitfield 2
-volatile uint8_t jack_rip			=	0;					//logitech butt lolz
+volatile uint8_t D_PAD_ABXY[8]		=	0;					//button bit field 1 for Dpad up/down/left/right, A, B, X, Y
+volatile uint8_t TrigStrtSlct[8]	=	0;					//button bit field 2 for l/r triggers, l/r bumpers, L3, R3, start, select
+volatile uint8_t jack_rip			=	0;					//logitech (butt)on lolz
 
 
-struct message												//this is
+struct message						// struct holding variables related to messages (a data Tx)
 	{
-		uint8_t werd_count;									//the # of words you're gonna send
-		uint8_t	data[MAX_MSG_LENGTH];						//array to store all those words
+		uint8_t werd_count;									//the # of words you're gonna send in a message
+		uint8_t	data[MAX_MSG_LENGTH];						//array to store all the words in a message
 	};
 
-enum CMND_TYPE												//quick-defined immediates
-{
+enum message_type												// data[0]=the message type
 	KILL,
 	RES0,
 	CTRL_BUTT,
@@ -180,68 +180,67 @@ enum CMND_TYPE												//quick-defined immediates
 	CTRL_JOY_L_STICK,
 };
 
-struct message heard;										//what's "heard" is a globally
-															//accessible instance of a msg.
-															//incoming data is stashed here
+struct message heard_msg;		// creates a message struct instance
 
-void MSG_handler (struct message *boo_hoo)
+
+void MSG_handler (struct message *msg_ptr)		// points to the addr of a message struct
 {
-	if (boo_hoo)											//the thing crying at the struct
-		{													//"message" is actually crying
-		
-		//check_sum()&data[CHK_SUM]); here					//best be a good reason
-		
-		switch(boo_hoo->data[CMD_BYTE])						//1st member it's squealing at is
-		{													//the directive ID, and dictates 
-															//response to terror
-		
-		case KILL:											//if it was Kill command
-		//handle_kill();									//Destroy the Child
-		break;
-		
-		
-		case CTRL_BUTT:										//if it was a button
-		//handle_butts();									//handle them hammy's
-		
-		for(uint8_t i=0; i<8; i++)
-		{
-			D_PAD_ABXY[i]	=	((heard.data[1] >> i) & 1);	//Bangin Bits out
-			TrigStrtSlct[i]	=	((heard.data[2] >> i) & 1);	//Bangin Bits out
-		}
-		
-			jack_rip		=	heard.data[3];				//idk- def enough room for both
-															//jack's on that door.
-		break;
-		
-		case CTRL_JOY_L_STICK:								//if it was L joy
-		//handle_motors(boo_hoo);							//it's to handle drivetrain motors
-		
-		DRIVE_L = (heard.data[0]<<8) | heard.data[1];		//High byte directive OR w/ Low byte
-		DRIVE_R = (heard.data[2]<<8) | heard.data[3];		//"									"
-															//expectation of message
-		
-		break;
-		
-		default												//assumption is otherwise invalid
-		//didnt_hear(boo_hoo);								//thus message is bunk, dump it
-		break;
-			
-		}
+	//check_sum()&data[CHK_SUM]); here					//best be a good reason
+
+	enum message_type msg_type = msg_ptr->data[CMD_BYTE];	// gets msg_type from the message's index 0
+
+	switch(msg_type)				// decodes the message, based on what type of message it is
+	{
+	
+	case KILL:											// message was a kill command
+	//TODO handle_kill();									//Destroy the Child
+	break;
+	
+	
+	case CTRL_BUTT:										// message was for buttons
+	//TODO handle_butts();									//handle them hammy's
+															// send them where they need to go
+	
+	for(uint8_t i=0; i<8; i++)
+	{
+		D_PAD_ABXY[i]	=	((heard_msg.data[1] >> i) & 1);	//Bangin Bits out from werd 1
+		TrigStrtSlct[i]	=	((heard_msg.data[2] >> i) & 1);	//Bangin Bits out from werd 2
+	}
+	
+		jack_rip		=	heard_msg.data[3];				//idk- def enough room for both
+														//jack's on that door.
+	break;
+	
+	case CTRL_JOY_L_STICK:								// message was for the left joystick
+	// expected word order is [0]=message_type, [1]=L_high, [2]=L_low, [3]=R_high, [4]=R_low
+	//TODO handle_motors(boo_hoo);							//it's to handle drivetrain motors, duh
+	
+	DRIVE_L = (heard_msg.data[1] << 8) | heard_msg.data[2];		
+	DRIVE_R = (heard_msg.data[3] << 8) | heard_msg.data[4];
+	
+	break;
+	
+	default:											// if the msg_type is not a recognizable value
+	//didnt_hear(boo_hoo);								// message is bunk, dump it, we're doing connectionless Tx
+	fprintf(stderr, "msg_ptr does not point to a recognizable message_type, MSG_handler() is throwing away that message")
+	break;
 		
 	}
+
 }
+
 
 void RX_ISR_maybe ()
 {
-	if(heard.werd_count < MAX_MSG_LENGTH)				//if not done listening
+	if(heard_msg.werd_count < MAX_MSG_LENGTH)				//if not done listening
 	{
-	heard.data[heard.werd_count++] = UDR0;				//increment the expectation
+	heard_msg.data[heard_msg.werd_count++] = UDR0;				//increment the expectation
 															//note buffer overflow
 															// we defined 8 bytes here
 	}
-	else if (heard.werd_count == MAX_MSG_LENGTH)		//if finished
+	else if (heard_msg.werd_count == MAX_MSG_LENGTH)		//if finished
 	{
-		MSG_handler(&heard);								//send 9 bytes located at rx_message
+		MSG_handler(&heard_msg);								//send 9 bytes located at rx_message
 															//in memory
 															//and clear "heard.which_cmd_werd"?
 															//the default case not handle that?
@@ -257,14 +256,12 @@ void RX_joy_vals (heard)
 		for(uint8_t i=0; i < heard.werd_count; i++)
 		{
 		
-			heard.data[heard.werd_count--] = UDR0;				//store byte in index [heard.werd_count - 1]
-																//stores lowest bytes first, so expects to receive low byte first
-																//expects DRIVE_R low, DRIVE_R high, DRIVE_L low, DRIVE_L high
+			heard.data[i] = UDR0;				// expects to receive data from index 0 first
 		}
 	}
 	else
 	{
-		printf("Error: tried to send more than MAX_MSG_LENGTH words using RX_joy_vals()")
+		fprintf(stderr, "Tried to send more than MAX_MSG_LENGTH words using RX_joy_vals()")
 	}
 
 }
@@ -491,7 +488,7 @@ void setDIR_serial(char input)				//And speed atm
 		DIRencoder = 0X0C;					//Encrypt DIR set
 		tosend='B';							//Encrypt State Measure
 	}
-	else if (input=='m')		// left joystick is in deadzone
+	else if (input=='m')		// left joystick is in deadzone, Stop
 	{
 		DRIVE_L = STOP_DUTY16;
 		DRIVE_R = STOP_DUTY16;
@@ -679,6 +676,7 @@ ISR(INT4_vect)								//For South
 
 ISR(USART1_RX_vect)							//Serial In
 {
+	//rx_isrmaybe(); stuff goes here 
 	cli();									//disable interrupts
 	uint8_t datz;							//Temp Var for Capture
 	
