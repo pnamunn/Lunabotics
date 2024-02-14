@@ -162,7 +162,7 @@ volatile	uint8_t		WatchToken =		  0;
 #define CMD_BYTE						0
 
 volatile uint8_t D_PAD_ABXY[8]		=	0;					//button bit field 1 for Dpad up/down/left/right, A, B, X, Y
-volatile uint8_t TrigStrtSlct[8]	=	0;					//button bit field 2 for l/r triggers, l/r bumpers, L3, R3, start, select
+volatile uint8_t TrigBumpStrtSlct[8]	=	0;				//button bit field 2 for l/r triggers, l/r bumpers, L3, R3, start, select
 volatile uint8_t jack_rip			=	0;					//logitech (butt)on lolz
 
 
@@ -172,11 +172,16 @@ struct message						// struct holding variables related to messages (a data Tx)
 		uint8_t	data[MAX_MSG_LENGTH];						//array to store all the words in a message
 	};
 
+#define KILL				0
+#define CTRL_BUTT			1
+#define CTRL_JOY_L_STICK	2
+
+
 enum message_type												// data[0]=the message type
 	KILL,
-	RES0,
+	RES0,		// TODO, what is RES0 going to be used for?
 	CTRL_BUTT,
-	RES1,
+	RES1,		// TODO "
 	CTRL_JOY_L_STICK,
 };
 
@@ -187,7 +192,7 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 {
 	//check_sum()&data[CHK_SUM]); here					//best be a good reason
 
-	enum message_type msg_type = msg_ptr->data[CMD_BYTE];	// gets msg_type from the message's index 0
+	enum message_type msg_type = msg_ptr->data[0];		// gets msg_type from the message's index 0
 
 	switch(msg_type)				// decodes the message, based on what type of message it is
 	{
@@ -204,11 +209,14 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 	for(uint8_t i=0; i<8; i++)
 	{
 		D_PAD_ABXY[i]	=	((heard_msg.data[1] >> i) & 1);	//Bangin Bits out from werd 1
-		TrigStrtSlct[i]	=	((heard_msg.data[2] >> i) & 1);	//Bangin Bits out from werd 2
+		TrigBumpStrtSlct[i]	=	((heard_msg.data[2] >> i) & 1);	//Bangin Bits out from werd 2
 	}
 	
 		jack_rip		=	heard_msg.data[3];				//idk- def enough room for both
 														//jack's on that door.
+
+		// TODO signal_linear_actuators()		now that we have the values, make them control the linear actuators
+
 	break;
 	
 	case CTRL_JOY_L_STICK:								// message was for the left joystick
@@ -217,6 +225,8 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 	
 	DRIVE_L = (heard_msg.data[1] << 8) | heard_msg.data[2];		
 	DRIVE_R = (heard_msg.data[3] << 8) | heard_msg.data[4];
+
+	// TODO signal_drivetrain_motors(DRIVE_L, DRIVE_R)		now that we have the values, send them to motors
 	
 	break;
 	
@@ -229,6 +239,9 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 
 }
 
+
+// TODO fix so only listens for 5 words?
+//		werd_count is never set to a value
 
 void RX_ISR_maybe ()
 {
