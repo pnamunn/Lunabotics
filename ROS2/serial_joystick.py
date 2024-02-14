@@ -13,6 +13,7 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 
+
 # Node that subs to /joy pubber
 class GamepadSubber(Node):
 
@@ -25,10 +26,10 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
-        # self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)      # for Nano currently on the Zyn mobile
+        # self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)      # serial to Arduino Mega 
 
         self.deadzone = 0.2
-          
+
 
 
     # def send(self, cmd):        # Used to serial write ASCII cmds
@@ -38,7 +39,8 @@ class GamepadSubber(Node):
     #         self.ser.write(cmd)
 
 
-    def joystick_math(self, x, y):
+    def arcade_drive_math(self, x, y):
+        x = -x      # Change bc gamepad's x axes are backwards
         self.max = max(abs(y), abs(x))
         self.sum = y + x
         self.diff = y - x
@@ -59,9 +61,25 @@ class GamepadSubber(Node):
                 self.left_motor = -(self.max)
                 self.right_motor = self.diff
 
-        self.get_logger().info(f'When X = {self.x}   Y = {self.y}')   
+
+        ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
+        self.left_motor = int( (self.left_motor * 1000) + 3000 )
+        self.right_motor = int( (self.right_motor * 1000) + 3000 ) 
+
+        self.get_logger().info(f'When X = {x}   Y = {y}')   
         self.get_logger().info(f'Left Motor = {self.left_motor}')
         self.get_logger().info(f'Right Motor = {self.right_motor}')
+
+
+        ''' Sends the motor's duty cycle values to the Arduino '''
+        self.send(CTRL_JOY_L_STICK)     # first send message_type
+        self.send(self.left_motor >> 8)            # send left_motor high
+        self.send(self.left_motor & 0b0000_1111)   # send left_motor low
+        self.send(self.right_motor >> 8)            # send right_motor high
+        self.send(self.right_motor & 0b0000_1111)   # send right_motor low
+
+
+
 
 
     def joy_callback(self, msg):
@@ -76,12 +94,17 @@ class GamepadSubber(Node):
         
 
         ''' Motor control using the Joysticks '''
-    
-        if (self.axes_values[0] > self.deadzone or self.axes_values[0] < -(self.deadzone) or self.axes_values[1] > self.deadzone or self.axes_values[1] < -(self.deadzone)):   # if Left Joystick is in neutral
-            self.joystick_math(self.axes_values[0], self.axes_values[1])
-        else:       # if left joystick is inside of deadzone
-            self.get_logger().info(f'In deadzone')
+        # If left joystick is outside of deadzone
+        if (self.axes_values[0] > self.deadzone or self.axes_values[0] < -(self.deadzone) or self.axes_values[1] > self.deadzone or self.axes_values[1] < -(self.deadzone)):
+            self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
 
+        # if left joystick is within deadzone
+        else:       
+            self.get_logger().info(f'In deadzone')
+            self.send('m')      # stop both motors
+
+        
+   
 
 
 
