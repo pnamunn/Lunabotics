@@ -26,17 +26,22 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
-        # self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)      # serial to Arduino Mega 
+        self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)      # serial to Arduino Mega 
 
         self.deadzone = 0.2
+        self.curr_joy = [0, 0]
+        self.last_joy = [0, 0]
+
+        self.left_motor = 0
+        self.right_motor = 0
 
 
 
-    # def send(self, cmd):        # Used to serial write ASCII cmds
-    #     if (type(cmd) == str):
-    #         self.ser.write(cmd.encode())
-    #     elif (type(cmd) == bytes):
-    #         self.ser.write(cmd)
+    def send(self, cmd):        # Used to serial write ASCII cmds
+        if (type(cmd) == str):
+            self.ser.write(cmd.encode())
+        elif (type(cmd) == bytes):
+            self.ser.write(cmd)
 
 
     def arcade_drive_math(self, x, y):
@@ -72,11 +77,15 @@ class GamepadSubber(Node):
 
 
         ''' Sends the motor's duty cycle values to the Arduino '''
-        self.send(CTRL_JOY_L_STICK)     # first send message_type
+        self.send("2")     # first send message_type
         self.send(self.left_motor >> 8)            # send left_motor high
         self.send(self.left_motor & 0b0000_1111)   # send left_motor low
         self.send(self.right_motor >> 8)            # send right_motor high
         self.send(self.right_motor & 0b0000_1111)   # send right_motor low
+
+        self.last_joy[0] = self.left_motor
+        self.last_joy[1] = self.right_motor
+        
 
 
 
@@ -101,7 +110,14 @@ class GamepadSubber(Node):
         # if left joystick is within deadzone
         else:       
             self.get_logger().info(f'In deadzone')
-            self.send('m')      # stop both motors
+            self.curr_joy[0] = self.left_motor
+            self.curr_joy[1] = self.right_motor
+            if (self.curr_joy != self.last_joy):
+                self.send("m")
+            self.last_joy[0] = self.left_motor
+            self.last_joy[1] = self.right_motor
+
+
 
         
    
