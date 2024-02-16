@@ -28,9 +28,57 @@ class GamepadSubber(Node):
 
         self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)      # for Nano currently on the Zyn mobile
 
+        self.deadzone = 0.2
+        
+        self.axes_values_last = [0 for i in range(6)]   #idk if initializing like this matters/is correct
+        self.butt_values_last = [0 for i in range(6)]   
 
-    def send(self, cmd):
-        self.ser.write(cmd.encode())
+
+    def send(self, cmd):        # Used to serial write ASCII cmds
+        if (type(cmd) == str):
+            self.ser.write(cmd.encode())
+        elif (type(cmd) == bytes):
+            self.ser.write(cmd)
+
+
+    def joystick_math(self, x, y):
+        self.max = max(abs(y), abs(x))
+        self.sum = y + x
+        self.diff = y - x
+
+        if y >= 0:      # if y is positive
+            if x >= 0:      # if x is positive      # Quadrant 1
+                self.left_motor = self.max
+                self.right_motor = self.diff
+            else:       # if x is negative          # Quadrant 2
+                self.left_motor = self.sum
+                self.right_motor = self.max
+
+        else:   # if y is negative                  # Quadrant 4
+            if x >= 0:      # if x is positive
+                self.left_motor = self.sum
+                self.right_motor = -(self.max)
+            else:       # if x is negative          # Quadrant 3
+                self.left_motor = -(self.max)
+                self.right_motor = self.diff
+
+    def send_motor_data(self, left, right):      
+        self.left_high = left >> 8                  #splits flag values into 2 bytes
+        self.left_low = left & (255)
+        self.right_high = right >> 8
+        self.right_low = right & (255)
+
+        self.send(4)                                # i think this is the command for joystick control
+        self.send(self.left_high)                   # we send the flag
+        self.send(self.left_low)
+        self.send(self.right_high)
+        self.send(self.right_low)
+
+        self.send('l')                              # to fill the buffer on embedded side. Prob want to have it be end byte instead
+        self.send('o')
+        self.send('l')
+
+
 
 
     def joy_callback(self, msg):
@@ -44,24 +92,64 @@ class GamepadSubber(Node):
         self.get_logger().info(f'Subber received axes = {self.axes_values}')
         
 
-        if (self.axes_values[1] == -0.0 and self.axes_values[0] == -0.0):      # No presses on Dpad occurring
-            if (self.button_values[4] == 1):      # LB pressed
-                self.send('1')        # retract
-            # elif (self.button_values[5] == 1):    # RB pressed
-            #     self.send('2')      # stop actuator
-            elif (self.button_values[6] == 1):    # LT pressed
-                self.send('3')      # extend
-            else:
-                self.send('m')        # send stop by sending an unused ASCII value
+        ''' Motor control using the Joysticks '''
+        if (self.axes_values == self.axes_values_last):     #checks for changes in controller input
+        # if left joystick is out of deadzone, math the flags
+            if (self.axes_values[0] > self.deadzone or self.axes_values[0] < -(self.deadzone)
+                or self.axes_values[1] > self.deadzone or self.axes_values[1] < -(self.deadzone)):   # if Left Joystick is in neutral
+                
+                self.joystick_math(self.axes_values[0], self.axes_values[1])   
+                self.send_motor_data(self.left,self.right)
 
-        elif (self.axes_values[1] == 1.0):      # Dpad up is pressed
-            self.send('w')        # move forward
-        elif (self.axes_values[1] == -1.0):      # Dpad down is pressed
-             self.send('s')        # move backward
-        elif (self.axes_values[0] == 1.0):      # Dpad left is pressed
-            self.send('a')        # skid steer left
-        elif (self.axes_values[0] == -1.0):      # Dpad right is pressed
-            self.send('d')        # skid steer right
+
+            else:       # if left joystick is inside of deadzone
+                self.send_motor_data(3000, 3000)
+
+        if (self.button_values != self.butt_values_last):
+            for p in range(8):                                  # convert button array into 1 byte
+                self.butt_bin += self.button_values[p] << p
+            
+            self.send(2)
+            self.send(self.butt_bin)
+
+            self.send('l')                              # same reason as the other one
+            self.send('o')
+            self.send('l')
+            self.send('o')
+            self.send('l')
+            self.send('o')
+
+
+
+        self.butt_values_last = self.button_values          # update the old array
+        self.axes_values_last = self.axes_values
+        self.butt_bin = 0
+
+        ''' Motor control using the Dpad '''
+        # if (self.axes_values[1] == -0.0 and self.axes_values[0] == -0.0):      # No presses on Dpad occurring
+        #     if (self.button_values[4] == 1):      # LB pressed
+        #         self.send('1')        # retract
+        #     elif (self.button_values[6] == 1):    # LT pressed
+        #         self.send('3')      # extend
+        #     else:
+        #         self.send('m')        # send stop by sending an unused ASCII value
+
+        # elif (self.axes_values[1] == 1.0):      # Dpad up is pressed
+        #     self.send('w')        # move forward
+        # elif (self.axes_values[1] == -1.0):      # Dpad down is pressed
+        #      self.send('s')        # move backward
+        # elif (self.axes_values[0] == 1.0):      # Dpad left is pressed
+        #     self.send('a')        # skid steer left
+        # elif (self.axes_values[0] == -1.0):      # Dpad right is pressed
+        #     self.send('d')        # skid steer right
+
+
+        # ''' Depo bin controls '''
+        # if (self.button_values[X] == 1):    # RB pressed
+        #     self.send('j')      # tilt up
+        # elif (self.button_values[X] == 1):    # RT pressed
+        #     self.send('l')      # tilt down
+
 
 
 
