@@ -135,6 +135,7 @@ volatile uint8_t	DepBinLoading	= 1;
 #define FWD_DUTY16	 4000
 #define STOP_DUTY16	 3000
 #define RVRS_DUTY16  2000
+
 #define TOP_40HZ	50000
 
 #define DRIVE_L		OCR1A
@@ -158,17 +159,19 @@ volatile	uint8_t		WatchToken =		  0;
 
 //-----Communication Protocol-----------------------------//
 
-#define MAX_MSG_LENGTH					8		// max # of words in a msg
+#define MAX_MSG_LENGTH					5		// max # of words in a msg
 #define CMD_BYTE						0
 
-volatile uint8_t D_PAD_ABXY[8]		=	0;					//button bit field 1 for Dpad up/down/left/right, A, B, X, Y
-volatile uint8_t TrigBumpStrtSlct[8]	=	0;				//button bit field 2 for l/r triggers, l/r bumpers, L3, R3, start, select
+volatile uint8_t D_PAD_ABXY[8]		=	{0};					//button bit field 1 for Dpad up/down/left/right, A, B, X, Y
+volatile uint8_t TrigBumpStrtSlct[8]	=	{0};				//button bit field 2 for l/r triggers, l/r bumpers, L3, R3, start, select
 volatile uint8_t jack_rip			=	0;					//logitech (butt)on lolz
+
+
 
 
 struct message						// struct holding variables related to messages (a data Tx)
 	{
-		uint8_t werd_count;									//the # of words you're gonna send in a message
+		uint8_t werd_count = MAX_MSG_LENGTH;									//the # of words you're gonna send in a message
 		uint8_t	data[MAX_MSG_LENGTH];						//array to store all the words in a message
 	};
 
@@ -178,6 +181,7 @@ struct message						// struct holding variables related to messages (a data Tx)
 
 
 enum message_type												// data[0]=the message type
+{
 	KILL,
 	RES0,		// TODO, what is RES0 going to be used for?
 	CTRL_BUTT,
@@ -206,7 +210,9 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 	//TODO handle_butts();									//handle them hammy's
 															// send them where they need to go
 	
-	for(uint8_t i=0; i<8; i++)
+	// heard_msg.werd_count = 3;	// addr werd + 2 data werds
+
+	for(uint8_t i = 0; i < MAX_MSG_LENGTH; i++)
 	{
 		D_PAD_ABXY[i]	=	((heard_msg.data[1] >> i) & 1);	//Bangin Bits out from werd 1
 		TrigBumpStrtSlct[i]	=	((heard_msg.data[2] >> i) & 1);	//Bangin Bits out from werd 2
@@ -217,22 +223,26 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 
 		// TODO signal_linear_actuators()		now that we have the values, make them control the linear actuators
 
+
+
 	break;
 	
 	case CTRL_JOY_L_STICK:								// message was for the left joystick
 	// expected word order is [0]=message_type, [1]=L_high, [2]=L_low, [3]=R_high, [4]=R_low
-	//TODO handle_motors(boo_hoo);							//it's to handle drivetrain motors, duh
+	// heard_msg.werd_count = 5;	// addr werd + 4 data werds 
 	
-	DRIVE_L = (heard_msg.data[1] << 8) | heard_msg.data[2];		
-	DRIVE_R = (heard_msg.data[3] << 8) | heard_msg.data[4];
+	// sets duty cycles of the left & right motors
+	DRIVE_L = (heard_msg.data[1] << MAX_MSG_LENGTH) | heard_msg.data[2];		
+	DRIVE_R = (heard_msg.data[3] << MAX_MSG_LENGTH) | heard_msg.data[4];
 
-	// TODO signal_drivetrain_motors(DRIVE_L, DRIVE_R)		now that we have the values, send them to motors
-	
+	serial_transmit(heard_msg.data[2]);				
+	serial_transmit(heard_msg.data[4]);				
+
 	break;
 	
 	default:											// if the msg_type is not a recognizable value
 	//didnt_hear(boo_hoo);								// message is bunk, dump it, we're doing connectionless Tx
-	fprintf(stderr, "msg_ptr does not point to a recognizable message_type, MSG_handler() is throwing away that message")
+	fprintf(stderr, "msg_ptr does not point to a recognizable message_type, MSG_handler() is throwing away that message");
 	break;
 		
 	}
@@ -243,41 +253,31 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 // TODO fix so only listens for 5 words?
 //		werd_count is never set to a value
 
-void RX_ISR_maybe ()
+ISR (USART0_RX_vect)
 {
-	if(heard_msg.werd_count < MAX_MSG_LENGTH)				//if not done listening
+	if(heard_msg.werd_count < 0)			
 	{
-	heard_msg.data[heard_msg.werd_count++] = UDR0;				//increment the expectation
-															//note buffer overflow
-															// we defined 8 bytes here
+		heard_msg.data[heard_msg.werd_count--] = UDR0;		// expects to receive data[MAX_MSG_LENGTH] werd first
 	}
-	else if (heard_msg.werd_count == MAX_MSG_LENGTH)		//if finished
+	else:		// once all werds have been received
 	{
-		MSG_handler(&heard_msg);								//send 9 bytes located at rx_message
-															//in memory
-															//and clear "heard.which_cmd_werd"?
-															//the default case not handle that?
+		MSG_handler(&heard_msg);			
+		heard_msg.werd_count = MAX_MSG_LENGTH;		// reset
 	}
 
 }
 
 
-void RX_joy_vals (heard)
-{
-	if(heard.werd_count <= MAX_MSG_LENGTH) 
-	{
-		for(uint8_t i=0; i < heard.werd_count; i++)
-		{
-		
-			heard.data[i] = UDR0;				// expects to receive data from index 0 first
-		}
-	}
-	else
-	{
-		fprintf(stderr, "Tried to send more than MAX_MSG_LENGTH words using RX_joy_vals()")
-	}
+// ISR (USART0_RX_vect)
+// {
 
-}
+// 	for(uint8_t i=0; i < heard.werd_count; i++)
+// 	{
+	
+// 		heard.data[i] = UDR0;				// expects to receive data from index 0 first
+// 	}
+// }
+
 
 
 //-----UART FUNCTIONS-------------------------------------//
@@ -314,16 +314,16 @@ unsigned char uart_recieve (void)			//Rx serial
 
 }
 
-unsigned char uart_receive_16 (void)		// Rx serial for 16 bit values (i.e. joystick values)
-{
+// unsigned char uart_receive_16 (void)		// Rx serial for 16 bit values (i.e. joystick values)
+// {
 
-	while(!((UCSR0A) & (1<<RXC0)));			//w8t while high data bits being received
-	uint16_t joy_data = UDR0 << 8;			//store 8-bit high data
-	while(!((UCSR0A) & (1<<RXC0)));			//w8t while low data bits being received
-	joy_data = joy_data | UDR0;				//store 8-bit low data
+// 	while(!((UCSR0A) & (1<<RXC0)));			//w8t while high data bits being received
+// 	uint16_t joy_data = UDR0 << 8;			//store 8-bit high data
+// 	while(!((UCSR0A) & (1<<RXC0)));			//w8t while low data bits being received
+// 	joy_data = joy_data | UDR0;				//store 8-bit low data
 
 
-}
+// }
 
 void term_Send_Val_as_Digits(uint8_t val)	//Decimal
 {
@@ -371,6 +371,7 @@ void printBin8(uint8_t stuff)				//Binary Print
 }
 
 //-----END OF UART FUNCTIONS------------------------------//
+
 
 void gpio_init()							//in's and out's
 {
@@ -446,7 +447,7 @@ void use_HX711()
 	
 }
 
-void init_DIR()
+void init_DIR()		// initialize all motor direction to be stopped
 {
 	DRIVE_L		= STOP_DUTY16;
 	DRIVE_R		= STOP_DUTY16;
@@ -455,7 +456,7 @@ void init_DIR()
 	EX_DESCEND	= STOP_DUTY16;
 }
 
-void setDIR_serial(char input)				//And speed atm
+void setDIR_serial(char input)		// set motor direction based on serial data Rx'd from Jetson
 {
 	char tosend='A';						//Place holder
 	
@@ -573,7 +574,7 @@ void setDIR_serial(char input)				//And speed atm
 	
 }
 
-void BewareOfDog()//watchdog
+void BewareOfDog()			//watchdog
 {
 	if(WatchToken == 240)					//kill operations
 	{
@@ -717,6 +718,7 @@ int main(void)
 	timer1_init();
 	timer4_init();
 	timer5_init();
+
 	
     sei();
 	
