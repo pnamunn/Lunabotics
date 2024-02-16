@@ -5,7 +5,7 @@ them to 8 bit ASCII values.  Then sends ASCII data serially to Arduino Nano. '''
 
 ''' To use this code: Run joy_node on Linux laptop to publish /joy topic.
 Then run this code on the Jetson to create a gamepad_subber_node that will sub to the
-/joy topic.  Logitech F310 gamepad must be flipped to D mode & have the Mode button light on. '''
+/joy topic.  Logitech F310 gamepad must be flipped to D mode & have the Mode button light OFF. '''
 
 
 import serial
@@ -28,7 +28,7 @@ class GamepadSubber(Node):
 
         self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)      # serial to Arduino Mega 
 
-        self.deadzone = 0.2
+        self._deadzone = 0.2
         self.curr_joy = [0, 0]
         self.last_joy = [0, 0]
 
@@ -78,17 +78,14 @@ class GamepadSubber(Node):
 
         ''' Sends the motor's duty cycle values to the Arduino '''
         self.send("2")     # first send message_type
-        self.send(self.left_motor >> 8)            # send left_motor high
-        self.send(self.left_motor & 0b0000_1111)   # send left_motor low
-        self.send(self.right_motor >> 8)            # send right_motor high
         self.send(self.right_motor & 0b0000_1111)   # send right_motor low
-
+        self.send(self.right_motor >> 8)            # send right_motor high
+        self.send(self.left_motor & 0b0000_1111)   # send left_motor low
+        self.send(self.left_motor >> 8)            # send left_motor high
+        
         self.last_joy[0] = self.left_motor
         self.last_joy[1] = self.right_motor
         
-
-
-
 
 
     def joy_callback(self, msg):
@@ -104,7 +101,7 @@ class GamepadSubber(Node):
 
         ''' Motor control using the Joysticks '''
         # If left joystick is outside of deadzone
-        if (self.axes_values[0] > self.deadzone or self.axes_values[0] < -(self.deadzone) or self.axes_values[1] > self.deadzone or self.axes_values[1] < -(self.deadzone)):
+        if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
             self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
 
         # if left joystick is within deadzone
@@ -112,8 +109,10 @@ class GamepadSubber(Node):
             self.get_logger().info(f'In deadzone')
             self.curr_joy[0] = self.left_motor
             self.curr_joy[1] = self.right_motor
+
             if (self.curr_joy != self.last_joy):
                 self.send("m")
+
             self.last_joy[0] = self.left_motor
             self.last_joy[1] = self.right_motor
 

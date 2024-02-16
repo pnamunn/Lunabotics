@@ -171,7 +171,7 @@ volatile uint8_t jack_rip			=	0;					//logitech (butt)on lolz
 
 struct message						// struct holding variables related to messages (a data Tx)
 	{
-		uint8_t werd_count = MAX_MSG_LENGTH;									//the # of words you're gonna send in a message
+		uint8_t werd_count = MAX_MSG_LENGTH;		
 		uint8_t	data[MAX_MSG_LENGTH];						//array to store all the words in a message
 	};
 
@@ -228,7 +228,6 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 	break;
 	
 	case CTRL_JOY_L_STICK:								// message was for the left joystick
-	// expected word order is [0]=message_type, [1]=L_high, [2]=L_low, [3]=R_high, [4]=R_low
 	// heard_msg.werd_count = 5;	// addr werd + 4 data werds 
 	
 	// sets duty cycles of the left & right motors
@@ -250,13 +249,14 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 }
 
 
-// TODO fix so only listens for 5 words?
-//		werd_count is never set to a value
 
 ISR (USART0_RX_vect)
 {
+	cli();									//disable interrupts
+
 	if(heard_msg.werd_count < 0)			
 	{
+		while ( !(UCSR0A & (1<<RXC0)) );		
 		heard_msg.data[heard_msg.werd_count--] = UDR0;		// expects to receive data[MAX_MSG_LENGTH] werd first
 	}
 	else:		// once all werds have been received
@@ -265,18 +265,9 @@ ISR (USART0_RX_vect)
 		heard_msg.werd_count = MAX_MSG_LENGTH;		// reset
 	}
 
+	sei();
 }
 
-
-// ISR (USART0_RX_vect)
-// {
-
-// 	for(uint8_t i=0; i < heard.werd_count; i++)
-// 	{
-	
-// 		heard.data[i] = UDR0;				// expects to receive data from index 0 first
-// 	}
-// }
 
 
 
