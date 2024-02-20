@@ -167,46 +167,56 @@ volatile uint8_t TrigBumpStrtSlct[8]	=	{0};				//button bit field 2 for l/r trig
 volatile uint8_t jack_rip			=	0;					//logitech (butt)on lolz
 
 
+//---------Function Declarations----------//
+void serial_transmit (unsigned char data);
 
 
-struct message						// struct holding variables related to messages (a data Tx)
-	{
-		uint8_t werd_count = MAX_MSG_LENGTH;		
-		uint8_t	data[MAX_MSG_LENGTH];						//array to store all the words in a message
-	};
 
-#define KILL				0
-#define CTRL_BUTT			1
-#define CTRL_JOY_L_STICK	2
-
-
-enum message_type												// data[0]=the message type
+typedef struct message						// struct holding variables related to messages (a data Tx)
 {
-	KILL,
-	RES0,		// TODO, what is RES0 going to be used for?
-	CTRL_BUTT,
-	RES1,		// TODO "
-	CTRL_JOY_L_STICK,
-};
-
-struct message heard_msg;		// creates a message struct instance
+		volatile uint8_t werd_count;		
+		volatile uint8_t	data[MAX_MSG_LENGTH];						//array to store all the words in a message
+} message;
 
 
-void MSG_handler (struct message *msg_ptr)		// points to the addr of a message struct
+
+//enum message_type												// data[0]=the message type
+//{
+	//KILL,
+	//RES0,		// TODO, what is RES0 going to be used for?
+	//CTRL_BUTT,
+	//RES1,		// TODO "
+	//CTRL_JOY_L_STICK,
+//};
+
+
+volatile struct message heard_msg;		// creates a message struct instance
+
+
+void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message struct
 {
 	//check_sum()&data[CHK_SUM]); here					//best be a good reason
-
-	enum message_type msg_type = msg_ptr->data[0];		// gets msg_type from the message's index 0
-
+	
+	serial_transmit('\n');
+	
+	serial_transmit('m');
+	serial_transmit('s');
+	serial_transmit('g');
+	
+	serial_transmit('\n');
+	
+	
+	uint8_t msg_type = msg_ptr->data[0];		// gets msg_type from the message's index 0
+	
 	switch(msg_type)				// decodes the message, based on what type of message it is
 	{
 	
-	case KILL:											// message was a kill command
+	case 0:											// message was a kill command
 	//TODO handle_kill();									//Destroy the Child
 	break;
 	
 	
-	case CTRL_BUTT:										// message was for buttons
+	case 1:										// message was for buttons
 	//TODO handle_butts();									//handle them hammy's
 															// send them where they need to go
 	
@@ -227,8 +237,11 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 
 	break;
 	
-	case CTRL_JOY_L_STICK:								// message was for the left joystick
+	case 2:								// message was for the left joystick
 	// heard_msg.werd_count = 5;	// addr werd + 4 data werds 
+	serial_transmit('j');
+	serial_transmit('o');
+	serial_transmit('y');
 	
 	// sets duty cycles of the left & right motors
 	DRIVE_L = (heard_msg.data[1] << MAX_MSG_LENGTH) | heard_msg.data[2];		
@@ -253,14 +266,34 @@ void MSG_handler (struct message *msg_ptr)		// points to the addr of a message s
 ISR (USART0_RX_vect)
 {
 	cli();									//disable interrupts
-
-	if(heard_msg.werd_count < 0)			
+	
+	serial_transmit('\n');
+	serial_transmit('\n');
+	
+	serial_transmit('i');
+	serial_transmit('s');
+	serial_transmit('r');
+	
+	serial_transmit('\n');
+	serial_transmit('\n');
+	
+	
+	
+	if(heard_msg.werd_count != 0)			
 	{
-		while ( !(UCSR0A & (1<<RXC0)) );		
-		heard_msg.data[heard_msg.werd_count--] = UDR0;		// expects to receive data[MAX_MSG_LENGTH] werd first
+		serial_transmit('y');
+	
+		while ( !(UCSR0A & (1<<RXC0)) );
+		heard_msg.werd_count -= 1;
+		heard_msg.data[heard_msg.werd_count] = UDR0;		// expects to receive data[MAX_MSG_LENGTH] werd first
+		UDR0 = heard_msg.data[heard_msg.werd_count];
+		
+		serial_transmit('w');
+		
 	}
-	else:		// once all werds have been received
+	else		// once all werds have been received
 	{
+		serial_transmit('e');
 		MSG_handler(&heard_msg);			
 		heard_msg.werd_count = MAX_MSG_LENGTH;		// reset
 	}
@@ -290,7 +323,7 @@ void uart_init (void)						//initialize UART
 
 void serial_transmit (unsigned char data)	//Tx serial
 {
-
+	//UDR0 |= (0 << TXB80);
 	while (!( UCSR0A & (1<<UDRE0)));		//w8 b4 read;
 											//UDREn is read when 1
 	UDR0 = data; 							//write the data in register
@@ -385,12 +418,12 @@ void gpio_init()							//in's and out's
 	FPWM_3C_OUT
 }
 
-void Prox_ISR_EN()							//EXT interrupt
-{
-	EICRB |=  (ISC50) |  (1<<ISC40);
-	EICRB &= ~(ISC51) & ~(1<<ISC41);
-	EIMSK |=  (INT5)  |	 (INT4);			//North and South
-}
+//void Prox_ISR_EN()							//EXT interrupt
+//{
+	//EICRB |=  (ISC50) |  (1<<ISC40);
+	//EICRB &= ~(ISC51) & ~(1<<ISC41);
+	//EIMSK |=  (INT5)  |	 (INT4);			//North and South
+//}
 
 void use_HX711()
 {
@@ -447,123 +480,123 @@ void init_DIR()		// initialize all motor direction to be stopped
 	EX_DESCEND	= STOP_DUTY16;
 }
 
-void setDIR_serial(char input)		// set motor direction based on serial data Rx'd from Jetson
-{
-	char tosend='A';						//Place holder
-	
-	//-----DRIVETRAIN COMMAND FUNCTIONS------------------------------//
-	
-	if(input=='a')
-	{										//Crck Scrw L
-		
-		DRIVE_L = FWD_DUTY16;
-		DRIVE_R = RVRS_DUTY16;
-		
-		DIRencoder = 0x01;					//Encrypt DIR set
-		tosend='L';							//Encrypt State Measure
-		
-	}
-	
-	else if (input=='d')
-	{										//Crck Scrw R
-		DRIVE_L = RVRS_DUTY16;
-		DRIVE_R= FWD_DUTY16;
-		
-		DIRencoder = 0X08;					//Encrypt DIR set
-		tosend='R';							//Encrypt State Measure
-
-	}
-	
-	else if (input=='w' && NorthIsClear)
-	{										//Forward
-		DRIVE_L = FWD_DUTY16;
-		DRIVE_R = FWD_DUTY16;
-		
-		DIRencoder	=	0X0D;				//Encrypt DIR set
-		tosend		=	'F';				//Encrypt State Measure
-		
-	}
-	
-	else if (input=='s' && SouthIsClear)	//Backward
-	{
-		
-		DRIVE_L = RVRS_DUTY16;
-		DRIVE_R = RVRS_DUTY16;
-		
-		DIRencoder = 0X0C;					//Encrypt DIR set
-		tosend='B';							//Encrypt State Measure
-	}
-	else if (input=='m')		// left joystick is in deadzone, Stop
-	{
-		DRIVE_L = STOP_DUTY16;
-		DRIVE_R = STOP_DUTY16;
-	}
-	
-	//-----EXCAVATION COMMAND FUNCTIONS------------------------------//
-	
-	else if (input == '1')
-	{
-		EX_ACTUATOR = RVRS_DUTY16;
-		tosend='D';							//down
-	}
-	
-	else if (input == '2')
-	{
-		EX_ACTUATOR = STOP_DUTY16;
-		tosend='S';							//stop
-	}
-	
-	else if (input == '3')
-	{
-		EX_ACTUATOR =	FWD_DUTY16;
-		tosend='U';							//up
-	}
-	
-	else if (input == '7' && DepBinLoading)
-	{
-		EX_DRIVE = FWD_DUTY16;
-		tosend='W';							//CW
-	}
-	else if (input == '8')
-	{
-		EX_DRIVE =	RVRS_DUTY16;
-		tosend='C';							//CCW
-	}
-	else if (input == '9')
-	{
-		EX_DRIVE = STOP_DUTY16;
-		tosend='S';							//stop
-	}
-	
-	else if (input == 'j')
-	{
-		DEPOS_TILT = FWD_DUTY16;
-		tosend='U';							//up
-	}
-	else if (input == 'k')
-	{
-		DEPOS_TILT = STOP_DUTY16;
-		tosend='S';							//stop
-	}
-	else if (input == 'l')
-	{
-		DEPOS_TILT = RVRS_DUTY16;
-		tosend='D';							//down
-	}
-	
-	else
-	{
-		init_DIR();
-		
-		DIRencoder = 0X00;					//Encrypt DIR set
-		tosend='S';							//Encrypt State Measure
-	}
-	
-	serial_transmit(tosend);				//Send State to serial
-	serial_transmit('\n');
-	serial_transmit('\r');
-	
-}
+//void setDIR_serial(char input)		// set motor direction based on serial data Rx'd from Jetson
+//{
+	//char tosend='A';						//Place holder
+	//
+	////-----DRIVETRAIN COMMAND FUNCTIONS------------------------------//
+	//
+	//if(input=='a')
+	//{										//Crck Scrw L
+		//
+		//DRIVE_L = FWD_DUTY16;
+		//DRIVE_R = RVRS_DUTY16;
+		//
+		//DIRencoder = 0x01;					//Encrypt DIR set
+		//tosend='L';							//Encrypt State Measure
+		//
+	//}
+	//
+	//else if (input=='d')
+	//{										//Crck Scrw R
+		//DRIVE_L = RVRS_DUTY16;
+		//DRIVE_R= FWD_DUTY16;
+		//
+		//DIRencoder = 0X08;					//Encrypt DIR set
+		//tosend='R';							//Encrypt State Measure
+//
+	//}
+	//
+	//else if (input=='w' && NorthIsClear)
+	//{										//Forward
+		//DRIVE_L = FWD_DUTY16;
+		//DRIVE_R = FWD_DUTY16;
+		//
+		//DIRencoder	=	0X0D;				//Encrypt DIR set
+		//tosend		=	'F';				//Encrypt State Measure
+		//
+	//}
+	//
+	//else if (input=='s' && SouthIsClear)	//Backward
+	//{
+		//
+		//DRIVE_L = RVRS_DUTY16;
+		//DRIVE_R = RVRS_DUTY16;
+		//
+		//DIRencoder = 0X0C;					//Encrypt DIR set
+		//tosend='B';							//Encrypt State Measure
+	//}
+	//else if (input=='m')		// left joystick is in deadzone, Stop
+	//{
+		//DRIVE_L = STOP_DUTY16;
+		//DRIVE_R = STOP_DUTY16;
+	//}
+	//
+	////-----EXCAVATION COMMAND FUNCTIONS------------------------------//
+	//
+	//else if (input == '1')
+	//{
+		//EX_ACTUATOR = RVRS_DUTY16;
+		//tosend='D';							//down
+	//}
+	//
+	//else if (input == '2')
+	//{
+		//EX_ACTUATOR = STOP_DUTY16;
+		//tosend='S';							//stop
+	//}
+	//
+	//else if (input == '3')
+	//{
+		//EX_ACTUATOR =	FWD_DUTY16;
+		//tosend='U';							//up
+	//}
+	//
+	//else if (input == '7' && DepBinLoading)
+	//{
+		//EX_DRIVE = FWD_DUTY16;
+		//tosend='W';							//CW
+	//}
+	//else if (input == '8')
+	//{
+		//EX_DRIVE =	RVRS_DUTY16;
+		//tosend='C';							//CCW
+	//}
+	//else if (input == '9')
+	//{
+		//EX_DRIVE = STOP_DUTY16;
+		//tosend='S';							//stop
+	//}
+	//
+	//else if (input == 'j')
+	//{
+		//DEPOS_TILT = FWD_DUTY16;
+		//tosend='U';							//up
+	//}
+	//else if (input == 'k')
+	//{
+		//DEPOS_TILT = STOP_DUTY16;
+		//tosend='S';							//stop
+	//}
+	//else if (input == 'l')
+	//{
+		//DEPOS_TILT = RVRS_DUTY16;
+		//tosend='D';							//down
+	//}
+	//
+	//else
+	//{
+		//init_DIR();
+		//
+		//DIRencoder = 0X00;					//Encrypt DIR set
+		//tosend='S';							//Encrypt State Measure
+	//}
+	//
+	//serial_transmit(tosend);				//Send State to serial
+	//serial_transmit('\n');
+	//serial_transmit('\r');
+	//
+//}
 
 void BewareOfDog()			//watchdog
 {
@@ -667,41 +700,42 @@ void ADC_init()								//Analogue Digital Conversion Set
 			&	~(1<<	ADTS2);				//ADTS0:2 = 0X00
 }
 
-ISR(INT5_vect)								//for North
-{
-	init_DIR();								//Halt Motion
-	NorthIsClear ^= 1;						//toggle flag
-}
+//ISR(INT5_vect)								//for North
+//{
+	//init_DIR();								//Halt Motion
+	//NorthIsClear ^= 1;						//toggle flag
+//}
+//
+//ISR(INT4_vect)								//For South
+//{
+	//init_DIR();								//Halt Motion
+	//SouthIsClear ^= 1;						//toggle flag
+//}
 
-ISR(INT4_vect)								//For South
-{
-	init_DIR();								//Halt Motion
-	SouthIsClear ^= 1;						//toggle flag
-}
-
-ISR(USART1_RX_vect)							//Serial In
-{
-	//rx_isrmaybe(); stuff goes here 
-	cli();									//disable interrupts
-	uint8_t datz;							//Temp Var for Capture
-	
-	while ( !(UCSR0A & (1<<RXC0)) );		//w8 for buffer clear
-	datz=UDR0;								//then read data
-	key = datz;								//send for Global access
-	
-	setDIR_serial(key);						//process for motion
-	
-	WatchToken = HeelDog;					//Acknowledge connection
-	use_HX711();							//spend ~20us LdCell
-	
-	sei();
-	
-}
+//ISR(USART1_RX_vect)							//Serial In
+//{
+	////rx_isrmaybe(); stuff goes here 
+	//cli();									//disable interrupts
+	//uint8_t datz;							//Temp Var for Capture
+	//
+	//while ( !(UCSR0A & (1<<RXC0)) );		//w8 for buffer clear
+	//datz=UDR0;								//then read data
+	//key = datz;								//send for Global access
+	//
+	//setDIR_serial(key);						//process for motion
+	//
+	//WatchToken = HeelDog;					//Acknowledge connection
+	//use_HX711();							//spend ~20us LdCell
+	//
+	//sei();
+	//
+//}
 
 int main(void)
 {
+	serial_transmit('k');
 	gpio_init();
-	Prox_ISR_EN();
+	//Prox_ISR_EN();
 	init_DIR();
 	
 	uart_init();
@@ -709,8 +743,8 @@ int main(void)
 	timer1_init();
 	timer4_init();
 	timer5_init();
+	heard_msg.werd_count = MAX_MSG_LENGTH;
 
-	
     sei();
 	
     while (1) 
@@ -719,5 +753,3 @@ int main(void)
     }
 	
 }
-
-
