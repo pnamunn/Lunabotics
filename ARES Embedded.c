@@ -54,6 +54,8 @@ Functionality:
 */
 
 
+
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
@@ -153,7 +155,7 @@ volatile	char	key		   =    0;
 
 //-----WATCHDOG OVERRIDE MACROS---------------------------//
 
-#define		WATCH_DOG_EN		(TIMSK5|=(1<<TOIE5));
+#define		WATCH_DOG_EN		(TIMSK5|=(1<<TOIE5));	// EN timer5 overflow interrupt
 #define		HeelDog							  0;	
 volatile	uint8_t		WatchToken =		  0;
 
@@ -175,7 +177,7 @@ void serial_transmit (unsigned char data);
 typedef struct message						// struct holding variables related to messages (a data Tx)
 {
 		volatile uint8_t werd_count;		
-		volatile uint8_t	data[MAX_MSG_LENGTH];						//array to store all the words in a message
+		volatile uint8_t data[MAX_MSG_LENGTH];						//array to store all the words in a message
 } message;
 
 
@@ -203,20 +205,20 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 	serial_transmit('s');
 	serial_transmit('g');
 	
-	serial_transmit('\n');
+	serial_transmit('\t');
 	
-	
-	uint8_t msg_type = msg_ptr->data[0];		// gets msg_type from the message's index 0
-	
+	char msg_type = msg_ptr->data[0];		// gets msg_type from the message's index 0
+	//msg_type = 2;
+
 	switch(msg_type)				// decodes the message, based on what type of message it is
 	{
 	
-	case 0:											// message was a kill command
+	case '0':											// message was a kill command
 	//TODO handle_kill();									//Destroy the Child
 	break;
 	
 	
-	case 1:										// message was for buttons
+	case '1':										// message was for buttons
 	//TODO handle_butts();									//handle them hammy's
 															// send them where they need to go
 	
@@ -233,28 +235,36 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 
 		// TODO signal_linear_actuators()		now that we have the values, make them control the linear actuators
 
-
-
 	break;
 	
-	case 2:								// message was for the left joystick
+	case '2':								// message was for the left joystick
 	// heard_msg.werd_count = 5;	// addr werd + 4 data werds 
 	serial_transmit('j');
 	serial_transmit('o');
 	serial_transmit('y');
+
+	serial_transmit('\t');
+
 	
 	// sets duty cycles of the left & right motors
 	DRIVE_L = (heard_msg.data[1] << MAX_MSG_LENGTH) | heard_msg.data[2];		
 	DRIVE_R = (heard_msg.data[3] << MAX_MSG_LENGTH) | heard_msg.data[4];
 
-	serial_transmit(heard_msg.data[2]);				
-	serial_transmit(heard_msg.data[4]);				
+	serial_transmit((char)heard_msg.data[4] & 127);
+	serial_transmit((char)heard_msg.data[3] & 127);
+	serial_transmit((char)heard_msg.data[2] & 127);
+	serial_transmit((char)heard_msg.data[1] & 127);
+	serial_transmit((char)heard_msg.data[0] & 127);
 
 	break;
 	
 	default:											// if the msg_type is not a recognizable value
 	//didnt_hear(boo_hoo);								// message is bunk, dump it, we're doing connectionless Tx
-	fprintf(stderr, "msg_ptr does not point to a recognizable message_type, MSG_handler() is throwing away that message");
+	serial_transmit('d');
+	serial_transmit('f');
+	serial_transmit('l');
+	serial_transmit('t');
+
 	break;
 		
 	}
@@ -268,36 +278,55 @@ ISR (USART0_RX_vect)
 	cli();									//disable interrupts
 	
 	serial_transmit('\n');
-	serial_transmit('\n');
 	
 	serial_transmit('i');
 	serial_transmit('s');
 	serial_transmit('r');
 	
-	serial_transmit('\n');
-	serial_transmit('\n');
-	
-	
-	
-	if(heard_msg.werd_count != 0)			
-	{
-		serial_transmit('y');
-	
+	serial_transmit('\t');
+
+	heard_msg.werd_count -= 1;
+		
+	if(heard_msg.werd_count > 0)			
+	{	
 		while ( !(UCSR0A & (1<<RXC0)) );
-		heard_msg.werd_count -= 1;
-		heard_msg.data[heard_msg.werd_count] = UDR0;		// expects to receive data[MAX_MSG_LENGTH] werd first
-		UDR0 = heard_msg.data[heard_msg.werd_count];
+		heard_msg.data[heard_msg.werd_count] = UDR0 & 127;
+
+
+		serial_transmit('d');
+		serial_transmit('a');
+		serial_transmit('t');
+		serial_transmit('a');
 		
-		serial_transmit('w');
-		
+
+		serial_transmit((char)heard_msg.werd_count + '0');
+		serial_transmit((char)heard_msg.data[heard_msg.werd_count]);
+
+		serial_transmit('\n');
+
+
 	}
-	else		// once all werds have been received
+	else		// on getting last werd (the msg_type)
 	{
-		serial_transmit('e');
+		while ( !(UCSR0A & (1<<RXC0)) );
+		heard_msg.data[heard_msg.werd_count] = UDR0 & 127;
+
+		serial_transmit('d');
+		serial_transmit('a');
+		serial_transmit('t');
+		serial_transmit('a');
+		serial_transmit('m');
+		
+
+		serial_transmit((char)heard_msg.werd_count + '0');
+		serial_transmit(heard_msg.data[heard_msg.werd_count]);
+
+		serial_transmit('\n');
+
 		MSG_handler(&heard_msg);			
 		heard_msg.werd_count = MAX_MSG_LENGTH;		// reset
 	}
-
+	
 	sei();
 }
 
@@ -413,9 +442,9 @@ void gpio_init()							//in's and out's
 	FPWM_2B_OUT
 	FPWM_2C_OUT
 	
-	FPWM_3A_OUT
-	FPWM_3B_OUT
-	FPWM_3C_OUT
+	//FPWM_3A_OUT
+	//FPWM_3B_OUT
+	//FPWM_3C_OUT
 }
 
 //void Prox_ISR_EN()							//EXT interrupt
@@ -605,6 +634,8 @@ void BewareOfDog()			//watchdog
 		init_DIR();
 		
 		WatchToken	=		HeelDog			//Job Done
+
+		serial_transmit('\n');				
 		
 		serial_transmit('Z');				//notify Terminal
 		serial_transmit('O');
@@ -618,6 +649,11 @@ void BewareOfDog()			//watchdog
 	}
 	
 	WatchToken++;							//Condition Count
+}
+
+ISR(TIMER5_OVF_vect)
+{
+	BewareOfDog();
 }
 
 void timer1_init()							//For Drive n Dep
@@ -659,7 +695,7 @@ void timer4_init()							//For Excavation
 	
 }
 
-void timer5_init()
+void timer5_init()		// used for watchdog
 {
 	
 	T5A_WGM_HI								//FPWM Mode
@@ -733,7 +769,13 @@ void ADC_init()								//Analogue Digital Conversion Set
 
 int main(void)
 {
-	serial_transmit('k');
+	serial_transmit('i');
+	serial_transmit('n');
+	serial_transmit('i');
+	serial_transmit('t');
+
+	serial_transmit('\n');
+
 	gpio_init();
 	//Prox_ISR_EN();
 	init_DIR();
@@ -744,7 +786,7 @@ int main(void)
 	timer4_init();
 	timer5_init();
 	heard_msg.werd_count = MAX_MSG_LENGTH;
-
+	
     sei();
 	
     while (1) 
