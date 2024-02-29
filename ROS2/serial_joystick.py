@@ -12,6 +12,7 @@ import serial
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
+import time
 
 
 # Node that subs to /joy pubber
@@ -26,7 +27,7 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
-        self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)      # serial to Arduino Mega 
+        self.ser = serial.Serial('/dev/ttyACM1', 115200, timeout=1)      # serial to Arduino Mega 
 
         self._deadzone = 0.2
         self.curr_joy = [0, 0]
@@ -75,14 +76,38 @@ class GamepadSubber(Node):
         self.get_logger().info(f'Left Motor = {self.left_motor}')
         self.get_logger().info(f'Right Motor = {self.right_motor}')
 
+        self.curr_joy[0] = self.left_motor
+        self.curr_joy[1] = self.right_motor
+
+
+        right_low = str(self.right_motor & 0b0000_0000_1111_1111)
+        right_high = str(self.right_motor >> 8)
+
+        left_low = str(self.left_motor & 0b0000_0000_1111_1111)
+        left_high = str(self.left_motor >> 8)
 
         ''' Sends the motor's duty cycle values to the Arduino '''
-        self.send("2")     # first send message_type
-        self.send(self.right_motor & 0b0000_1111)   # send right_motor low
-        self.send(self.right_motor >> 8)            # send right_motor high
-        self.send(self.left_motor & 0b0000_1111)   # send left_motor low
-        self.send(self.left_motor >> 8)            # send left_motor high
-        
+        if (self.curr_joy != self.last_joy):
+            
+            self.send(right_low)   # send right_motor low
+            self.send(right_high)            # send right_motor high
+
+            self.send(left_low)   # send left_motor low
+            self.send(left_high)            # send left_motor high
+
+            self.send('2')     # send message_type
+
+
+            self.get_logger().info(f'L = {bin(self.left_motor)}')
+            self.get_logger().info(f'R = {bin(self.right_motor)}')
+
+
+            # self.get_logger().info(f'RL = {bin(self.right_motor & 0b0000_1111)}')
+            # self.get_logger().info(f'RH = {bin(self.right_motor >> 8)}')
+            # self.get_logger().info(f'LL = {bin(self.left_motor & 0b0000_1111)}')
+            # self.get_logger().info(f'LH = {bin(self.left_motor >> 8)}')
+
+            
         self.last_joy[0] = self.left_motor
         self.last_joy[1] = self.right_motor
         
@@ -98,6 +123,8 @@ class GamepadSubber(Node):
         self.axes_values = msg.axes
         self.get_logger().info(f'Subber received axes = {self.axes_values}')
         
+        time.sleep(0.04)
+        
 
         ''' Motor control using the Joysticks '''
         # If left joystick is outside of deadzone
@@ -111,7 +138,14 @@ class GamepadSubber(Node):
             self.curr_joy[1] = self.right_motor
 
             if (self.curr_joy != self.last_joy):
-                self.send("m")
+                self.send('0')     # all motors are stopped
+                self.send('0') 
+                self.send('0') 
+                self.send('0') 
+                self.send('2')     # send message_type
+
+
+
 
             self.last_joy[0] = self.left_motor
             self.last_joy[1] = self.right_motor
