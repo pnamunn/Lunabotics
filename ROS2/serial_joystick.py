@@ -86,6 +86,7 @@ class GamepadSubber(Node):
         left_low = str(self.left_motor & 0b0000_0000_1111_1111)
         left_high = str(self.left_motor >> 8)
 
+
         ''' Sends the motor's duty cycle values to the Arduino '''
         if (self.curr_joy != self.last_joy):
             
@@ -134,18 +135,28 @@ class GamepadSubber(Node):
         # if left joystick is within deadzone
         else:       
             self.get_logger().info(f'In deadzone')
+
+            self.left_motor = 3000
+            self.right_motor = 3000
+
             self.curr_joy[0] = self.left_motor
             self.curr_joy[1] = self.right_motor
 
+            right_low = str(self.right_motor & 0b0000_0000_1111_1111)
+            right_high = str(self.right_motor >> 8)
+
+            left_low = str(self.left_motor & 0b0000_0000_1111_1111)
+            left_high = str(self.left_motor >> 8)
+
             if (self.curr_joy != self.last_joy):
-                self.send('0')     # all motors are stopped
-                self.send('0') 
-                self.send('0') 
-                self.send('0') 
+            
+                self.send(right_low)   # send right_motor low
+                self.send(right_high)            # send right_motor high
+
+                self.send(left_low)   # send left_motor low
+                self.send(left_high)            # send left_motor high
+
                 self.send('2')     # send message_type
-
-
-
 
             self.last_joy[0] = self.left_motor
             self.last_joy[1] = self.right_motor
