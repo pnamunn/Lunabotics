@@ -170,7 +170,7 @@ volatile uint8_t jack_rip			=	0;					//logitech (butt)on lolz
 
 
 //---------Function Declarations----------//
-void serial_transmit (unsigned char data);
+void serial_transmit (uint8_t data);
 
 
 
@@ -207,7 +207,7 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 	
 	serial_transmit('\t');
 	
-	char msg_type = msg_ptr->data[0];		// gets msg_type from the message's index 0
+	uint8_t msg_type = msg_ptr->data[0];		// gets msg_type from the message's index 0
 	//msg_type = 2;
 
 	switch(msg_type)				// decodes the message, based on what type of message it is
@@ -224,16 +224,18 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 	
 	// heard_msg.werd_count = 3;	// addr werd + 2 data werds
 
-	for(uint8_t i = 0; i < MAX_MSG_LENGTH; i++)
+	for(uint8_t i = 0; i < 8; i++)
 	{
 		D_PAD_ABXY[i]	=	((heard_msg.data[1] >> i) & 1);	//Bangin Bits out from werd 1
 		TrigBumpStrtSlct[i]	=	((heard_msg.data[2] >> i) & 1);	//Bangin Bits out from werd 2
 	}
 	
-		jack_rip		=	heard_msg.data[3];				//idk- def enough room for both
+	jack_rip		=	heard_msg.data[3];				//idk- def enough room for both
 														//jack's on that door.
+	// throw data[4] out the door
 
-		// TODO signal_linear_actuators()		now that we have the values, make them control the linear actuators
+	// TODO signal_linear_actuators()		now that we have the values, make them control the linear actuators
+	
 
 	break;
 	
@@ -244,17 +246,31 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 	serial_transmit('y');
 
 	serial_transmit('\t');
-
 	
 	// sets duty cycles of the left & right motors
-	DRIVE_L = (heard_msg.data[1] << MAX_MSG_LENGTH) | heard_msg.data[2];		
-	DRIVE_R = (heard_msg.data[3] << MAX_MSG_LENGTH) | heard_msg.data[4];
+	DRIVE_L = (heard_msg.data[1] << 8) | heard_msg.data[2];
+	DRIVE_R = (heard_msg.data[3] << 8) | heard_msg.data[4];
 
-	serial_transmit((char)heard_msg.data[4] & 127);
-	serial_transmit((char)heard_msg.data[3] & 127);
-	serial_transmit((char)heard_msg.data[2] & 127);
-	serial_transmit((char)heard_msg.data[1] & 127);
-	serial_transmit((char)heard_msg.data[0] & 127);
+	
+	if (DRIVE_L == 3000 && DRIVE_R == 3000)
+	//if (heard_msg.data[1] == '0' && heard_msg.data[2] == '0' && heard_msg.data[3] == '0' && heard_msg.data[4] == '0')
+	{
+		serial_transmit('d');
+		serial_transmit('e');
+		serial_transmit('a');
+		serial_transmit('d');
+		
+	}
+	else
+	{
+	serial_transmit(heard_msg.data[4]);
+	serial_transmit(heard_msg.data[3]);
+	serial_transmit(heard_msg.data[2]);
+	serial_transmit(heard_msg.data[1]);
+	serial_transmit(heard_msg.data[0]);
+	}
+	
+	
 
 	break;
 	
@@ -287,7 +303,7 @@ ISR (USART0_RX_vect)
 
 	heard_msg.werd_count -= 1;
 		
-	if(heard_msg.werd_count > 0)			
+	if(heard_msg.werd_count > 0)			// so expects to receiver data[4] first, data[0] last			
 	{	
 		while ( !(UCSR0A & (1<<RXC0)) );
 		heard_msg.data[heard_msg.werd_count] = UDR0 & 127;
@@ -299,8 +315,8 @@ ISR (USART0_RX_vect)
 		serial_transmit('a');
 		
 
-		serial_transmit((char)heard_msg.werd_count + '0');
-		serial_transmit((char)heard_msg.data[heard_msg.werd_count]);
+		serial_transmit(heard_msg.werd_count + '0');
+		serial_transmit(heard_msg.data[heard_msg.werd_count]);
 
 		serial_transmit('\n');
 
@@ -315,10 +331,10 @@ ISR (USART0_RX_vect)
 		serial_transmit('a');
 		serial_transmit('t');
 		serial_transmit('a');
-		serial_transmit('m');
+		serial_transmit('g');
 		
 
-		serial_transmit((char)heard_msg.werd_count + '0');
+		serial_transmit(heard_msg.werd_count + '0');
 		serial_transmit(heard_msg.data[heard_msg.werd_count]);
 
 		serial_transmit('\n');
@@ -350,7 +366,7 @@ void uart_init (void)						//initialize UART
 
 }
 
-void serial_transmit (unsigned char data)	//Tx serial
+void serial_transmit (uint8_t data)	//Tx serial
 {
 	//UDR0 |= (0 << TXB80);
 	while (!( UCSR0A & (1<<UDRE0)));		//w8 b4 read;
