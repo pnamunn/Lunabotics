@@ -59,6 +59,7 @@ Functionality:
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 //-----PROXIMITY SENSOR MACROS------------------------------//
 
@@ -171,7 +172,7 @@ volatile uint8_t jack_rip			=	0;					//logitech (butt)on lolz
 
 //---------Function Declarations----------//
 void serial_transmit (uint8_t data);
-
+void printBin8(uint8_t stuff);		
 
 
 typedef struct message						// struct holding variables related to messages (a data Tx)
@@ -241,6 +242,10 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 	
 	case '2':								// message was for the left joystick
 	// heard_msg.werd_count = 5;	// addr werd + 4 data werds 
+
+	serial_transmit('\t');
+	serial_transmit('\t');
+	
 	serial_transmit('j');
 	serial_transmit('o');
 	serial_transmit('y');
@@ -263,11 +268,23 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 	}
 	else
 	{
-	serial_transmit(heard_msg.data[4]);
-	serial_transmit(heard_msg.data[3]);
-	serial_transmit(heard_msg.data[2]);
-	serial_transmit(heard_msg.data[1]);
-	serial_transmit(heard_msg.data[0]);
+		printBin8(heard_msg.data[4]);
+		serial_transmit(' ');
+		printBin8(heard_msg.data[3]);
+		serial_transmit(' ');
+		printBin8(heard_msg.data[2]);
+		serial_transmit(' ');
+		printBin8(heard_msg.data[1]);
+		serial_transmit(' ');
+		printBin8(heard_msg.data[0]);
+
+		serial_transmit(' ');
+		
+		serial_transmit(heard_msg.data[4]);
+		serial_transmit(heard_msg.data[3]);
+		serial_transmit(heard_msg.data[2]);
+		serial_transmit(heard_msg.data[1]);
+		serial_transmit(heard_msg.data[0]);
 	}
 	
 	
@@ -276,13 +293,18 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 	
 	default:											// if the msg_type is not a recognizable value
 	//didnt_hear(boo_hoo);								// message is bunk, dump it, we're doing connectionless Tx
+	serial_transmit('\t');
+	serial_transmit('\t');
+	
 	serial_transmit('d');
 	serial_transmit('f');
 	serial_transmit('l');
 	serial_transmit('t');
+	
+	serial_transmit('\n');
+	serial_transmit('\r');
 
 	break;
-		
 	}
 
 }
@@ -316,9 +338,14 @@ ISR (USART0_RX_vect)
 		
 
 		serial_transmit(heard_msg.werd_count + '0');
+		serial_transmit(' ');
+		printBin8(heard_msg.data[heard_msg.werd_count]);
+		serial_transmit(' ');
 		serial_transmit(heard_msg.data[heard_msg.werd_count]);
-
+		
 		serial_transmit('\n');
+		serial_transmit('\r');
+		
 
 
 	}
@@ -335,9 +362,13 @@ ISR (USART0_RX_vect)
 		
 
 		serial_transmit(heard_msg.werd_count + '0');
+		serial_transmit(' ');
+		printBin8(heard_msg.data[heard_msg.werd_count]);
+		serial_transmit(' ');
 		serial_transmit(heard_msg.data[heard_msg.werd_count]);
 
 		serial_transmit('\n');
+		serial_transmit('\r');
 
 		MSG_handler(&heard_msg);			
 		heard_msg.werd_count = MAX_MSG_LENGTH;		// reset
@@ -372,8 +403,11 @@ void serial_transmit (uint8_t data)	//Tx serial
 	while (!( UCSR0A & (1<<UDRE0)));		//w8 b4 read;
 											//UDREn is read when 1
 	UDR0 = data; 							//write the data in register
-
+	
+	
 }
+
+
 
 unsigned char uart_recieve (void)			//Rx serial
 {
