@@ -27,7 +27,7 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
-        self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)      # serial to Arduino Mega 
+        self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=5)      # serial to Arduino Mega 
 
         self._deadzone = 0.2
         self.curr_joy = [0, 0]
@@ -43,6 +43,77 @@ class GamepadSubber(Node):
             self.ser.write(cmd.encode())
         elif (type(cmd) == bytes):
             self.ser.write(cmd)
+
+
+
+    def send_duty_vals(self):
+        self.curr_joy[0] = self.left_motor
+        self.curr_joy[1] = self.right_motor
+
+        right_low = str(self.right_motor & 0b0000_0000_1111_1111)
+        right_high = str(self.right_motor >> 8)
+        left_low = str(self.left_motor & 0b0000_0000_1111_1111)
+        left_high = str(self.left_motor >> 8)
+
+
+        if (self.curr_joy != self.last_joy):
+
+            self.send('2')     # send message_type
+            time.sleep(0.4)
+
+            if (self.ser.read() == ']'):    # if Arduino sent an ack
+                self.send(left_high)    
+                self.get_logger().info('\n\n ARDUINO ACK RECEIVED \n\n')   
+                pass
+            else:
+                self.send('?')      # tell Arduino to expect msg_type next
+                self.get_logger().info('\n\n ARDUINO SENT A NACK WOMP WOMP \n\n')   
+                return
+
+            # self.send(left_high)            # send left_motor high
+            # time.sleep(0.4)
+
+
+            if (self.ser.read() == ']'):    # if Arduino sent an ack
+                self.send(left_low)    
+                self.get_logger().info('\n\n ARDUINO ACK RECEIVED \n\n')   
+                pass
+            else:
+                self.send('?')      # tell Arduino to expect msg_type next
+                self.get_logger().info('\n\n ARDUINO SENT A NACK WOMP WOMP \n\n')   
+                return
+
+            # self.send(left_low)   # send left_motor low
+            # time.sleep(0.4)
+
+
+            if (self.ser.read() == ']'):    # if Arduino sent an ack
+                self.send(left_low)    
+                self.get_logger().info('\n\n ARDUINO ACK RECEIVED \n\n')   
+                pass
+            else:
+                self.send('?')      # tell Arduino to expect msg_type next
+                self.get_logger().info('\n\n ARDUINO SENT A NACK WOMP WOMP \n\n')   
+                return
+            
+            # self.send(right_high)            # send right_motor high
+            # time.sleep(0.4)
+
+            if (self.ser.read() == ']'):    # if Arduino sent an ack
+                self.send(left_low)    
+                self.get_logger().info('\n\n ARDUINO ACK RECEIVED \n\n')   
+                pass
+            else:
+                self.send('?')      # tell Arduino to expect msg_type next
+                self.get_logger().info('\n\n ARDUINO SENT A NACK WOMP WOMP \n\n')   
+                return
+
+            # self.send(right_low)   # send right_motor low
+            # time.sleep(0.4)
+
+        self.last_joy[0] = self.left_motor
+        self.last_joy[1] = self.right_motor
+
 
 
     def arcade_drive_math(self, x, y):
@@ -67,7 +138,6 @@ class GamepadSubber(Node):
                 self.left_motor = -(self.max)
                 self.right_motor = self.diff
 
-
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
         self.left_motor = int( (self.left_motor * 1000) + 3000 )
         self.right_motor = int( (self.right_motor * 1000) + 3000 ) 
@@ -76,49 +146,10 @@ class GamepadSubber(Node):
         self.get_logger().info(f'Left Motor = {self.left_motor}')
         self.get_logger().info(f'Right Motor = {self.right_motor}')
 
-        self.curr_joy[0] = self.left_motor
-        self.curr_joy[1] = self.right_motor
+        self.get_logger().info(f'L = {bin(self.left_motor)}')
+        self.get_logger().info(f'R = {bin(self.right_motor)}')
+    
 
-
-        right_low = str(self.right_motor & 0b0000_0000_1111_1111)
-        right_high = str(self.right_motor >> 8)
-
-        left_low = str(self.left_motor & 0b0000_0000_1111_1111)
-        left_high = str(self.left_motor >> 8)
-
-
-        ''' Sends the motor's duty cycle values to the Arduino '''
-        if (self.curr_joy != self.last_joy):
-            
-            self.send(right_low)   # send right_motor low
-            time.sleep(0.4)
-
-            self.send(right_high)            # send right_motor high
-            time.sleep(0.4)
-
-            self.send(left_low)   # send left_motor low
-            time.sleep(0.4)
-
-            self.send(left_high)            # send left_motor high
-            time.sleep(0.4)
-
-            self.send('2')     # send message_type
-            time.sleep(0.4)
-
-
-            self.get_logger().info(f'L = {bin(self.left_motor)}')
-            self.get_logger().info(f'R = {bin(self.right_motor)}')
-
-
-            # self.get_logger().info(f'RL = {bin(self.right_motor & 0b0000_1111)}')
-            # self.get_logger().info(f'RH = {bin(self.right_motor >> 8)}')
-            # self.get_logger().info(f'LL = {bin(self.left_motor & 0b0000_1111)}')
-            # self.get_logger().info(f'LH = {bin(self.left_motor >> 8)}')
-
-            
-        self.last_joy[0] = self.left_motor
-        self.last_joy[1] = self.right_motor
-        
 
 
     def joy_callback(self, msg):
@@ -135,6 +166,7 @@ class GamepadSubber(Node):
         # If left joystick is outside of deadzone
         if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
             self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
+            self.send_duty_vals()
 
         # if left joystick is within deadzone
         else:       
@@ -143,35 +175,7 @@ class GamepadSubber(Node):
             self.left_motor = 3000
             self.right_motor = 3000
 
-            self.curr_joy[0] = self.left_motor
-            self.curr_joy[1] = self.right_motor
-
-            right_low = str(self.right_motor & 0b0000_0000_1111_1111)
-            right_high = str(self.right_motor >> 8)
-
-            left_low = str(self.left_motor & 0b0000_0000_1111_1111)
-            left_high = str(self.left_motor >> 8)
-
-            if (self.curr_joy != self.last_joy):
-            
-                self.send(right_low)   # send right_motor low
-                time.sleep(0.4)
-
-                self.send(right_high)            # send right_motor high
-                time.sleep(0.4)
-
-                self.send(left_low)   # send left_motor low
-                time.sleep(0.4)
-            
-                self.send(left_high)            # send left_motor high
-                time.sleep(0.4)
-
-                self.send('2')     # send message_type
-                time.sleep(0.4)
-
-
-            self.last_joy[0] = self.left_motor
-            self.last_joy[1] = self.right_motor
+            self.send_duty_vals()
 
 
 
@@ -190,7 +194,7 @@ def main(args=None):
 
     subber.destroy_node()   
     rclpy.shutdown()
-    # self.ser.close()
+    self.ser.close()
 
 
 if __name__ == '__main__':
