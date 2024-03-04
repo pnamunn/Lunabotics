@@ -27,7 +27,7 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
-        self.ser = serial.Serial('/dev/ttyACM1', 115200, timeout=1)      # serial to Arduino Mega 
+        self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)      # serial to Arduino Mega 
 
         self._deadzone = 0.2
         self.curr_joy = [0, 0]
@@ -91,12 +91,19 @@ class GamepadSubber(Node):
         if (self.curr_joy != self.last_joy):
             
             self.send(right_low)   # send right_motor low
+            time.sleep(0.4)
+
             self.send(right_high)            # send right_motor high
+            time.sleep(0.4)
 
             self.send(left_low)   # send left_motor low
+            time.sleep(0.4)
+
             self.send(left_high)            # send left_motor high
+            time.sleep(0.4)
 
             self.send('2')     # send message_type
+            time.sleep(0.4)
 
 
             self.get_logger().info(f'L = {bin(self.left_motor)}')
@@ -122,10 +129,7 @@ class GamepadSubber(Node):
         self.get_logger().info(f'Subber received buttons = {self.button_values}')
 
         self.axes_values = msg.axes
-        self.get_logger().info(f'Subber received axes = {self.axes_values}')
-        
-        time.sleep(0.04)
-        
+        self.get_logger().info(f'Subber received axes = {self.axes_values}')        
 
         ''' Motor control using the Joysticks '''
         # If left joystick is outside of deadzone
@@ -151,12 +155,20 @@ class GamepadSubber(Node):
             if (self.curr_joy != self.last_joy):
             
                 self.send(right_low)   # send right_motor low
+                time.sleep(0.4)
+
                 self.send(right_high)            # send right_motor high
+                time.sleep(0.4)
 
                 self.send(left_low)   # send left_motor low
+                time.sleep(0.4)
+            
                 self.send(left_high)            # send left_motor high
+                time.sleep(0.4)
 
                 self.send('2')     # send message_type
+                time.sleep(0.4)
+
 
             self.last_joy[0] = self.left_motor
             self.last_joy[1] = self.right_motor
