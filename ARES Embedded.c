@@ -61,6 +61,7 @@ Functionality:
 #include <stdio.h>
 #include <stdlib.h>
 
+
 //-----PROXIMITY SENSOR MACROS------------------------------//
 
 #define NORTH_SENS_IN		(DDRE &=	  ~(1<<PINE5));
@@ -174,6 +175,13 @@ volatile uint8_t jack_rip			=	0;					//logitech (butt)on lolz
 void serial_transmit (uint8_t data);
 void printBin8(uint8_t stuff);		
 
+void delay() {
+	int j = 0;
+	for (volatile int i = 0; i < 125; ++i)
+	{
+		++j;
+	}
+}
 
 typedef struct message						// struct holding variables related to messages (a data Tx)
 {
@@ -207,7 +215,8 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 	serial_transmit('g');
 	
 	serial_transmit('\t');
-	
+	delay();
+	delay();
 	uint8_t msg_type = msg_ptr->data[0];		// gets msg_type from the message's index 0
 	//msg_type = 2;
 
@@ -224,6 +233,16 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 															// send them where they need to go
 	
 	// heard_msg.werd_count = 3;	// addr werd + 2 data werds
+	
+	serial_transmit('\t');
+	serial_transmit('\t');
+	
+	serial_transmit('b');
+	serial_transmit('u');
+	serial_transmit('t');
+	serial_transmit('t');
+
+	serial_transmit('\t');
 
 	for(uint8_t i = 0; i < 8; i++)
 	{
@@ -268,23 +287,23 @@ void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message
 	}
 	else
 	{
-		printBin8(heard_msg.data[4]);
-		serial_transmit(' ');
-		printBin8(heard_msg.data[3]);
-		serial_transmit(' ');
-		printBin8(heard_msg.data[2]);
+		printBin8(heard_msg.data[0]);
 		serial_transmit(' ');
 		printBin8(heard_msg.data[1]);
 		serial_transmit(' ');
-		printBin8(heard_msg.data[0]);
+		printBin8(heard_msg.data[2]);
+		serial_transmit(' ');
+		printBin8(heard_msg.data[3]);
+		serial_transmit(' ');
+		printBin8(heard_msg.data[4]);
 
 		serial_transmit(' ');
 		
-		serial_transmit(heard_msg.data[4]);
-		serial_transmit(heard_msg.data[3]);
-		serial_transmit(heard_msg.data[2]);
-		serial_transmit(heard_msg.data[1]);
 		serial_transmit(heard_msg.data[0]);
+		serial_transmit(heard_msg.data[1]);
+		serial_transmit(heard_msg.data[2]);
+		serial_transmit(heard_msg.data[3]);
+		serial_transmit(heard_msg.data[4]);
 	}
 	
 	
@@ -322,46 +341,30 @@ ISR (USART0_RX_vect)
 	serial_transmit('r');
 	
 	serial_transmit('\t');
-
-	heard_msg.werd_count -= 1;
-		
-	if(heard_msg.werd_count > 0)			// so expects to receiver data[4] first, data[0] last			
-	{	
-		while ( !(UCSR0A & (1<<RXC0)) );
-		heard_msg.data[heard_msg.werd_count] = UDR0 & 127;
-
-
-		serial_transmit('d');
-		serial_transmit('a');
-		serial_transmit('t');
-		serial_transmit('a');
-		
-
-		serial_transmit(heard_msg.werd_count + '0');
-		serial_transmit(' ');
-		printBin8(heard_msg.data[heard_msg.werd_count]);
-		serial_transmit(' ');
-		serial_transmit(heard_msg.data[heard_msg.werd_count]);
-		
-		serial_transmit('\n');
-		serial_transmit('\r');
-		
-
-
-	}
-	else		// on getting last werd (the msg_type)
+	
+	
+	
+	if (heard_msg.werd_count == 0)		// on getting werd 0 (the msg_type)
 	{
 		while ( !(UCSR0A & (1<<RXC0)) );
 		heard_msg.data[heard_msg.werd_count] = UDR0 & 127;
-
+		delay();		// delay so Jetson has time to start ser.read() listening on serial port
+		if (heard_msg.data[heard_msg.werd_count] == '2')
+		{
+			serial_transmit(']');	// send ack to Jetson
+		}
+		else
+		{
+			serial_transmit('|');
+		}
+		
 		serial_transmit('d');
 		serial_transmit('a');
 		serial_transmit('t');
 		serial_transmit('a');
-		serial_transmit('g');
 		
-
 		serial_transmit(heard_msg.werd_count + '0');
+		
 		serial_transmit(' ');
 		printBin8(heard_msg.data[heard_msg.werd_count]);
 		serial_transmit(' ');
@@ -369,10 +372,58 @@ ISR (USART0_RX_vect)
 
 		serial_transmit('\n');
 		serial_transmit('\r');
-
-		MSG_handler(&heard_msg);			
-		heard_msg.werd_count = MAX_MSG_LENGTH;		// reset
+		
+		
+		
+		if (heard_msg.data[heard_msg.werd_count] == '?')		// Jetson tells Arduino to reset to expect msg_type next
+		{
+			heard_msg.werd_count = 0;
+		}
+		else
+		{
+			heard_msg.werd_count++;
+		}
 	}
+	
+	else					
+	{	
+		while ( !(UCSR0A & (1<<RXC0)) );
+		heard_msg.data[heard_msg.werd_count] = UDR0 & 127;
+		delay();		// delay so Jetson has time to start ser.read() listening on serial port
+		serial_transmit(']');	// send ack to Jetson
+			
+		serial_transmit('d');
+		serial_transmit('a');
+		serial_transmit('t');
+		serial_transmit('a');
+		
+
+		serial_transmit(heard_msg.werd_count + '0');
+		serial_transmit(' ');
+		printBin8(heard_msg.data[heard_msg.werd_count]);
+		serial_transmit(' ');
+		serial_transmit(heard_msg.data[heard_msg.werd_count]);
+		
+		serial_transmit('\n');
+		serial_transmit('\r');
+		
+		if (heard_msg.data[heard_msg.werd_count] == '?')		// Jetson tells Arduino to reset to expect msg_type next
+		{
+			heard_msg.werd_count = 0;
+		}
+		else
+		{
+			heard_msg.werd_count++;
+		}
+		
+		if (heard_msg.werd_count == MAX_MSG_LENGTH)
+		{
+			MSG_handler(&heard_msg);
+			heard_msg.werd_count = 0;		// reset
+		}
+
+	}
+	
 	
 	sei();
 }
@@ -409,7 +460,7 @@ void serial_transmit (uint8_t data)	//Tx serial
 
 
 
-unsigned char uart_recieve (void)			//Rx serial
+unsigned char uart_recieve (void)			//Rx serial		TODO replace code above with this function
 {
 	
 	while(!((UCSR0A) & (1<<RXC0)));			//w8t while data being received
@@ -819,23 +870,22 @@ void ADC_init()								//Analogue Digital Conversion Set
 
 int main(void)
 {
+	gpio_init();
+	//Prox_ISR_EN();
+	init_DIR();
+	
+	uart_init();
 	serial_transmit('i');
 	serial_transmit('n');
 	serial_transmit('i');
 	serial_transmit('t');
 
 	serial_transmit('\n');
-
-	gpio_init();
-	//Prox_ISR_EN();
-	init_DIR();
-	
-	uart_init();
 	
 	timer1_init();
 	timer4_init();
 	timer5_init();
-	heard_msg.werd_count = MAX_MSG_LENGTH;
+	heard_msg.werd_count = 0;
 	
     sei();
 	
