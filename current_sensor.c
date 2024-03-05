@@ -15,6 +15,10 @@
 #define Vcc 5.0
 float voltage = 0.0;
 float current = 0.0;
+float sum = 0.0;
+volatile int i = 0;
+volatile float array[10] = {0.0,0.0,0.0,0.0,0.0,
+						   0.0,0.0,0.0,0.0,0.0};
 
 void ADC_init() {
 	ADCSRA |= (1<<ADEN);	// enable ADC
@@ -109,6 +113,13 @@ ISR (ADC_vect) {
 	ADC_high = ADCH;
 	ADC_full = (ADC_high << 8) | ADC_low;
 	
+	// Average past 10 ADC values to limit noise, although it updates
+	// at a slightly slower rate now 
+	sum = sum - array[i] + ADC_full;
+	array[i] = ADC_full;
+	i = (i+1) % 10;
+	ADC_full = sum / 10;
+	
 	voltage = (Vcc / 1024.0)*ADC_full;	
 	voltage = voltage - (Vcc / 2.0);
 	current = voltage*25000.0;
@@ -116,7 +127,7 @@ ISR (ADC_vect) {
 	serial_transmit(' ');
 	serial_transmit('m');
 	serial_transmit('A');
-	_delay_ms(500);
+	_delay_ms(250);
 	serial_transmit('\n');
 }
 
@@ -133,6 +144,3 @@ int main(void)
     {	
     }
 }
-
-
-
