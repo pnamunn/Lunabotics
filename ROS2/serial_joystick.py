@@ -27,7 +27,7 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
-        self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=5)      # serial to Arduino Mega 
+        self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega 
 
         self._deadzone = 0.2
         self.curr_joy = [0, 0]
@@ -45,71 +45,62 @@ class GamepadSubber(Node):
             self.ser.write(cmd)
 
 
-
     def send_duty_vals(self):
         self.curr_joy[0] = self.left_motor
         self.curr_joy[1] = self.right_motor
 
-        right_low = str(self.right_motor & 0b0000_0000_1111_1111)
-        right_high = str(self.right_motor >> 8)
-        left_low = str(self.left_motor & 0b0000_0000_1111_1111)
-        left_high = str(self.left_motor >> 8)
+        right_low = (self.right_motor & 0b0000_0000_1111_1111)
+        right_high = (self.right_motor >> 8)
+        left_low = (self.left_motor & 0b0000_0000_1111_1111)
+        left_high = (self.left_motor >> 8)
 
 
         if (self.curr_joy != self.last_joy):
 
-            self.send('2')     # send message_type
+            if (self.left_motor == 3000 and self.right_motor == 3000):
+                self.get_logger().info(f'In deadzone')
+            else:
+                self.get_logger().info(f'Joystick moving')
+
+            # 2 in ascii decimal is 50, in ascii binary is 00110010
+        
+            self.send(b'2')     # send message_type 2
+            # time.sleep(0.4)
+            
+            # self.get_logger().info(f'as bytes is: {(24).to_bytes(1, byteorder="big")}')
+            self.send((left_high).to_bytes(1, byteorder="big"))
+            self.send((left_low).to_bytes(1, byteorder="big"))
             time.sleep(0.4)
 
-            if (self.ser.read() == ']'):    # if Arduino sent an ack
-                self.send(left_high)    
-                self.get_logger().info('\n\n ARDUINO ACK RECEIVED \n\n')   
-                pass
-            else:
-                self.send('?')      # tell Arduino to expect msg_type next
-                self.get_logger().info('\n\n ARDUINO SENT A NACK WOMP WOMP \n\n')   
-                return
+            self.send((right_high).to_bytes(1, byteorder="big"))
+            time.sleep(0.4)
 
-            # self.send(left_high)            # send left_motor high
-            # time.sleep(0.4)
+            self.send((right_low).to_bytes(1, byteorder="big"))
 
+            # self.send(left_high)   # send right_motor low
+            # self.send(left_low)
 
-            if (self.ser.read() == ']'):    # if Arduino sent an ack
-                self.send(left_low)    
-                self.get_logger().info('\n\n ARDUINO ACK RECEIVED \n\n')   
-                pass
-            else:
-                self.send('?')      # tell Arduino to expect msg_type next
-                self.get_logger().info('\n\n ARDUINO SENT A NACK WOMP WOMP \n\n')   
-                return
+            # # time.sleep(0.4)
 
-            # self.send(left_low)   # send left_motor low
-            # time.sleep(0.4)
+            # self.send(format(left_low, "08b"))   # send right_motor low
+            # # time.sleep(0.4)
 
-
-            if (self.ser.read() == ']'):    # if Arduino sent an ack
-                self.send(left_low)    
-                self.get_logger().info('\n\n ARDUINO ACK RECEIVED \n\n')   
-                pass
-            else:
-                self.send('?')      # tell Arduino to expect msg_type next
-                self.get_logger().info('\n\n ARDUINO SENT A NACK WOMP WOMP \n\n')   
-                return
-            
-            # self.send(right_high)            # send right_motor high
-            # time.sleep(0.4)
-
-            if (self.ser.read() == ']'):    # if Arduino sent an ack
-                self.send(left_low)    
-                self.get_logger().info('\n\n ARDUINO ACK RECEIVED \n\n')   
-                pass
-            else:
-                self.send('?')      # tell Arduino to expect msg_type next
-                self.get_logger().info('\n\n ARDUINO SENT A NACK WOMP WOMP \n\n')   
-                return
-
+            # self.send(format(right_high, "08b"))   # send right_motor low
+            # # time.sleep(0.4)
+             
             # self.send(right_low)   # send right_motor low
             # time.sleep(0.4)
+
+            ########### output to ROS terminal ####
+            self.get_logger().info(f'Left = {self.left_motor}  {format(self.left_motor, "016b")}')
+            self.get_logger().info(f'Right = {self.right_motor}  {format(self.right_motor, "016b")}')
+
+            self.get_logger().info(f'lh = {format(left_high, "08b")}')
+            self.get_logger().info(f'll = {format(left_low, "08b")}')
+
+            self.get_logger().info(f'rh = {format(right_high, "08b")}')
+            self.get_logger().info(f'rl = {format(right_low, "08b")}')
+            ###############################################################
 
         self.last_joy[0] = self.left_motor
         self.last_joy[1] = self.right_motor
@@ -142,12 +133,8 @@ class GamepadSubber(Node):
         self.left_motor = int( (self.left_motor * 1000) + 3000 )
         self.right_motor = int( (self.right_motor * 1000) + 3000 ) 
 
-        self.get_logger().info(f'When X = {x}   Y = {y}')   
-        self.get_logger().info(f'Left Motor = {self.left_motor}')
-        self.get_logger().info(f'Right Motor = {self.right_motor}')
-
-        self.get_logger().info(f'L = {bin(self.left_motor)}')
-        self.get_logger().info(f'R = {bin(self.right_motor)}')
+        # self.get_logger().info(f'When X = {x}   Y = {y}')   
+        
     
 
 
@@ -157,10 +144,10 @@ class GamepadSubber(Node):
         them to ASCII values, and sends serially to Arduino. '''
 
         self.button_values = msg.buttons
-        self.get_logger().info(f'Subber received buttons = {self.button_values}')
+        # self.get_logger().info(f'Subber received buttons = {self.button_values}')
 
         self.axes_values = msg.axes
-        self.get_logger().info(f'Subber received axes = {self.axes_values}')        
+        # self.get_logger().info(f'Subber received axes = {self.axes_values}')        
 
         ''' Motor control using the Joysticks '''
         # If left joystick is outside of deadzone
@@ -170,8 +157,6 @@ class GamepadSubber(Node):
 
         # if left joystick is within deadzone
         else:       
-            self.get_logger().info(f'In deadzone')
-
             self.left_motor = 3000
             self.right_motor = 3000
 
