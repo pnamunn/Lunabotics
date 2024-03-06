@@ -175,13 +175,6 @@ volatile uint8_t jack_rip			=	0;					//logitech (butt)on lolz
 void serial_transmit (uint8_t data);
 void printBin8(uint8_t stuff);		
 
-void delay() {
-	int j = 0;
-	for (volatile int i = 0; i < 125; ++i)
-	{
-		++j;
-	}
-}
 
 typedef struct message						// struct holding variables related to messages (a data Tx)
 {
@@ -204,230 +197,145 @@ typedef struct message						// struct holding variables related to messages (a d
 volatile struct message heard_msg;		// creates a message struct instance
 
 
-void MSG_handler (volatile message *msg_ptr)		// points to the addr of a message struct
+void MSG_handler ()		// points to the addr of a message struct
 {
 	//check_sum()&data[CHK_SUM]); here					//best be a good reason
 	
 	serial_transmit('\n');
-	
+	serial_transmit('\r');
+		
 	serial_transmit('m');
 	serial_transmit('s');
 	serial_transmit('g');
+	serial_transmit(':');
+	serial_transmit(' ');
 	
-	serial_transmit('\t');
-	delay();
-	delay();
-	uint8_t msg_type = msg_ptr->data[0];		// gets msg_type from the message's index 0
-	//msg_type = 2;
+	uint8_t msg_type = heard_msg.data[0];		// gets msg_type from the message's index 0
+	msg_type = '2';
 
 	switch(msg_type)				// decodes the message, based on what type of message it is
 	{
 	
 	case '0':											// message was a kill command
-	//TODO handle_kill();									//Destroy the Child
+		//TODO handle_kill();									//Destroy the Child
 	break;
 	
 	
 	case '1':										// message was for buttons
-	//TODO handle_butts();									//handle them hammy's
-															// send them where they need to go
+		//TODO handle_butts();									//handle them hammy's
+																// send them where they need to go
 	
-	// heard_msg.werd_count = 3;	// addr werd + 2 data werds
+		// heard_msg.werd_count = 3;	// addr werd + 2 data werds
 	
-	serial_transmit('\t');
-	serial_transmit('\t');
+		serial_transmit('\t');
+		serial_transmit('\t');
 	
-	serial_transmit('b');
-	serial_transmit('u');
-	serial_transmit('t');
-	serial_transmit('t');
+		serial_transmit('b');
+		serial_transmit('u');
+		serial_transmit('t');
+		serial_transmit('t');
 
-	serial_transmit('\t');
+		serial_transmit('\n');
+		serial_transmit('\r');
+		
 
-	for(uint8_t i = 0; i < 8; i++)
-	{
-		D_PAD_ABXY[i]	=	((heard_msg.data[1] >> i) & 1);	//Bangin Bits out from werd 1
-		TrigBumpStrtSlct[i]	=	((heard_msg.data[2] >> i) & 1);	//Bangin Bits out from werd 2
-	}
+		for(uint8_t i = 0; i < 8; i++)
+		{
+			D_PAD_ABXY[i]	=	((heard_msg.data[1] >> i) & 1);	//Bangin Bits out from werd 1
+			TrigBumpStrtSlct[i]	=	((heard_msg.data[2] >> i) & 1);	//Bangin Bits out from werd 2
+		}
 	
-	jack_rip		=	heard_msg.data[3];				//idk- def enough room for both
-														//jack's on that door.
-	// throw data[4] out the door
+		jack_rip		=	heard_msg.data[3];				//idk- def enough room for both
+															//jack's on that door.
+		// throw data[4] out the door
 
-	// TODO signal_linear_actuators()		now that we have the values, make them control the linear actuators
-	
-
+		// TODO signal_linear_actuators()		now that we have the values, make them control the linear actuators
 	break;
+	
 	
 	case '2':								// message was for the left joystick
-	// heard_msg.werd_count = 5;	// addr werd + 4 data werds 
-
-	serial_transmit('\t');
-	serial_transmit('\t');
+		// heard_msg.werd_count = 5;	// addr werd + 4 data werds 
 	
-	serial_transmit('j');
-	serial_transmit('o');
-	serial_transmit('y');
+		serial_transmit('j');
+		serial_transmit('o');
+		serial_transmit('y');
 
-	serial_transmit('\t');
-	
-	// sets duty cycles of the left & right motors
-	DRIVE_L = (heard_msg.data[1] << 8) | heard_msg.data[2];
-	DRIVE_R = (heard_msg.data[3] << 8) | heard_msg.data[4];
-
-	
-	if (DRIVE_L == 3000 && DRIVE_R == 3000)
-	//if (heard_msg.data[1] == '0' && heard_msg.data[2] == '0' && heard_msg.data[3] == '0' && heard_msg.data[4] == '0')
-	{
-		serial_transmit('d');
-		serial_transmit('e');
-		serial_transmit('a');
-		serial_transmit('d');
+		serial_transmit('\t');
 		
-	}
-	else
-	{
-		printBin8(heard_msg.data[0]);
-		serial_transmit(' ');
-		printBin8(heard_msg.data[1]);
-		serial_transmit(' ');
-		printBin8(heard_msg.data[2]);
-		serial_transmit(' ');
-		printBin8(heard_msg.data[3]);
-		serial_transmit(' ');
-		printBin8(heard_msg.data[4]);
+		// sets duty cycles of the left & right motors
+		DRIVE_L = (heard_msg.data[1] << 8) | heard_msg.data[2];
+		DRIVE_R = (heard_msg.data[3] << 8) | heard_msg.data[4];
 
-		serial_transmit(' ');
+		for (uint8_t i = 0; i < 5; i++)
+		{
+			printBin8(heard_msg.data[i]);
+			serial_transmit(' ');
+			
+		}
 		
-		serial_transmit(heard_msg.data[0]);
-		serial_transmit(heard_msg.data[1]);
-		serial_transmit(heard_msg.data[2]);
-		serial_transmit(heard_msg.data[3]);
-		serial_transmit(heard_msg.data[4]);
-	}
+		serial_transmit('\n');
+		serial_transmit('\r');
 	
+		//if (DRIVE_L == 3000 && DRIVE_R == 3000)
+		////if (heard_msg.data[1] == '0' && heard_msg.data[2] == '0' && heard_msg.data[3] == '0' && heard_msg.data[4] == '0')
+		//{
+			//serial_transmit('d');
+			//serial_transmit('e');
+			//serial_transmit('a');
+			//serial_transmit('d');
+		//
+		//}
+		//else
+		//{
+			//printBin8(heard_msg.data[0]);
+			//serial_transmit(' ');
+			//printBin8(heard_msg.data[1]);
+			//serial_transmit(' ');
+			//printBin8(heard_msg.data[2]);
+			//serial_transmit(' ');
+			//printBin8(heard_msg.data[3]);
+			//serial_transmit(' ');
+			//printBin8(heard_msg.data[4]);
+//
+			//serial_transmit(' ');
+		//
+			//serial_transmit(heard_msg.data[0]);
+			//serial_transmit(heard_msg.data[1]);
+			//serial_transmit(heard_msg.data[2]);
+			//serial_transmit(heard_msg.data[3]);
+			//serial_transmit(heard_msg.data[4]);
+			//serial_transmit('\n');
+			//serial_transmit('\r');
+		//
+		//
+		//}
 	
-
 	break;
+	
 	
 	default:											// if the msg_type is not a recognizable value
-	//didnt_hear(boo_hoo);								// message is bunk, dump it, we're doing connectionless Tx
-	serial_transmit('\t');
-	serial_transmit('\t');
+		//didnt_hear(boo_hoo);								// message is bunk, dump it, we're doing connectionless Tx
+		serial_transmit('\t');
+		serial_transmit('\t');
 	
-	serial_transmit('d');
-	serial_transmit('f');
-	serial_transmit('l');
-	serial_transmit('t');
-	
-	serial_transmit('\n');
-	serial_transmit('\r');
-
-	break;
-	}
-
-}
-
-
-
-ISR (USART0_RX_vect)
-{
-	cli();									//disable interrupts
-	
-	serial_transmit('\n');
-	
-	serial_transmit('i');
-	serial_transmit('s');
-	serial_transmit('r');
-	
-	serial_transmit('\t');
-	
-	
-	
-	if (heard_msg.werd_count == 0)		// on getting werd 0 (the msg_type)
-	{
-		while ( !(UCSR0A & (1<<RXC0)) );
-		heard_msg.data[heard_msg.werd_count] = UDR0 & 127;
-		delay();		// delay so Jetson has time to start ser.read() listening on serial port
-		if (heard_msg.data[heard_msg.werd_count] == '2')
-		{
-			serial_transmit(']');	// send ack to Jetson
-		}
-		else
-		{
-			serial_transmit('|');
-		}
-		
 		serial_transmit('d');
-		serial_transmit('a');
+		serial_transmit('f');
+		serial_transmit('l');
 		serial_transmit('t');
-		serial_transmit('a');
-		
-		serial_transmit(heard_msg.werd_count + '0');
-		
-		serial_transmit(' ');
-		printBin8(heard_msg.data[heard_msg.werd_count]);
-		serial_transmit(' ');
-		serial_transmit(heard_msg.data[heard_msg.werd_count]);
-
+	
 		serial_transmit('\n');
 		serial_transmit('\r');
-		
-		
-		
-		if (heard_msg.data[heard_msg.werd_count] == '?')		// Jetson tells Arduino to reset to expect msg_type next
-		{
-			heard_msg.werd_count = 0;
-		}
-		else
-		{
-			heard_msg.werd_count++;
-		}
-	}
-	
-	else					
-	{	
-		while ( !(UCSR0A & (1<<RXC0)) );
-		heard_msg.data[heard_msg.werd_count] = UDR0 & 127;
-		delay();		// delay so Jetson has time to start ser.read() listening on serial port
-		serial_transmit(']');	// send ack to Jetson
-			
-		serial_transmit('d');
-		serial_transmit('a');
-		serial_transmit('t');
-		serial_transmit('a');
-		
 
-		serial_transmit(heard_msg.werd_count + '0');
-		serial_transmit(' ');
-		printBin8(heard_msg.data[heard_msg.werd_count]);
-		serial_transmit(' ');
-		serial_transmit(heard_msg.data[heard_msg.werd_count]);
-		
-		serial_transmit('\n');
-		serial_transmit('\r');
-		
-		if (heard_msg.data[heard_msg.werd_count] == '?')		// Jetson tells Arduino to reset to expect msg_type next
-		{
-			heard_msg.werd_count = 0;
-		}
-		else
-		{
-			heard_msg.werd_count++;
-		}
-		
-		if (heard_msg.werd_count == MAX_MSG_LENGTH)
-		{
-			MSG_handler(&heard_msg);
-			heard_msg.werd_count = 0;		// reset
-		}
-
+		break;
 	}
-	
-	
-	sei();
+
+	heard_msg.data[0] = 0;		// reset vals to 0
+	heard_msg.data[1] = 0;
+	heard_msg.data[2] = 0;
+	heard_msg.data[3] = 0;
+	heard_msg.data[4] = 0;
+
 }
-
 
 
 
@@ -436,7 +344,7 @@ ISR (USART0_RX_vect)
 void uart_init (void)						//initialize UART
 {
 
-	UBRR0L = 8;								//BAUD 115200
+	UBRR0L = 1;								//BAUD 500000
 	
 	UCSR0B	|=	(1<<	TXEN0)
 			|	(1<<	RXEN0)					
@@ -460,13 +368,13 @@ void serial_transmit (uint8_t data)	//Tx serial
 
 
 
-unsigned char uart_recieve (void)			//Rx serial		TODO replace code above with this function
-{
-	
-	while(!((UCSR0A) & (1<<RXC0)));			//w8t while data being received
-	return UDR0;							//return 8-bit data read
-
-}
+//unsigned char uart_recieve (void)			//Rx serial		TODO replace code above with this function
+//{
+	//
+	//while(!((UCSR0A) & (1<<RXC0)));			//w8t while data being received
+	//return UDR0;							//return 8-bit data read
+//
+//}
 
 // unsigned char uart_receive_16 (void)		// Rx serial for 16 bit values (i.e. joystick values)
 // {
@@ -736,17 +644,17 @@ void BewareOfDog()			//watchdog
 		
 		WatchToken	=		HeelDog			//Job Done
 
-		serial_transmit('\n');				
-		
-		serial_transmit('Z');				//notify Terminal
-		serial_transmit('O');
-		serial_transmit('I');
-		serial_transmit('N');
-		serial_transmit('K');
-		serial_transmit('S');
-
-		serial_transmit('\n');				//Print nxt on
-		serial_transmit('\r');				//new line
+		//serial_transmit('\n');				
+		//
+		//serial_transmit('Z');				//notify Terminal
+		//serial_transmit('O');
+		//serial_transmit('I');
+		//serial_transmit('N');
+		//serial_transmit('K');
+		//serial_transmit('S');
+//
+		//serial_transmit('\n');				//Print nxt on
+		//serial_transmit('\r');				//new line
 	}
 	
 	WatchToken++;							//Condition Count
@@ -867,6 +775,60 @@ void ADC_init()								//Analogue Digital Conversion Set
 	//sei();
 	//
 //}
+
+ISR (USART0_RX_vect)
+{
+	cli();									//disable interrupts
+	
+	if (heard_msg.werd_count < (MAX_MSG_LENGTH-1))	
+	{
+		//while ( !(UCSR0A & (1<<RXC0)) );
+		heard_msg.data[heard_msg.werd_count] = UDR0;
+		
+		//printBin8(UDR0);
+		serial_transmit(heard_msg.werd_count + '0');
+		//serial_transmit(' ');
+	    //term_Send_Val_as_Digits(heard_msg.werd_count);
+		serial_transmit(' ');
+		
+		printBin8(heard_msg.data[heard_msg.werd_count]);
+		
+		//printBin8(UDR0);
+		serial_transmit(' ');
+
+		//printBin8(UDR0);
+		serial_transmit(heard_msg.data[heard_msg.werd_count]);
+		//printBin8(UDR0);
+		//
+		serial_transmit('\n');
+		serial_transmit('\r');
+		
+		heard_msg.werd_count++;
+	}
+	
+	else      // getting last data byte & jumping to msg_handler
+	{
+		//while ( !(UCSR0A & (1<<RXC0)) );
+		heard_msg.data[heard_msg.werd_count] = UDR0;
+		//delay();		// delay so Jetson has time to start ser.read() listening on serial port
+		serial_transmit(heard_msg.werd_count + '0');
+		serial_transmit(' ');
+		printBin8(heard_msg.data[heard_msg.werd_count]);
+		serial_transmit(' ');
+		serial_transmit(heard_msg.data[heard_msg.werd_count]);
+				
+		serial_transmit('\n');
+		serial_transmit('\r');
+		
+		MSG_handler(&heard_msg);
+		heard_msg.werd_count = 0;		// reset count
+
+	}
+	
+	sei();
+}
+
+
 
 int main(void)
 {
