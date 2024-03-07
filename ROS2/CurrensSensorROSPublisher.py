@@ -13,7 +13,7 @@ class CurrentSensorPublisher(Node):
     def __init__(self):
         super().__init__('current service')
         #create a publisher node of type= KeyValue, topic= current, callback= current_callback, 
-        self.publisher_ = self.create_publisher(String, 'current',current_callback, 10)
+        self.publisher_ = self.create_publisher(String, 'current', self.current_callback, 10)
         #timer_period = 0.5  # seconds
         #self.timer = self.create_timer(timer_period, self.timer_callback)
 
@@ -42,4 +42,5 @@ def main(args=None):
     rclpy.shutdown()               #stop RoS
 
 
-if __name__ ==
+if __name__ == '__main__':
+    main()
