@@ -29,9 +29,9 @@ class GamepadSubber(Node):
 
         self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega 
 
-        self._deadzone = 0.2
+        self._deadzone = 0.1
         self.curr_joy = [0, 0]
-        self.last_joy = [0, 0]
+        self.last_joy = [0, 0] 
 
         self.left_motor = 0
         self.right_motor = 0
@@ -61,43 +61,27 @@ class GamepadSubber(Node):
                 self.get_logger().info(f'In deadzone')
             else:
                 self.get_logger().info(f'Joystick moving')
-
-            # 2 in ascii decimal is 50, in ascii binary is 00110010
         
-            self.send(b'2')     # send message_type 2
-            # time.sleep(0.4)
-            
-            # self.get_logger().info(f'as bytes is: {(24).to_bytes(1, byteorder="big")}')
-            self.send((left_high).to_bytes(1, byteorder="big"))
-            self.send((left_low).to_bytes(1, byteorder="big"))
-            time.sleep(0.4)
+                self.send(b'2')     # send message_type 2
+                # time.sleep(0.4)
+                
+                self.send((left_high).to_bytes(1, byteorder="big"))
+                # time.sleep(0.4)
 
-            self.send((right_high).to_bytes(1, byteorder="big"))
-            time.sleep(0.4)
+                self.send((left_low).to_bytes(1, byteorder="big"))
+                # time.sleep(0.4)
 
-            self.send((right_low).to_bytes(1, byteorder="big"))
+                self.send((right_high).to_bytes(1, byteorder="big"))
+                # time.sleep(0.4)
 
-            # self.send(left_high)   # send right_motor low
-            # self.send(left_low)
-
-            # # time.sleep(0.4)
-
-            # self.send(format(left_low, "08b"))   # send right_motor low
-            # # time.sleep(0.4)
-
-            # self.send(format(right_high, "08b"))   # send right_motor low
-            # # time.sleep(0.4)
-             
-            # self.send(right_low)   # send right_motor low
-            # time.sleep(0.4)
+                self.send((right_low).to_bytes(1, byteorder="big"))
+                # time.sleep(0.4)
 
             ########### output to ROS terminal ####
             self.get_logger().info(f'Left = {self.left_motor}  {format(self.left_motor, "016b")}')
             self.get_logger().info(f'Right = {self.right_motor}  {format(self.right_motor, "016b")}')
-
             self.get_logger().info(f'lh = {format(left_high, "08b")}')
             self.get_logger().info(f'll = {format(left_low, "08b")}')
-
             self.get_logger().info(f'rh = {format(right_high, "08b")}')
             self.get_logger().info(f'rl = {format(right_low, "08b")}')
             ###############################################################
@@ -134,8 +118,7 @@ class GamepadSubber(Node):
         self.right_motor = int( (self.right_motor * 1000) + 3000 ) 
 
         # self.get_logger().info(f'When X = {x}   Y = {y}')   
-        
-    
+            
 
 
 
@@ -162,10 +145,6 @@ class GamepadSubber(Node):
 
             self.send_duty_vals()
 
-
-
-        
-   
 
 
 
