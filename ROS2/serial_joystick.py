@@ -5,13 +5,15 @@ them to 8 bit ASCII values.  Then sends ASCII data serially to Arduino Nano. '''
 
 ''' To use this code: Run joy_node on Linux laptop to publish /joy topic.
 Then run this code on the Jetson to create a gamepad_subber_node that will sub to the
-/joy topic.  Logitech F310 gamepad must be flipped to D mode & have the Mode button light on. '''
+/joy topic.  Logitech F310 gamepad must be flipped to D mode & have the Mode button light OFF. '''
 
 
 import serial
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
+import time
+
 
 # Node that subs to /joy pubber
 class GamepadSubber(Node):
@@ -25,19 +27,77 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
+<<<<<<< HEAD
         # self.ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)      # serial to Arduino Mega 
+=======
+        self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega 
+>>>>>>> joystick_implementation
 
-        self.deadzone = 0.2
-          
+        self._deadzone = 0.1
+        self.curr_joy = [0, 0]
+        self.last_joy = [0, 0] 
+
+        self.left_motor = 0
+        self.right_motor = 0
 
 
-    # def send(self, cmd):        # Used to serial write ASCII cmds
-    #     if (type(cmd) == str):
-    #         self.ser.write(cmd.encode())
-    #     elif (type(cmd) == bytes):
-    #         self.ser.write(cmd)
+
+    def send(self, cmd):        # Used to serial write ASCII cmds
+        if (type(cmd) == str):
+            self.ser.write(cmd.encode())
+        elif (type(cmd) == bytes):
+            self.ser.write(cmd)
 
 
+<<<<<<< HEAD
+=======
+    def send_duty_vals(self):
+        self.curr_joy[0] = self.left_motor
+        self.curr_joy[1] = self.right_motor
+
+        right_low = (self.right_motor & 0b0000_0000_1111_1111)
+        right_high = (self.right_motor >> 8)
+        left_low = (self.left_motor & 0b0000_0000_1111_1111)
+        left_high = (self.left_motor >> 8)
+
+
+        if (self.curr_joy != self.last_joy):
+
+            if (self.left_motor == 3000 and self.right_motor == 3000):
+                self.get_logger().info(f'In deadzone')
+            else:
+                self.get_logger().info(f'Joystick moving')
+        
+                self.send(b'2')     # send message_type 2
+                # time.sleep(0.4)
+                
+                self.send((left_high).to_bytes(1, byteorder="big"))
+                # time.sleep(0.4)
+
+                self.send((left_low).to_bytes(1, byteorder="big"))
+                # time.sleep(0.4)
+
+                self.send((right_high).to_bytes(1, byteorder="big"))
+                # time.sleep(0.4)
+
+                self.send((right_low).to_bytes(1, byteorder="big"))
+                # time.sleep(0.4)
+
+            ########### output to ROS terminal ####
+            self.get_logger().info(f'Left = {self.left_motor}  {format(self.left_motor, "016b")}')
+            self.get_logger().info(f'Right = {self.right_motor}  {format(self.right_motor, "016b")}')
+            self.get_logger().info(f'lh = {format(left_high, "08b")}')
+            self.get_logger().info(f'll = {format(left_low, "08b")}')
+            self.get_logger().info(f'rh = {format(right_high, "08b")}')
+            self.get_logger().info(f'rl = {format(right_low, "08b")}')
+            ###############################################################
+
+        self.last_joy[0] = self.left_motor
+        self.last_joy[1] = self.right_motor
+
+
+
+>>>>>>> joystick_implementation
     def arcade_drive_math(self, x, y):
         x = -x      # Change bc gamepad's x axes are backwards
         self.max = max(abs(y), abs(x))
@@ -64,6 +124,7 @@ class GamepadSubber(Node):
         self.left_motor = int( (self.left_motor * 1000) + 3000 )
         self.right_motor = int( (self.right_motor * 1000) + 3000 ) 
 
+<<<<<<< HEAD
         # # TODO TEST ALTERNATIVE METHOD
         # ''' Or transmit 8 bit values to Arduino & then have Arduino normalize it on its end? '''
         # TODO RESOLVED  This is actually less efficent and should not be implemented bc it costs no bandwidth to send
@@ -74,6 +135,11 @@ class GamepadSubber(Node):
         self.get_logger().info(f'When X = {x}   Y = {y}')   
         self.get_logger().info(f'Left Motor = {self.left_motor}')
         self.get_logger().info(f'Right Motor = {self.right_motor}')
+=======
+        # self.get_logger().info(f'When X = {x}   Y = {y}')   
+            
+
+>>>>>>> joystick_implementation
 
         ''' Sends the motor's duty cycle values to the Arduino '''
         self.send(self.right_motor & 0b0000_1111)   # send right_motor low
@@ -88,14 +154,14 @@ class GamepadSubber(Node):
         them to ASCII values, and sends serially to Arduino. '''
 
         self.button_values = msg.buttons
-        self.get_logger().info(f'Subber received buttons = {self.button_values}')
+        # self.get_logger().info(f'Subber received buttons = {self.button_values}')
 
         self.axes_values = msg.axes
-        self.get_logger().info(f'Subber received axes = {self.axes_values}')
-        
+        # self.get_logger().info(f'Subber received axes = {self.axes_values}')        
 
         ''' Motor control using the Joysticks '''
         # If left joystick is outside of deadzone
+<<<<<<< HEAD
         if (self.axes_values[0] > self.deadzone or self.axes_values[0] < -(self.deadzone) or self.axes_values[1] > self.deadzone or self.axes_values[1] < -(self.deadzone)):
             self.arcade_drive_math(self.axes_values[0], self.axes_values[1])
 
@@ -104,6 +170,18 @@ class GamepadSubber(Node):
             self.get_logger().info(f'In deadzone')
             # TODO
             # send 3000 to remain stopped
+=======
+        if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
+            self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
+            self.send_duty_vals()
+
+        # if left joystick is within deadzone
+        else:       
+            self.left_motor = 3000
+            self.right_motor = 3000
+
+            self.send_duty_vals()
+>>>>>>> joystick_implementation
 
 
 
@@ -118,7 +196,7 @@ def main(args=None):
 
     subber.destroy_node()   
     rclpy.shutdown()
-    # self.ser.close()
+    self.ser.close()
 
 
 if __name__ == '__main__':
