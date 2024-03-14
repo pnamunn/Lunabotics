@@ -11,10 +11,12 @@ from std_msgs.msg import String
 
 class CurrentSensorPublisher(Node):
     def __init__(self):
-        super().__init__('current service')
+        super().__init__('CurrentSubber')
         #create a publisher node of type= KeyValue, topic= current, callback= current_callback, 
-        self.publisher_ = self.create_publisher(String, 'current', self.current_callback, 10)
+        self.subber = self.create_subscription(String, 'current', self.current_callback, 10)
         #timer_period = 0.5  # seconds
+        self.get_logger().info("Subber node has been created")
+
         #self.timer = self.create_timer(timer_period, self.timer_callback)
 
 
@@ -28,6 +30,7 @@ class CurrentSensorPublisher(Node):
             msg = ('Problem with wheel "%s", currrent is "%s".' %request.key %request.value)
             self.publisher_.publish(msg)
             self.get_logger().info(msg)
+        print('success2')
         time.wait(1)
 
 def main(args=None):
@@ -37,7 +40,7 @@ def main(args=None):
 
     rclpy.spin(pubber)            #run until it is killed
 
-
+    print('Success1')
     pubber.destroy_node()         #free node
     rclpy.shutdown()               #stop RoS
 

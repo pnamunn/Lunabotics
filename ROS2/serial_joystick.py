@@ -12,7 +12,7 @@ import serial
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
-import time
+from bitarray import bitarray
 
 
 # Node that subs to /joy pubber
@@ -27,20 +27,20 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
-        # self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega 
+        self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega 
 
         self._deadzone = 0.1
         self.curr_joy = [0, 0]  # holds left & right motor vals
         self.last_joy = [0, 0]  # holds left & right motor vals
 
-        self.last_buttons = 0   # holds self.button_values array
+        self.last_butt = bytearray([0, 0, 0, 0, 0, 0, 0, 0])   # holds self.button_values array
 
         self.left_motor = 0
         self.right_motor = 0
 
 
 
-    def send(self, cmd):        # Used to serial write ASCII cmds
+    def send(self, cmd):        # Used to serial Tx
         if (type(cmd) == str):
             self.ser.write(cmd.encode())
         elif (type(cmd) == bytes):
@@ -134,10 +134,13 @@ class GamepadSubber(Node):
         self.button_values = msg.buttons
         # self.get_logger().info(f'Subber received buttons = {self.button_values}')
 
-        self.get_logger().info(f'button values = {self.button_values}')
-        self.button_values.pop(11)
+        # self.get_logger().info(f'button values = {self.button_values}')
+        self.button_values.pop(11)      # gets last 4 unused buttons out of the array so button values is a 8 element array
         self.button_values.pop(10)
-        self.get_logger().info(f'after pops = {self.button_values}')
+        self.button_values.pop(9)
+        self.button_values.pop(8)
+        self.button_values = bitarray(self.button_values)      # converts array into a byte array
+        # self.get_logger().info(f'after pops = {self.button_values}')
 
         self.axes_values = msg.axes
         # self.get_logger().info(f'Subber received axes = {self.axes_values}')
@@ -157,8 +160,12 @@ class GamepadSubber(Node):
 
 
         if (self.last_butt != self.button_values):
-            # self.send((self.button_values).to_bytes(1, byteorder="big"))
-            pass
+            self.send(b'1')     # send message_type 1
+            self.send(bytes(self.button_values))       # converts bit array to byte and sends
+            
+            self.get_logger().info(f'Vals: {self.button_values}')
+            self.get_logger().info(f'Sent: {bytes(self.button_values)}')
+
 
         self.last_butt = self.button_values
 
