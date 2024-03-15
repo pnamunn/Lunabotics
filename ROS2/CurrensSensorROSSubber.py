@@ -12,9 +12,10 @@ from std_msgs.msg import String
 
 class CurrentSensorSubscriber(Node):
     def __init__(self):
-        super().__init__('current service')
+        super().__init__('CurrentSubscriber')
         #create a publisher node of type= KeyValue, topic= current, callback= current_callback, 
-        self.subscriber_ = self.create_subsriber(String, 'current',current_callback, 10)
+        self.subscriber_ = self.create_subscription(String, 'current',self.current_callback, 10)
+        self.get_logger().info("Pubber node has been created")
 
 
     def current_callback(self, msg): #only publish if a problem arrises  
@@ -24,7 +25,7 @@ class CurrentSensorSubscriber(Node):
 
 def main(args=None):
     rclpy.init(args=args)           #get rclpy library
-    pubber = CurrentSensorSubsriber()      #create a node
+    pubber = CurrentSensorSubscriber()      #create a node
 
 
     rclpy.spin(pubber)            #run until it is killed
@@ -34,5 +35,5 @@ def main(args=None):
     rclpy.shutdown()               #stop RoS
 
 
-if __name__ ==
-
+if __name__ == '__main__':
+    main()
