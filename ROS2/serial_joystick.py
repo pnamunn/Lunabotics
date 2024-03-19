@@ -27,10 +27,10 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
-        self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega 
+        self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega
 
         self._deadzone = 0.1
-        self.curr_joy = [0, 0]  # holds left & right motor vals
+
         self.last_joy = [0, 0]  # holds left & right motor vals
 
         self.last_butt = bytearray([0, 0, 0, 0, 0, 0, 0, 0])   # holds self.button_values array
@@ -48,36 +48,30 @@ class GamepadSubber(Node):
 
 
     def send_duty_vals(self):
-        self.curr_joy[0] = self.left_motor
-        self.curr_joy[1] = self.right_motor
-
         right_low = (self.right_motor & 0b0000_0000_1111_1111)
         right_high = (self.right_motor >> 8)
         left_low = (self.left_motor & 0b0000_0000_1111_1111)
         left_high = (self.left_motor >> 8)
 
+        if (self.left_motor == 3000 and self.right_motor == 3000):
+            self.get_logger().info(f'In deadzone')
+        else:
+            self.get_logger().info(f'Joystick moving')
+    
+            self.send(b'2')     # send message_type 2
+            # time.sleep(0.4)
+            
+            self.send((left_high).to_bytes(1, byteorder="big"))
+            # time.sleep(0.4)
 
-        if (self.curr_joy != self.last_joy):
+            self.send((left_low).to_bytes(1, byteorder="big"))
+            # time.sleep(0.4)
 
-            if (self.left_motor == 3000 and self.right_motor == 3000):
-                self.get_logger().info(f'In deadzone')
-            else:
-                self.get_logger().info(f'Joystick moving')
-        
-                self.send(b'2')     # send message_type 2
-                # time.sleep(0.4)
-                
-                self.send((left_high).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
+            self.send((right_high).to_bytes(1, byteorder="big"))
+            # time.sleep(0.4)
 
-                self.send((left_low).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
-
-                self.send((right_high).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
-
-                self.send((right_low).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
+            self.send((right_low).to_bytes(1, byteorder="big"))
+            # time.sleep(0.4)
 
             ########### output to ROS terminal ####
             self.get_logger().info(f'Left = {self.left_motor}  {format(self.left_motor, "016b")}')
@@ -87,9 +81,6 @@ class GamepadSubber(Node):
             self.get_logger().info(f'rh = {format(right_high, "08b")}')
             self.get_logger().info(f'rl = {format(right_low, "08b")}')
             ###############################################################
-
-        self.last_joy[0] = self.left_motor
-        self.last_joy[1] = self.right_motor
 
 
 
@@ -142,26 +133,36 @@ class GamepadSubber(Node):
         self.button_values = bitarray(self.button_values)      # converts array into a byte array
         # self.get_logger().info(f'after pops = {self.button_values}')
 
+
         self.axes_values = msg.axes
         # self.get_logger().info(f'Subber received axes = {self.axes_values}')
 
         ''' Motor control using the Joysticks '''
-        # If left joystick is outside of deadzone
-        if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
-            self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
-            self.send_duty_vals()
+        # TODO pull out curr_value/last value comparison out here so we can avoid doing computation here if there is no val difference
 
-        # if left joystick is within deadzone
-        else:       
-            self.left_motor = 3000
-            self.right_motor = 3000
+        if (self.curr_joy != self.last_joy):
+            # If left joystick is outside of deadzone
+            if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
+                self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
+                self.send_duty_vals()
 
-            self.send_duty_vals()
+            # if left joystick is within deadzone
+            else:       
+                self.left_motor = 3000
+                self.right_motor = 3000
+
+                self.send_duty_vals()
+
+        self.last_joy[0] = self.left_motor
+        self.last_joy[1] = self.right_motor
 
 
         if (self.last_butt != self.button_values):
             self.send(b'1')     # send message_type 1
             self.send(bytes(self.button_values))       # converts bit array to byte and sends
+            self.send(b'0')     # send filler bytes
+            self.send(b'0')     
+            self.send(b'0')     
             
             self.get_logger().info(f'Vals: {self.button_values}')
             self.get_logger().info(f'Sent: {bytes(self.button_values)}')
