@@ -807,8 +807,7 @@ ISR (USART0_RX_vect)
 	
 	WatchToken = 0;		// reset watchdog count
 	
-		if (heard_msg.werd_count < (MAX_MSG_LENGTH-1))	
-	{
+		
 	heard_msg.data[heard_msg.werd_count] = UDR0;
 	
 	serial_transmit(heard_msg.werd_count + '0');
@@ -816,27 +815,26 @@ ISR (USART0_RX_vect)
 	printBin8(heard_msg.data[heard_msg.werd_count]);
 	serial_transmit(' ');
 	serial_transmit(heard_msg.data[heard_msg.werd_count]);
-		serial_transmit('\n');
+	serial_transmit(' ');
+	//printBin8(UCSR0A);
+	
+	serial_transmit('\n');
 	serial_transmit('\r');
 	
 	heard_msg.werd_count++;
-}
-	
-	else      // getting last data byte & jumping to msg_handler
-	{
-		heard_msg.data[heard_msg.werd_count] = UDR0;
-		
-		serial_transmit(heard_msg.werd_count + '0');
-		serial_transmit(' ');
-		printBin8(heard_msg.data[heard_msg.werd_count]);
-		serial_transmit(' ');
-		serial_transmit(heard_msg.data[heard_msg.werd_count]);
-		serial_transmit('\n');
-		serial_transmit('\r');
-		
-		MSG_handler(&heard_msg);
-		heard_msg.werd_count = 0;		// reset count
 
+	
+	//if ((UCSR0A >> DOR0) & 1) == 1))		// if Data Overrun has occurred (RX buffer is full)
+	//{
+		//heard_msg.werd_count = 0;	// reset Arduino to expect msg_type next and do not use previous data received
+		//serial_transmit('>');		// alert Jetson that it should send msg_type next
+	//}
+	
+	
+	if (heard_msg.werd_count >= MAX_MSG_LENGTH)		// handle msg & reset werd_count
+	{
+		MSG_handler(&heard_msg);
+		heard_msg.werd_count = 0;
 	}
 	
 	
