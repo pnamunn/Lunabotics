@@ -10,14 +10,15 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-//#define BAUD 115200					ignore
-//#define BAUDRATE ((F_CPU)/(BAUD*16UL))-1		ignore
-#define Vcc 5.0
+#define Vcc 4.872
+#define arr_size 10
 float voltage = 0.0;
 float current = 0.0;
-float sum = 0.0;
+float sum2 = 0.0;
+float sum3 = 0.0;
 volatile int i = 0;
-volatile float array[5] = {0.0,0.0,0.0,0.0,0.0};
+volatile uint16_t array2[arr_size] = {0};
+volatile uint16_t array3[arr_size] = {0};
 
 void ADC_init() {
 	ADCSRA |= (1<<ADEN);	// enable ADC
@@ -103,7 +104,7 @@ void printFloat(float num) {
 	}
 }
 
-ISR (ADC_vect) {	
+ISR (ADC_vect) {
 	static uint16_t ADC_low = 0;
 	static uint16_t ADC_high = 0;
 	static uint16_t ADC_full = 0;
@@ -112,23 +113,63 @@ ISR (ADC_vect) {
 	ADC_high = ADCH;
 	ADC_full = (ADC_high << 8) | ADC_low;
 	
-	// Average past 5 ADC values to limit noise, although it updates
-	// at a slightly slower rate now 
-	sum = sum - array[i] + ADC_full;
-	array[i] = ADC_full;
-	i = (i+1) % 5;
-	ADC_full = sum / 5;
-	
-	voltage = (Vcc / 1024.0)*ADC_full;	
-	voltage = voltage - (Vcc / 2.0);
-	current = voltage*25000.0;
-	printFloat(current);
-	serial_transmit(' ');
-	serial_transmit('m');
-	serial_transmit('A');
-	_delay_ms(250);
-	serial_transmit('\n');
+	if ((ADMUX & 0x0F) == 2) {
+		sum2 = sum2 - array2[i] + ADC_full;
+		array2[i] = ADC_full;
+		i = (i+1) % arr_size;
+		ADC_full = sum2 / arr_size;
+		
+		voltage = (Vcc / 1024.0)*ADC_full;
+		voltage = fabs(voltage - (Vcc / 2.0));
+		current = voltage*9.752;	// 1/0.11 * 1000 --> new sensitivity with amplifier
+		
+		serial_transmit('I');
+		serial_transmit('1');
+		serial_transmit(':');
+		
+		if (ADC_full < 512) {
+			serial_transmit('-');
+		}
+		
+		printFloat(current);
+		serial_transmit(' ');
+		serial_transmit('A');
+		_delay_ms(150);
+		serial_transmit('\n');
+		
+		ADMUX = 0b01000011;		// switch to ADC3
+	}
+	else if ((ADMUX & 0x0F) == 3) {
+		sum3 = sum3 - array3[i] + ADC_full;
+		array3[i] = ADC_full;
+		i = (i+1) % arr_size;
+		ADC_full = sum2 / arr_size;
+		
+		voltage = (Vcc / 1024.0)*ADC_full;
+		voltage = fabs(voltage - (Vcc / 2.0));
+		current = voltage*9.752;	
+		
+		serial_transmit('I');
+		serial_transmit('2');	
+		serial_transmit(':');	
+		
+		if (ADC_full < 512) {
+			serial_transmit('-');
+		}
+		
+		printFloat(current);
+		serial_transmit(' ');
+		serial_transmit('A');
+		_delay_ms(150);
+		serial_transmit('\n');
+		
+		ADMUX = 0b01000010;		// switch to ADC2
+	}
+	else {
+		ADMUX = 0b01000010;		// else set to ADC2
+	}	
 }
+	
 
 int main(void)
 {
