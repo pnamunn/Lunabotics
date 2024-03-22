@@ -27,7 +27,7 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created")
 
-        self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega
+        self.ser = serial.Serial('/dev/ttyACM0', 112500, bytesize=8, timeout=2)      # serial to Arduino Mega
 
         self._deadzone = 0.1
         self.curr_joy = [0, 0]  # holds left & right motor vals
@@ -144,9 +144,9 @@ class GamepadSubber(Node):
         self.button_values = bitarray(self.button_values)      # converts array into a byte array
         # self.get_logger().info(f'after pops = {self.button_values}')
 
-
         self.axes_values = msg.axes
         # self.get_logger().info(f'Subber received axes = {self.axes_values}')
+
 
 
         ''' Motor control using the Joysticks '''

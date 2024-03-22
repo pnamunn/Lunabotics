@@ -10249,6 +10249,13 @@
       (effects (font (size 1.27 1.27)) (justify left) hide)
     )
   )
+  (global_label "FL" (shape input) (at 300.99 57.15 0) (fields_autoplaced)
+    (effects (font (size 1.27 1.27)) (justify left))
+    (uuid 8ce23e05-abd5-44e5-94a6-6f215c3b2ed2)
+    (property "Intersheetrefs" "${INTERSHEET_REFS}" (at 306.0919 57.15 0)
+      (effects (font (size 1.27 1.27)) (justify left) hide)
+    )
+  )
   (global_label "Sig - L2" (shape input) (at 337.82 43.18 0) (fields_autoplaced)
     (effects (font (size 1.27 1.27)) (justify left))
     (uuid 8d2a8a92-3dfd-45af-826a-bc39e7fbd2c5)
@@ -10394,7 +10401,7 @@
     (pin "1" (uuid 4cc99f4d-37ed-4264-9abf-cdd6bbb4120c))
     (pin "2" (uuid 167519f0-dd7b-4db6-8ef1-9cf57764db30))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C11") (unit 1)
         )
@@ -10431,7 +10438,7 @@
     (pin "1" (uuid b3c0658b-fdec-4b6a-9809-fee08ffbf373))
     (pin "2" (uuid 193ceb1b-dc32-49fa-a667-46d553dca7ec))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D1") (unit 1)
         )
@@ -10462,7 +10469,7 @@
     (pin "1" (uuid 07f2665e-7766-4869-a622-4b269368b046))
     (pin "2" (uuid 83dfcd55-7b38-4027-aa8f-0bc7d895766b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R24") (unit 1)
         )
@@ -10492,7 +10499,7 @@
     )
     (pin "1" (uuid c47697ef-cd52-4948-8c26-0530d86c504e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR016") (unit 1)
         )
@@ -10522,7 +10529,7 @@
     )
     (pin "1" (uuid 2138bc6a-1830-44e3-8e4b-0f47a37a69c0))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR073") (unit 1)
         )
@@ -10552,7 +10559,7 @@
     )
     (pin "1" (uuid 5da1c09a-bb5f-4f7f-bb0c-c160488b0c53))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR029") (unit 1)
         )
@@ -10582,7 +10589,7 @@
     )
     (pin "1" (uuid b15bdc5a-3cf3-4808-81f9-1023cd880920))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR074") (unit 1)
         )
@@ -10613,7 +10620,7 @@
     (pin "1" (uuid 80de32ac-e70c-4a0e-8a18-a7aef0889772))
     (pin "2" (uuid 2f1e351d-c51a-4556-ba5e-973c9bace472))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J75") (unit 1)
         )
@@ -10644,7 +10651,7 @@
     (pin "1" (uuid b7377809-96fb-4324-8ba0-8d13394171dd))
     (pin "2" (uuid 80c7bb89-f39a-4610-8a27-ef81b31b1ed2))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M12") (unit 1)
         )
@@ -10675,7 +10682,7 @@
     (pin "1" (uuid c5d28845-9fdb-400c-9c9d-18a9bc80fc61))
     (pin "2" (uuid 7207e952-df34-4953-80fa-c9b6e5bd46a9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R41") (unit 1)
         )
@@ -10708,7 +10715,7 @@
     (pin "" (uuid 577102c4-e24f-413b-bda0-25ad7bdcb7f6))
     (pin "" (uuid f28c48a3-c569-4e19-9405-457589091f3e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J45") (unit 1)
         )
@@ -10738,7 +10745,7 @@
     )
     (pin "1" (uuid 88067d77-93ea-44dd-9262-920cac11c418))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR072") (unit 1)
         )
@@ -10771,7 +10778,7 @@
     (pin "" (uuid fbb1dfe7-dc48-4e86-a320-4ba792695f55))
     (pin "" (uuid 1e3e6884-4543-478b-a3cc-ebea663a914f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J42") (unit 1)
         )
@@ -10802,7 +10809,7 @@
     (pin "1" (uuid 7b545f05-527f-495d-980d-d530f206113b))
     (pin "2" (uuid adae0f3c-f546-4607-9fd2-074081e8eaf2))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J37") (unit 1)
         )
@@ -10833,7 +10840,7 @@
     (pin "" (uuid 50f9a050-b751-4292-a288-938901342532))
     (pin "" (uuid d78f5063-596e-41cf-8a61-b9201c60e760))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "P2") (unit 1)
         )
@@ -10870,7 +10877,7 @@
     (pin "7" (uuid d2bb8a8b-0bf4-473f-80f5-f6c8b90d2f34))
     (pin "8" (uuid 67ae5726-c54c-48c2-9b20-f7c0180b568b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U14") (unit 1)
         )
@@ -10901,7 +10908,7 @@
     (pin "1" (uuid b0f925b3-a187-4c5e-b0c2-ef41af4eb70f))
     (pin "2" (uuid 517edfa5-631a-4308-a585-e4dac6a7fa6c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J55") (unit 1)
         )
@@ -10931,7 +10938,7 @@
     )
     (pin "1" (uuid 4a23f65d-1055-429d-864a-cb4eae63a66c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR04") (unit 1)
         )
@@ -10962,7 +10969,7 @@
     (pin "1" (uuid c328d132-9fc6-488a-932f-96f47d968340))
     (pin "2" (uuid 79577509-e3b4-4337-8d06-1f44204a52d7))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R13") (unit 1)
         )
@@ -10993,7 +11000,7 @@
     (pin "1" (uuid 14990048-15ec-4217-b8b3-5fef80983099))
     (pin "2" (uuid 601d73b2-e34b-479c-8eb0-c1b0b3fe5088))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C10") (unit 1)
         )
@@ -11030,7 +11037,7 @@
     (pin "7" (uuid 83dced3d-3298-46f6-9c36-ac745c398452))
     (pin "8" (uuid 5af18816-26db-4d7c-a7e4-73b451c286c5))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U15") (unit 1)
         )
@@ -11062,7 +11069,7 @@
     (pin "2" (uuid 2f468e42-4904-4df7-8fef-556b536a16ee))
     (pin "3" (uuid ddf150fa-6a8f-4889-9ca6-464c75fb6953))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J29") (unit 1)
         )
@@ -11096,7 +11103,7 @@
     (pin "4" (uuid 341caffa-a38a-47bb-bb8a-34fa12700f37))
     (pin "5" (uuid 302a0330-5896-43f2-9e46-6b7ab6de9d3f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U22") (unit 1)
         )
@@ -11129,7 +11136,7 @@
     (pin "" (uuid ff3058b8-719f-41dc-a200-503c114ef89f))
     (pin "" (uuid 2359e433-9d64-4447-ac37-447dddc1794e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J52") (unit 1)
         )
@@ -11166,7 +11173,7 @@
     (pin "7" (uuid baf2ac0f-8cf6-4f85-9087-95316af1d75e))
     (pin "8" (uuid bc210f78-154e-4f06-9517-b83411dfb722))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U13") (unit 1)
         )
@@ -11203,7 +11210,7 @@
     (pin "1" (uuid d24e3f6a-065d-4ad9-994d-fbe59a89e2da))
     (pin "2" (uuid 5807a853-e67b-435e-8858-1b5092a62d0f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D4") (unit 1)
         )
@@ -11234,7 +11241,7 @@
     (pin "1" (uuid a7f0bc8a-a478-43e2-88c8-05894a676992))
     (pin "2" (uuid a2cc312e-7914-4c52-a293-8322feec330c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C27") (unit 1)
         )
@@ -11266,7 +11273,7 @@
     (pin "2" (uuid b8fbde57-715f-4a93-b0de-b42b539c7e99))
     (pin "3" (uuid 8fa74088-dc76-4e73-9d6d-fef95e1733c0))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J57") (unit 1)
         )
@@ -11297,7 +11304,7 @@
     (pin "1" (uuid 734939ae-102c-46d5-8133-92d2e11f4b8f))
     (pin "2" (uuid 1ef55a5d-38ee-43f6-90c2-77cf27245a97))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R27") (unit 1)
         )
@@ -11330,7 +11337,7 @@
     (pin "" (uuid abc687e2-59bb-46ee-a12d-348888d8be4c))
     (pin "" (uuid cd05362e-b762-49fe-a2b0-c7d7d36da90c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J62") (unit 1)
         )
@@ -11363,7 +11370,7 @@
     (pin "" (uuid a7e85432-2b4a-405e-a58a-8b4fb5be0422))
     (pin "" (uuid 6449b075-61e9-4d72-a491-87eb8ce6022d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J36") (unit 1)
         )
@@ -11400,7 +11407,7 @@
     (pin "" (uuid a144d285-f4f4-4a41-a9ad-094a92aa4994))
     (pin "" (uuid 9dd73675-c9f0-4485-b643-da89f6555f87))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U12") (unit 1)
         )
@@ -11430,7 +11437,7 @@
     )
     (pin "1" (uuid e3152bc3-389b-455a-82a4-2703eb042306))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR057") (unit 1)
         )
@@ -11461,7 +11468,7 @@
     (pin "1" (uuid 58839833-66af-413b-a883-ba752f2ec785))
     (pin "2" (uuid 3e226976-b3f1-47ac-a90f-cf52dc24ef1a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C3") (unit 1)
         )
@@ -11491,7 +11498,7 @@
     )
     (pin "1" (uuid 3ee13a4d-0f85-4d98-babd-30952c74c2de))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR025") (unit 1)
         )
@@ -11522,7 +11529,7 @@
     (pin "1" (uuid b2769d88-5b39-47e4-b902-180036b0c100))
     (pin "2" (uuid 641debe3-385b-4ac3-a05b-88a591859afd))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "Y2") (unit 1)
         )
@@ -11553,7 +11560,7 @@
     (pin "1" (uuid 945c6b75-1c29-44de-9e5f-5deb21623b3e))
     (pin "2" (uuid 64ee2713-8d97-4ee4-9ba1-8efe1bb54bc9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R47") (unit 1)
         )
@@ -11584,7 +11591,7 @@
     (pin "1" (uuid 02909318-bdde-4cfd-a55b-9eb814ff58a6))
     (pin "2" (uuid 899d70cc-f71a-4c29-a096-7d4eae704e29))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C24") (unit 1)
         )
@@ -11615,7 +11622,7 @@
     (pin "1" (uuid 516c8527-1d90-4249-b1e6-f59485f4052c))
     (pin "2" (uuid e87c3c09-2d66-46b5-8d7e-7c18252cbd80))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C35") (unit 1)
         )
@@ -11645,7 +11652,7 @@
     )
     (pin "1" (uuid 20dcba39-cacd-42ae-a2ba-dd93578132e2))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR031") (unit 1)
         )
@@ -11675,7 +11682,7 @@
     )
     (pin "1" (uuid 16e0d60f-4168-4b2d-907f-4f0105fa3908))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR038") (unit 1)
         )
@@ -11706,7 +11713,7 @@
     (pin "1" (uuid abfacc3c-f96c-452f-a9d4-0ddb5aa18716))
     (pin "2" (uuid 62e5436c-6fda-4e34-9ab1-0ec5c3401164))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C23") (unit 1)
         )
@@ -11736,7 +11743,7 @@
     )
     (pin "1" (uuid 4d3f99da-c7a8-453d-873b-c2bd7009e521))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR062") (unit 1)
         )
@@ -11767,7 +11774,7 @@
     (pin "1" (uuid 94352fae-c884-4425-acca-d86e028a8cac))
     (pin "2" (uuid 4cbc99c6-b00b-4a14-9622-343bd14df34a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D11") (unit 1)
         )
@@ -11798,7 +11805,7 @@
     (pin "1" (uuid 3700ecb6-aed2-4a50-9d9a-572f6bf0afe2))
     (pin "2" (uuid 8bc20062-c4a5-409a-9d08-e1408ada1717))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R28") (unit 1)
         )
@@ -11829,7 +11836,7 @@
     (pin "1" (uuid aacc1fda-5707-496c-b9fe-45df688cc365))
     (pin "2" (uuid 640306ad-a4a9-4e1b-8b4f-e56cb31db092))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C25") (unit 1)
         )
@@ -11860,7 +11867,7 @@
     (pin "1" (uuid bc3ca132-85d6-4eeb-9caa-68cb54025c09))
     (pin "2" (uuid f59a9fc9-5331-4c21-800d-d17ccbf28593))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R38") (unit 1)
         )
@@ -11893,7 +11900,7 @@
     (pin "" (uuid a5f9bb87-50ac-44ba-a809-9b185ea0246d))
     (pin "" (uuid 791179e7-fd58-465d-bebe-63c57a0d9826))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J40") (unit 1)
         )
@@ -11924,7 +11931,7 @@
     (pin "1" (uuid e418d0a7-4190-4900-877e-51d9697da04b))
     (pin "2" (uuid be94f0ed-723c-4f57-a844-732a64991abd))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C13") (unit 1)
         )
@@ -11955,7 +11962,7 @@
     (pin "1" (uuid 4415a425-68b9-4a08-a049-e950bfa99605))
     (pin "2" (uuid 6c02cd90-bbdf-4cab-bb01-1862cc10c74a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D2") (unit 1)
         )
@@ -11997,7 +12004,7 @@
     (pin "4" (uuid 536c0a10-e63b-4be8-8484-2a10e82413af))
     (pin "8" (uuid bd50f76f-03ed-4bc0-9c84-177716a0681c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U28") (unit 2)
         )
@@ -12016,7 +12023,7 @@
     (property "Reference" "J14" (at 229.87 58.42 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Value" "~" (at 224.79 60.96 0)
+    (property "Value" "XT-90M" (at 224.79 60.96 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "" (at 224.79 60.96 0)
@@ -12030,7 +12037,7 @@
     (pin "" (uuid f66e9efd-c727-4aa9-8a52-aaa3648a56b1))
     (pin "" (uuid 306cf51b-7da1-40d2-8f4c-403dbd609c38))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J14") (unit 1)
         )
@@ -12062,7 +12069,7 @@
     (pin "2" (uuid 784f9383-a08a-42ed-98e3-302a42b77d2e))
     (pin "3" (uuid ee6b0950-7437-40cd-817a-fe77590fc8e3))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J27") (unit 1)
         )
@@ -12093,7 +12100,7 @@
     (pin "1" (uuid fd5a17e7-8f54-43c2-a51c-cbbd60fede93))
     (pin "2" (uuid 1e6a1e2a-3771-41e5-9f5c-e0c5a9358628))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C2") (unit 1)
         )
@@ -12124,7 +12131,7 @@
     (pin "1" (uuid 1f4b89a3-2f00-45fd-9ef0-5f8573f01f9f))
     (pin "2" (uuid c353c0a0-84d8-4ef7-8b2a-cc265716e35a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R44") (unit 1)
         )
@@ -12155,7 +12162,7 @@
     (pin "1" (uuid c04e1fa3-ab69-4a8b-be69-7efdd7678c8e))
     (pin "2" (uuid 56a082b2-3459-4fbc-b14b-7954f59ef56f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R22") (unit 1)
         )
@@ -12193,7 +12200,7 @@
     (pin "" (uuid e2ab7dba-39d4-4587-9c68-1ad9fe5f9962))
     (pin "" (uuid 2759905b-ca10-4cc0-bc97-e1dd523d2ce9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J31") (unit 1)
         )
@@ -12230,7 +12237,7 @@
     (pin "7" (uuid 17ebfbcd-4a3c-47df-85b8-3f26cf911d3c))
     (pin "8" (uuid c8bfeedc-3a10-4733-b003-74ca21f4e92f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U17") (unit 1)
         )
@@ -12264,7 +12271,7 @@
     (pin "4" (uuid 42ce2b4c-a74b-4dee-ab10-e8ce953a257f))
     (pin "5" (uuid fd4c66be-364c-44da-82cb-e153b816b669))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J2") (unit 1)
         )
@@ -12294,7 +12301,7 @@
     )
     (pin "1" (uuid bb60cebd-b2a7-40b4-8124-d16f54c11152))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR015") (unit 1)
         )
@@ -12327,7 +12334,7 @@
     (pin "" (uuid 51f9cea6-f4fd-4f2e-8c4b-8ce29b24a860))
     (pin "" (uuid e8c178ca-1ba3-43db-80dd-771f4c07121e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J35") (unit 1)
         )
@@ -12358,7 +12365,7 @@
     (pin "1" (uuid b3a88ed3-9c1c-46bf-9117-a6f8717331ec))
     (pin "2" (uuid 4d1e3f1e-1cba-47b1-9df9-7f5109157041))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C37") (unit 1)
         )
@@ -12390,7 +12397,7 @@
     (pin "2" (uuid bc215502-5d39-40ee-a65c-0ac71da8d55c))
     (pin "3" (uuid 56ef9b69-dbf8-41b5-bf77-80d3dd1dbe48))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J33") (unit 1)
         )
@@ -12420,7 +12427,7 @@
     )
     (pin "1" (uuid c1674c3b-9a08-49cd-97ce-308297c312b8))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR045") (unit 1)
         )
@@ -12451,7 +12458,7 @@
     (pin "1" (uuid 8c0f3280-37a9-4035-a07a-3e3a57e91ddd))
     (pin "2" (uuid d97c22b3-89e4-4cf8-babc-6472de308b6e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R1") (unit 1)
         )
@@ -12489,7 +12496,7 @@
     (pin "3" (uuid ec1620c6-1e1a-4410-820d-3798076ae38e))
     (pin "4" (uuid f9143c2d-cf6a-43a6-88b3-a2870fb3665a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J8") (unit 1)
         )
@@ -12520,7 +12527,7 @@
     (pin "1" (uuid 812946ad-0647-4301-a2ae-a9c177a3b533))
     (pin "2" (uuid c77fef60-0c8f-4323-bc5f-ed51344a8c33))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "FB1") (unit 1)
         )
@@ -12550,7 +12557,7 @@
     )
     (pin "1" (uuid a3dc759d-56b1-46f0-b775-aaebac092cdf))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR043") (unit 1)
         )
@@ -12580,7 +12587,7 @@
     )
     (pin "1" (uuid 27fd149f-54bf-470f-981e-b77e97250fb0))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR09") (unit 1)
         )
@@ -12617,7 +12624,7 @@
     (pin "4" (uuid 0b4ce2c5-300b-45f3-b5d9-d1718cc7b15b))
     (pin "8" (uuid 541bd622-2488-4326-a9f9-37a2aae93937))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U11") (unit 1)
         )
@@ -12648,7 +12655,7 @@
     (pin "1" (uuid d04118f0-16f6-4da0-97ae-a4ebad1129c1))
     (pin "2" (uuid 62feffdd-7e8e-4b46-a6e0-f7bca52e429e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D16") (unit 1)
         )
@@ -12679,7 +12686,7 @@
     (pin "1" (uuid 90802ece-a13f-4ffb-8a2f-d11cc1138bae))
     (pin "2" (uuid 280e996f-fd22-4dd8-b376-b1738969dd89))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D5") (unit 1)
         )
@@ -12714,7 +12721,7 @@
     )
     (pin "1" (uuid 2f9db954-4423-4899-8315-05db81e12c59))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR059") (unit 1)
         )
@@ -12745,7 +12752,7 @@
     (pin "1" (uuid 9e323f71-b94f-40a8-aa9c-1633423c4b62))
     (pin "2" (uuid 085ba3f5-65c5-4352-92ba-a1cef2b9e41a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D12") (unit 1)
         )
@@ -12778,7 +12785,7 @@
     (pin "" (uuid 6b4b810b-3d08-4091-89e5-0d2b5a6134c2))
     (pin "" (uuid 8e79d413-dac0-43db-aa5d-7bd46aa96974))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J18") (unit 1)
         )
@@ -12810,7 +12817,7 @@
     (pin "2" (uuid 7ea3cf8e-b9f2-4262-9c29-90f922d1eee8))
     (pin "3" (uuid 3ba8d46a-95dd-4194-a723-2f004e025aa9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J28") (unit 1)
         )
@@ -12841,7 +12848,7 @@
     (pin "1" (uuid 757f6259-f53f-421c-8eaa-92a3a7c4c397))
     (pin "2" (uuid 2ca9eda9-6c88-497d-8618-667532779daf))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C12") (unit 1)
         )
@@ -12871,7 +12878,7 @@
     )
     (pin "1" (uuid 18cf00ff-4754-4d8e-b404-64ce6f5a43c6))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR036") (unit 1)
         )
@@ -12901,7 +12908,7 @@
     )
     (pin "1" (uuid a29266b1-460e-4b04-8518-bc3efbf3de91))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR068") (unit 1)
         )
@@ -12932,7 +12939,7 @@
     (pin "1" (uuid 113491d3-21fb-4ae0-a6d0-d08aa3a6f9ed))
     (pin "2" (uuid 0e5edd74-aba2-4e77-9d0e-9a41cf8d0cd6))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D22") (unit 1)
         )
@@ -12964,7 +12971,7 @@
     (pin "2" (uuid 593c36ca-6ce8-4654-aee9-6bf37f18689a))
     (pin "3" (uuid c948f395-d66d-417d-bd06-7e27f3d1bfa8))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U6") (unit 1)
         )
@@ -12995,7 +13002,7 @@
     (pin "1" (uuid bd417578-8209-4bc3-8fe6-b78850eee3e2))
     (pin "2" (uuid 5137deaa-6176-4517-a352-04e319bb126f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "JP2") (unit 1)
         )
@@ -13026,7 +13033,7 @@
     (pin "1" (uuid 3436f86b-deb2-4369-bdb1-de392e235ba9))
     (pin "2" (uuid 4a4e3069-dc33-4c1c-b471-f13c0e7788e7))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J3") (unit 1)
         )
@@ -13060,7 +13067,7 @@
     (pin "4" (uuid 8ca5d504-c477-4fa3-9a82-ebc07fe936bf))
     (pin "5" (uuid 9ef66095-66c2-4a72-b30a-64cbec01c42f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U20") (unit 1)
         )
@@ -13093,7 +13100,7 @@
     (pin "" (uuid a83bd69d-dd0b-4d73-8bf2-0486273ec94b))
     (pin "" (uuid 0276a770-7ae2-40f3-b111-f1596181fb3f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J25") (unit 1)
         )
@@ -13124,7 +13131,7 @@
     (pin "1" (uuid 4378b10f-d224-4f90-8cd3-b9e243377dd1))
     (pin "2" (uuid bb730b04-697d-47e1-ba01-6196c1997886))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D3") (unit 1)
         )
@@ -13161,7 +13168,7 @@
     (pin "2" (uuid 82c1f134-4632-4f5e-8d6e-646dd523eaad))
     (pin "3" (uuid eaa420c9-1563-45eb-96e7-71ca33010157))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J74") (unit 1)
         )
@@ -13180,7 +13187,7 @@
     (property "Reference" "J13" (at 229.87 44.45 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Value" "~" (at 224.79 46.99 0)
+    (property "Value" "XT-90M" (at 224.79 46.99 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "" (at 224.79 46.99 0)
@@ -13194,7 +13201,7 @@
     (pin "" (uuid fa0d17cd-8a40-4abc-b424-7587c8a1988e))
     (pin "" (uuid 9eff331e-c74b-4a11-ac2f-843b96d7a144))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J13") (unit 1)
         )
@@ -13227,7 +13234,7 @@
     (pin "" (uuid e3b2023f-fac1-4b73-a65e-685d8364ea79))
     (pin "" (uuid b19693ad-3504-4142-b228-4cf6332f1499))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J60") (unit 1)
         )
@@ -13258,7 +13265,7 @@
     (pin "1" (uuid 5d4f00cf-0042-4118-96a4-74bd8ff3f878))
     (pin "2" (uuid f3e07236-1d65-4cb8-81ef-508d783688bd))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C14") (unit 1)
         )
@@ -13289,7 +13296,7 @@
     (pin "1" (uuid ac9de5a5-c735-4c0d-8082-a8c628be1cef))
     (pin "2" (uuid e9b2e699-81e1-4571-afc1-137564164ef8))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R25") (unit 1)
         )
@@ -13320,7 +13327,7 @@
     (pin "1" (uuid 6d8e9c67-b8dd-4470-bb4f-d3f4375e6a95))
     (pin "2" (uuid e5c26405-4e45-4855-9a41-fea938b55945))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J54") (unit 1)
         )
@@ -13351,7 +13358,7 @@
     (pin "1" (uuid f16fcda7-f18a-40ca-a948-9b454e99e3c1))
     (pin "2" (uuid b71050d2-4fdf-4f11-949e-cf4e7e53890d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C30") (unit 1)
         )
@@ -13384,7 +13391,7 @@
     (pin "" (uuid 81462979-72bb-43c9-ae87-fbeb65b876f8))
     (pin "" (uuid 439be229-ea48-406d-a32c-c9602f637e91))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J59") (unit 1)
         )
@@ -13415,7 +13422,7 @@
     (pin "1" (uuid aedddd4c-a166-4bad-9bd8-efcd8df1428c))
     (pin "2" (uuid 97f4814a-6f94-414a-bb82-7d420ac82f6e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C33") (unit 1)
         )
@@ -13446,7 +13453,7 @@
     (pin "1" (uuid e3c5cfca-dff2-41d7-96b8-1b433b86fd8e))
     (pin "2" (uuid 61d5d804-e680-47d7-afe0-4fe1c449cc99))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R32") (unit 1)
         )
@@ -13477,7 +13484,7 @@
     (pin "1" (uuid b17c48a8-4918-480a-8749-bc2d90c6cab9))
     (pin "2" (uuid e4008013-2e39-4d1a-9aad-783c9c17a7b2))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C21") (unit 1)
         )
@@ -13508,7 +13515,7 @@
     (pin "1" (uuid 841ce389-5171-488e-9489-6a8e610fb673))
     (pin "2" (uuid 4896fbe2-87d2-4903-becc-02210de4cb2d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C20") (unit 1)
         )
@@ -13545,7 +13552,7 @@
     (pin "7" (uuid 97994de1-5190-4850-b2cf-ba85606bc9ce))
     (pin "8" (uuid 47798efd-beee-4756-92c7-837fc6af6bf9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "Q3") (unit 1)
         )
@@ -13583,7 +13590,7 @@
     (pin "" (uuid 5248c446-22b0-4045-9964-8b1b605152a2))
     (pin "" (uuid 73562490-5035-43f9-b33e-5addcc6c78ba))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J43") (unit 1)
         )
@@ -13613,7 +13620,7 @@
     )
     (pin "1" (uuid c8df4dd3-20a3-46de-a4b5-dcb069612481))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR041") (unit 1)
         )
@@ -13646,7 +13653,7 @@
     (pin "" (uuid 795bb99c-7329-4618-9c08-04b7118ced1c))
     (pin "" (uuid 050bd733-a1ca-4c77-936a-0928a22fdf12))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J46") (unit 1)
         )
@@ -13676,7 +13683,7 @@
     )
     (pin "1" (uuid 7bddfadf-3bb5-4808-9cee-91f8eebaa630))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR050") (unit 1)
         )
@@ -13706,7 +13713,7 @@
     )
     (pin "1" (uuid 4b16445d-d71d-4fac-812e-50b83fc00b36))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR052") (unit 1)
         )
@@ -13740,7 +13747,7 @@
     (pin "4" (uuid 9e46c86c-9816-4227-b878-3fa41b2c1a7f))
     (pin "5" (uuid a3896d20-416a-4ea9-a777-547cd41a0ec9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U19") (unit 1)
         )
@@ -13770,7 +13777,7 @@
     )
     (pin "1" (uuid 32a091e9-ca91-4d73-9cc7-0755b08a4563))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR047") (unit 1)
         )
@@ -13803,7 +13810,7 @@
     (pin "" (uuid 4169f4c8-f1c3-4791-a536-15becb6f8620))
     (pin "" (uuid a1a10756-cbf0-47fd-85bc-342f81a6de38))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J49") (unit 1)
         )
@@ -13834,7 +13841,7 @@
     (pin "1" (uuid babc0f83-d684-4057-8d39-4acfbc05e1aa))
     (pin "2" (uuid 1587f7fc-35dd-40db-b562-dce96f127e74))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J58") (unit 1)
         )
@@ -13867,7 +13874,7 @@
     (pin "" (uuid 032e1d9c-5daa-49e5-82db-beaf542c5842))
     (pin "" (uuid 8fac7394-3e29-41f7-a715-a1577f05965d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J48") (unit 1)
         )
@@ -13898,7 +13905,7 @@
     (pin "1" (uuid ef883eaf-5231-443a-beb3-03a5643aebbb))
     (pin "2" (uuid 7fdd7487-fd2a-48ff-bf2f-603ad14786fa))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D6") (unit 1)
         )
@@ -13933,7 +13940,7 @@
     (pin "5" (uuid 2ab893b2-2cc2-4e78-8102-2ef709e6ef74))
     (pin "6" (uuid da4720f3-52cf-427d-8cf7-1344e2f40072))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J7") (unit 1)
         )
@@ -13963,7 +13970,7 @@
     )
     (pin "1" (uuid be5288e2-0b89-43df-a918-e2ff7a46419b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR055") (unit 1)
         )
@@ -13993,7 +14000,7 @@
     )
     (pin "1" (uuid 4276040f-65f6-4b28-be44-d2a7e2466c41))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR042") (unit 1)
         )
@@ -14023,7 +14030,7 @@
     )
     (pin "1" (uuid fe8fe583-0ed6-405c-8730-21ff5c65e78e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR017") (unit 1)
         )
@@ -14053,7 +14060,7 @@
     )
     (pin "1" (uuid 607f1bc8-2095-488a-beac-dbbff876919a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR039") (unit 1)
         )
@@ -14084,7 +14091,7 @@
     (pin "1" (uuid 3f0aa717-36ac-4f19-8f77-f3563e9b985b))
     (pin "2" (uuid 2ea4183b-f699-4e9b-9428-07f202f17c80))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C28") (unit 1)
         )
@@ -14114,7 +14121,7 @@
     )
     (pin "1" (uuid 9f123ba5-4057-4ec7-895f-e50b377f43cc))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR06") (unit 1)
         )
@@ -14145,7 +14152,7 @@
     (pin "1" (uuid 62523f12-2f4b-4e40-bc4d-6a1d0a38cf33))
     (pin "2" (uuid 93862bc8-2a42-47ab-812c-abb82484c0f0))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J56") (unit 1)
         )
@@ -14176,7 +14183,7 @@
     (pin "1" (uuid 987b3105-7ab1-4c28-b36b-1ebf0d061551))
     (pin "2" (uuid f726a288-aa33-46f7-8386-0f93db7b289a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R26") (unit 1)
         )
@@ -14206,7 +14213,7 @@
     )
     (pin "1" (uuid d1718a19-62de-4807-b049-0e92c1b02c3e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR05") (unit 1)
         )
@@ -14239,7 +14246,7 @@
     (pin "" (uuid 2f26dc36-5e9c-4c96-addd-ef5422832ad2))
     (pin "" (uuid c49bca60-69ba-452c-bcb3-88c9dcc9920b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J47") (unit 1)
         )
@@ -14269,7 +14276,7 @@
     )
     (pin "1" (uuid a41ddc2c-88ac-468f-838c-c7917a5abc65))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR037") (unit 1)
         )
@@ -14299,7 +14306,7 @@
     )
     (pin "1" (uuid edfc8877-92ec-4cf2-913b-a0a83717688d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR018") (unit 1)
         )
@@ -14333,7 +14340,7 @@
     (pin "4" (uuid 188cf3a3-79f5-4e23-8238-93ae831501c5))
     (pin "5" (uuid 0f5a1279-6201-489a-8965-e79f9fbbe931))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U3") (unit 1)
         )
@@ -14364,7 +14371,7 @@
     (pin "1" (uuid 3e969946-6bf6-4ac5-937e-426f73918310))
     (pin "2" (uuid b96e22da-2621-4c2f-bf18-bac7f030ffb5))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D19") (unit 1)
         )
@@ -14396,7 +14403,7 @@
     (pin "2" (uuid fa5389ea-d34d-488e-add4-7ed6ff738086))
     (pin "3" (uuid b565afe7-f800-40e0-a756-ecf7e06cd83f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U1") (unit 1)
         )
@@ -14429,7 +14436,7 @@
     (pin "" (uuid 074e2e9a-c857-4a2d-90d6-f2c1bf79bc7a))
     (pin "" (uuid 984437eb-f7b3-4d5c-a913-e322d2024150))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J53") (unit 1)
         )
@@ -14460,7 +14467,7 @@
     (pin "1" (uuid c56c4296-d79e-4fe6-bf10-367e845be5e7))
     (pin "2" (uuid 9df32de0-b881-4cc2-9b5e-d3b7bc605b94))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R8") (unit 1)
         )
@@ -14495,7 +14502,7 @@
     )
     (pin "1" (uuid 7c0bb0a0-fe33-44cb-b502-58e9a9e5999e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR02") (unit 1)
         )
@@ -14526,7 +14533,7 @@
     (pin "1" (uuid 111a5459-eada-44a8-8359-76ea3dfc7664))
     (pin "2" (uuid 232d2531-8f0b-4384-8d81-bac01bc60f48))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C39") (unit 1)
         )
@@ -14557,7 +14564,7 @@
     (pin "1" (uuid 2faf71a5-2cdb-4205-851a-9af527a7d49b))
     (pin "2" (uuid 8caa2603-c86e-49a7-954e-47d2e27d25f5))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C22") (unit 1)
         )
@@ -14593,7 +14600,7 @@
     (pin "1" (uuid e34722fa-e841-4ddd-befd-8e96697f2914))
     (pin "2" (uuid 041531a8-0551-4229-8d97-3bd95ab674eb))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D13") (unit 1)
         )
@@ -14623,7 +14630,7 @@
     )
     (pin "1" (uuid 284d5ba9-1413-40f1-aa91-7b7a72f8d780))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR069") (unit 1)
         )
@@ -14654,7 +14661,7 @@
     (pin "1" (uuid 47d78552-abd9-4d57-873c-09a934c7b2a7))
     (pin "2" (uuid 82793c62-87c9-44ce-9565-0278d55afc72))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "L2") (unit 1)
         )
@@ -14685,7 +14692,7 @@
     (pin "1" (uuid 08417e2a-afad-46c3-9f5f-ee559dfd524f))
     (pin "2" (uuid cf5d85ee-6a11-4b89-aa9a-4bd03b71d7c5))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M8") (unit 1)
         )
@@ -14814,7 +14821,7 @@
     (pin "98" (uuid e09bd9e4-4372-4851-8ded-f4cf79c2f6e7))
     (pin "99" (uuid 5f6a7d0c-db45-480e-9a55-409d39402c4e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U9") (unit 1)
         )
@@ -14845,7 +14852,7 @@
     (pin "1" (uuid ebb6f64c-5cd4-4bd7-953c-b5225c5886d0))
     (pin "2" (uuid 42d75332-35ca-4d8a-8069-d34ed4bbed8c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R18") (unit 1)
         )
@@ -14876,7 +14883,7 @@
     (pin "1" (uuid ae429333-9439-4ec2-a827-9fcf570ffdf2))
     (pin "2" (uuid a2a59801-3fb3-4d12-b6ec-27526eba4b6a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J26") (unit 1)
         )
@@ -14908,7 +14915,7 @@
     (pin "2" (uuid c8b5bfa2-88e1-4bd5-a30e-71796fa5238d))
     (pin "3" (uuid ba721a67-8b7b-41f4-a714-1c5101c57ca2))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J73") (unit 1)
         )
@@ -14927,7 +14934,7 @@
     (property "Reference" "J15" (at 229.87 72.39 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Value" "~" (at 224.79 74.93 0)
+    (property "Value" "XT-90M" (at 224.79 74.93 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "" (at 224.79 74.93 0)
@@ -14941,7 +14948,7 @@
     (pin "" (uuid a11665ff-a8ce-40d0-b7ce-7713fb3d9be3))
     (pin "" (uuid 58f3c1f6-ae66-4420-b81a-1bcce54c8d49))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J15") (unit 1)
         )
@@ -14972,7 +14979,7 @@
     (pin "1" (uuid b48aa4a6-f7e1-47be-9d2e-60308847cac8))
     (pin "2" (uuid ecfb1a99-c557-4a4e-a59d-cde45d97d43c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R46") (unit 1)
         )
@@ -15003,7 +15010,7 @@
     (pin "1" (uuid 14c7164c-54b4-4e15-a8ac-13ded1340b78))
     (pin "2" (uuid 62a5837c-2bf9-4452-b422-1c988841e5ae))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R33") (unit 1)
         )
@@ -15034,7 +15041,7 @@
     (pin "1" (uuid 6e13bd29-cb1d-4c27-8a14-3aa5bc277915))
     (pin "2" (uuid 710d10a0-9458-4b61-869a-bc2acb9bb810))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R7") (unit 1)
         )
@@ -15065,7 +15072,7 @@
     (pin "1" (uuid 80c5cf8b-8db2-4150-84fa-48fe7ec36846))
     (pin "2" (uuid 4bdc00d6-9218-4662-b0d7-e8f207989bdb))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R29") (unit 1)
         )
@@ -15098,7 +15105,7 @@
     (pin "" (uuid fc6d5dad-ef98-429a-b54d-a49732ae081a))
     (pin "" (uuid a5210fd1-d14b-465e-b254-efd0f04e0096))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "P1") (unit 1)
         )
@@ -15128,7 +15135,7 @@
     )
     (pin "1" (uuid 98a0efa3-379d-4908-a5f2-9a2c40c1d078))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR08") (unit 1)
         )
@@ -15162,7 +15169,7 @@
     (pin "4" (uuid 7d2d28bb-779e-4e12-a5cc-f8baabc0fdad))
     (pin "5" (uuid fc2d9b2c-7bb5-4d75-98f4-8bbf7eb2a4ff))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U5") (unit 1)
         )
@@ -15204,7 +15211,7 @@
     (pin "" (uuid 6f046fc2-e55f-40ef-adbc-05486082adef))
     (pin "" (uuid 1e878b80-c51e-4e60-894d-eb6730d5b313))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U24") (unit 1)
         )
@@ -15235,7 +15242,7 @@
     (pin "1" (uuid a28284b4-f522-430a-83c7-768f231bbed4))
     (pin "2" (uuid 88e3669d-07ae-4f83-863f-1aa8eed81618))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D7") (unit 1)
         )
@@ -15266,7 +15273,7 @@
     (pin "1" (uuid 08885e69-ce9d-49ec-84bb-84591fa5f893))
     (pin "2" (uuid 970e93fd-3d67-48a0-8b93-9e6b74441492))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R43") (unit 1)
         )
@@ -15303,7 +15310,7 @@
     (pin "4" (uuid c2e2f268-8fb9-471b-b2bb-ef2382987ec4))
     (pin "8" (uuid 876b29e0-3050-4b2f-85f3-c33a77229d41))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U2") (unit 1)
         )
@@ -15334,7 +15341,7 @@
     (pin "1" (uuid 283d1f21-694c-4ad5-bd33-fd7077cf4f8e))
     (pin "2" (uuid 30f895b0-4743-4aea-8da6-87ee94052fde))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R40") (unit 1)
         )
@@ -15365,7 +15372,7 @@
     (pin "1" (uuid bde8c1e9-49b9-435c-b8d6-c1dfaa1a7353))
     (pin "2" (uuid d1110a30-0390-4f85-87e0-1794f0bd6d3e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C40") (unit 1)
         )
@@ -15396,7 +15403,7 @@
     (pin "1" (uuid 35239c8b-5279-49ae-973a-7aa288a70fa3))
     (pin "2" (uuid 98792250-9461-42d4-8319-1ff269770830))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R30") (unit 1)
         )
@@ -15427,7 +15434,7 @@
     (pin "1" (uuid 5b872507-24f0-4fa8-a395-1598363b3f13))
     (pin "2" (uuid bc55648b-b129-410d-8043-b22573303cb4))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C19") (unit 1)
         )
@@ -15458,7 +15465,7 @@
     (pin "1" (uuid b790774b-34ce-414f-9566-d7cc6f96fac6))
     (pin "2" (uuid 8bfbe4f8-bdf8-4e05-b9d6-f5c4575e0ecc))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M9") (unit 1)
         )
@@ -15491,7 +15498,7 @@
     (pin "" (uuid 822025ee-111b-4d6a-9a5a-6afc6897c5cb))
     (pin "" (uuid 5236bf30-d9e3-463b-a8c2-9d33bd9afe95))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J39") (unit 1)
         )
@@ -15522,7 +15529,7 @@
     (pin "1" (uuid e6cc7e79-09a4-47b2-9557-637359e42f14))
     (pin "2" (uuid 291bbe4a-2337-459b-819d-b1356aaebd35))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R50") (unit 1)
         )
@@ -15556,7 +15563,7 @@
     (pin "A1" (uuid e0d807d6-1311-4091-a241-30bdbb3497f3))
     (pin "A2" (uuid 1f5ec862-6a98-4c07-9267-d7fdd06edef9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "K1") (unit 1)
         )
@@ -15592,7 +15599,7 @@
     (pin "1" (uuid 36618209-e3d3-498e-9140-dd38163a1940))
     (pin "2" (uuid 7be17b01-4326-41db-95e0-567b6c770ff2))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J44") (unit 1)
         )
@@ -15622,7 +15629,7 @@
     )
     (pin "1" (uuid 9d2bab4b-7d54-4f47-9939-f7fd7fc11e69))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR07") (unit 1)
         )
@@ -15653,7 +15660,7 @@
     (pin "1" (uuid 4485a65a-7ef5-4207-b959-0f126b38db05))
     (pin "2" (uuid 3e5262ed-1daa-4425-845f-2549f5a0b91e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R37") (unit 1)
         )
@@ -15684,7 +15691,7 @@
     (pin "1" (uuid 653af5f7-270e-4c20-a051-e3bb09e6638a))
     (pin "2" (uuid ac4c30f5-df11-435a-8670-aafe1c7e17ee))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R51") (unit 1)
         )
@@ -15714,7 +15721,7 @@
     )
     (pin "1" (uuid b861b8f8-1ec0-4753-8725-bef2992a9415))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR022") (unit 1)
         )
@@ -15744,7 +15751,7 @@
     )
     (pin "1" (uuid 15c9f2e4-d08a-4d94-bd3b-8ce0954aacb4))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR026") (unit 1)
         )
@@ -15775,7 +15782,7 @@
     (pin "1" (uuid 8796439e-1332-44cc-8b29-b2f564904704))
     (pin "2" (uuid 0ea74435-4b8f-436b-b011-c93d2651856e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M10") (unit 1)
         )
@@ -15808,7 +15815,7 @@
     (pin "" (uuid 6a6c7b98-315b-4f7e-a090-e89154652d46))
     (pin "" (uuid 607ef62a-f12e-4b57-8bd6-716833569540))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J34") (unit 1)
         )
@@ -15839,7 +15846,7 @@
     (pin "1" (uuid 67534aef-058a-49bc-b0d3-871684adc4e4))
     (pin "2" (uuid c9932a4c-14f6-4042-b69f-5bf07fbb1aec))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R5") (unit 1)
         )
@@ -15869,7 +15876,7 @@
     )
     (pin "1" (uuid 7b7bf72c-371a-478f-b216-702b73324d06))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR044") (unit 1)
         )
@@ -15900,7 +15907,7 @@
     (pin "1" (uuid 4d5e90f1-5549-4a04-8555-f1cb46f770d4))
     (pin "2" (uuid 8c00dad6-30b4-4982-bbe2-96a9274661f3))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C38") (unit 1)
         )
@@ -15931,7 +15938,7 @@
     (pin "1" (uuid 0753b4fe-03f0-4819-9d67-589d992f9449))
     (pin "2" (uuid 5276af52-4124-4aa9-9f4d-90e24ceda482))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M2") (unit 1)
         )
@@ -15961,7 +15968,7 @@
     )
     (pin "1" (uuid 29e9a1be-6659-4f23-a8ad-e80f4810f822))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR075") (unit 1)
         )
@@ -15991,7 +15998,7 @@
     )
     (pin "1" (uuid d8f12d86-2b5b-4ef8-91bc-8af189b5982b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR033") (unit 1)
         )
@@ -16023,7 +16030,7 @@
     (pin "2" (uuid 3d18fe08-573c-4b8b-bbff-4494e3dc9dae))
     (pin "3" (uuid 6c90620a-b4d8-4531-bc58-d8204f3196fb))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "SW2") (unit 1)
         )
@@ -16053,7 +16060,7 @@
     )
     (pin "1" (uuid b7311f76-4e34-495d-aea8-96ec4106946a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR020") (unit 1)
         )
@@ -16084,7 +16091,7 @@
     (pin "1" (uuid 87a3f4c4-284c-471f-aafc-c522a43a954c))
     (pin "2" (uuid 60e21753-a5ec-4811-b666-90efce25ba13))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R9") (unit 1)
         )
@@ -16114,7 +16121,7 @@
     )
     (pin "1" (uuid d0de1232-95ca-43e6-9d41-12409a6e194a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR061") (unit 1)
         )
@@ -16147,7 +16154,7 @@
     (pin "" (uuid b1167240-12d6-46c2-824a-93c9c487f704))
     (pin "" (uuid 0e3b5986-1fa7-4bb0-af35-3e0fcdcfd66b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J23") (unit 1)
         )
@@ -16180,7 +16187,7 @@
     (pin "" (uuid 1c18c1c1-f31d-4fc3-b2c8-8705620460a5))
     (pin "" (uuid 6bf57fa4-b62a-4367-a7a1-f482502bb569))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J71") (unit 1)
         )
@@ -16213,7 +16220,7 @@
     (pin "" (uuid 4323f89d-a8e4-457d-987d-4a526a50cb31))
     (pin "" (uuid 53399a3d-c627-498e-ab1a-df1b9c74c378))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J63") (unit 1)
         )
@@ -16247,7 +16254,7 @@
     (pin "4" (uuid ff6431e8-dac1-48f5-abfd-b3eb3473a8fc))
     (pin "5" (uuid 54865771-ef7c-4635-a79a-5841be71c92d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U23") (unit 1)
         )
@@ -16278,7 +16285,7 @@
     (pin "1" (uuid 9897d2c1-3b2f-41c4-81da-8e07a964e8ec))
     (pin "2" (uuid 9c5b0d28-7a85-4f6f-846d-85fdcd098d64))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C42") (unit 1)
         )
@@ -16309,7 +16316,7 @@
     (pin "1" (uuid 17e8291b-10dd-4312-b1ac-3c309f492764))
     (pin "2" (uuid 454512d7-5549-4f32-860d-7eef3a70798e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R20") (unit 1)
         )
@@ -16341,7 +16348,7 @@
     (pin "2" (uuid 28f30890-b4f0-4368-8903-57fc98bae3b5))
     (pin "3" (uuid 5e1aabbe-a233-4ded-8e71-d82a81b0e9d0))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "RV3") (unit 1)
         )
@@ -16372,7 +16379,7 @@
     (pin "1" (uuid 07893c34-d045-4f77-a43d-ac1032704251))
     (pin "2" (uuid 3b296676-4ce3-4681-9730-0ef7ec52798a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M4") (unit 1)
         )
@@ -16402,7 +16409,7 @@
     )
     (pin "1" (uuid 4f2c1213-f6e4-4721-b27f-aa69bff192ee))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR060") (unit 1)
         )
@@ -16432,7 +16439,7 @@
     )
     (pin "1" (uuid 5d8890e3-8fe9-4036-b957-91afc82cfe3a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR030") (unit 1)
         )
@@ -16462,7 +16469,7 @@
     )
     (pin "1" (uuid 759ecc2b-20ad-4828-9563-aca419270bc0))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR071") (unit 1)
         )
@@ -16495,7 +16502,7 @@
     (pin "" (uuid de11b7be-154d-4847-8980-2c9d55b21483))
     (pin "" (uuid 2f7cd7c4-c270-454b-8824-986b27206958))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J61") (unit 1)
         )
@@ -16514,7 +16521,7 @@
     (property "Reference" "J16" (at 229.87 86.36 0)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Value" "~" (at 224.79 88.9 0)
+    (property "Value" "XT-90M" (at 224.79 88.9 0)
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "" (at 224.79 88.9 0)
@@ -16528,7 +16535,7 @@
     (pin "" (uuid 3ca11ab3-487c-466e-ba44-760e286840fc))
     (pin "" (uuid 9fcb7824-c7bd-4c60-9d61-69735d7748ae))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J16") (unit 1)
         )
@@ -16558,7 +16565,7 @@
     )
     (pin "1" (uuid 71c9a2ac-6078-40ed-ab1c-9b65388e8789))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR034") (unit 1)
         )
@@ -16589,7 +16596,7 @@
     (pin "1" (uuid c60c60d2-50dd-41f2-9ace-c571de1e4d2f))
     (pin "2" (uuid 51e0b8da-1013-4676-bf72-103791ddc87d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R6") (unit 1)
         )
@@ -16625,7 +16632,7 @@
     (pin "1" (uuid 301fe2d4-aeae-4b8b-bd86-d0840c8c6094))
     (pin "2" (uuid aa1e0929-2982-4741-94d6-a8815c4cdcd8))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J51") (unit 1)
         )
@@ -16658,7 +16665,7 @@
     (pin "" (uuid cb0df57e-2088-496c-8d38-cef1d11b4ed5))
     (pin "" (uuid 5a975e8e-260a-4234-9766-7b67014553d7))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J20") (unit 1)
         )
@@ -16689,7 +16696,7 @@
     (pin "1" (uuid 3d15d892-22a1-45f7-9e77-938fdea07c98))
     (pin "2" (uuid efe848fb-496d-4e84-bbbf-27136e439de8))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R36") (unit 1)
         )
@@ -16724,7 +16731,7 @@
     (pin "5" (uuid 424f0f7b-4d58-471c-9c81-57720b150f93))
     (pin "6" (uuid f965b34e-550e-4f37-aad8-d42cd0e34a5d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "SW3") (unit 1)
         )
@@ -16755,7 +16762,7 @@
     (pin "1" (uuid 835f6dca-243e-4db3-93a4-2e063f48254c))
     (pin "2" (uuid a52dc7d4-0b86-4ec5-8aa3-3980ac332063))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R48") (unit 1)
         )
@@ -16788,7 +16795,7 @@
     (pin "" (uuid dc82e162-2495-4b28-8b78-8798489ef064))
     (pin "" (uuid 66c53fc8-11cc-459e-86c4-6272fa9eba98))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J70") (unit 1)
         )
@@ -16818,7 +16825,7 @@
     )
     (pin "1" (uuid 72aef46b-c604-45d5-bbb4-3527bcfd4dbf))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR064") (unit 1)
         )
@@ -16849,7 +16856,7 @@
     (pin "1" (uuid 00f14a3f-339e-4d1f-9514-131c32e3b576))
     (pin "2" (uuid e4edf938-1b30-4af4-ad6f-382024179531))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C17") (unit 1)
         )
@@ -16880,7 +16887,7 @@
     (pin "1" (uuid 8dba0465-0fb7-445f-a4a8-2d47e3985a4d))
     (pin "2" (uuid a923a3cf-feae-430d-9df2-faac6bb6b0c6))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D17") (unit 1)
         )
@@ -16911,7 +16918,7 @@
     (pin "1" (uuid 4c25b052-5201-41a9-ac36-79cf87acd439))
     (pin "2" (uuid b5f2efcf-dbce-4505-85d2-6cc3dfa4d03d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R23") (unit 1)
         )
@@ -16989,7 +16996,7 @@
     (pin "8" (uuid 11503cd2-22ea-461c-bc43-3f8d3d95d845))
     (pin "9" (uuid 73b4410e-c2ee-46f3-9c76-79fe9c39bd06))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U4") (unit 1)
         )
@@ -17019,7 +17026,7 @@
     )
     (pin "1" (uuid ba7d2c2f-5f02-42e6-b874-5780b9abf4b0))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR040") (unit 1)
         )
@@ -17051,7 +17058,7 @@
     (pin "2" (uuid 1b0c3148-85ca-45eb-84be-1144b89cee22))
     (pin "3" (uuid 31af88a6-d7e2-48ba-b710-88d8233f031b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M6") (unit 1)
         )
@@ -17081,7 +17088,7 @@
     )
     (pin "1" (uuid bdf1a11a-5ae7-4a05-b3c5-c718be7e1f81))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR048") (unit 1)
         )
@@ -17114,7 +17121,7 @@
     (pin "3" (uuid 86679f64-11a9-4dbb-9555-368e4d147c20))
     (pin "4" (uuid 61d64c76-352a-4ee8-862f-a7a62385d480))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J6") (unit 1)
         )
@@ -17145,7 +17152,7 @@
     (pin "1" (uuid 3915e400-671a-4418-ba97-66775724757d))
     (pin "2" (uuid edd365a9-b60a-45f0-8aa0-bfdb9c4ec31c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R11") (unit 1)
         )
@@ -17176,7 +17183,7 @@
     (pin "1" (uuid 5f9cf8cd-a3f4-4922-8a73-43ef0daa8eb5))
     (pin "2" (uuid da532cd8-ce9f-4d0f-b599-3a20d0bd5995))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D24") (unit 1)
         )
@@ -17207,7 +17214,7 @@
     (pin "1" (uuid cc0cf728-5a48-40bd-b6fe-b14e3fefafd9))
     (pin "2" (uuid 4532cc3f-d8a4-4bb9-9225-efa9f5c27624))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R17") (unit 1)
         )
@@ -17238,7 +17245,7 @@
     (pin "1" (uuid 44b81016-a898-4af5-bf56-d845d80129c9))
     (pin "2" (uuid b8d70763-ad2b-4d1d-9583-f90ea8652029))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C29") (unit 1)
         )
@@ -17279,7 +17286,7 @@
     (pin "2" (uuid 95342321-2e28-43cd-813f-0b6f3cb1de69))
     (pin "3" (uuid bd3ca65e-d48b-4dfe-857a-8fcb35546082))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "Q2") (unit 1)
         )
@@ -17310,7 +17317,7 @@
     (pin "1" (uuid 2d66ce2d-145e-4944-bb16-82ff06bfcf4d))
     (pin "2" (uuid 1042c46c-62c5-4b2b-a67e-385b5f8a3ccf))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C4") (unit 1)
         )
@@ -17347,7 +17354,7 @@
     (pin "4" (uuid 536c0a10-e63b-4be8-8484-2a10e82413b1))
     (pin "8" (uuid bd50f76f-03ed-4bc0-9c84-177716a0681e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U27") (unit 2)
         )
@@ -17378,7 +17385,7 @@
     (pin "1" (uuid 52e8aa3a-1f6f-40f5-b6c8-6cdcc20c7953))
     (pin "2" (uuid a77b15bb-c4b9-4633-81e2-2c74254852e4))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "F2") (unit 1)
         )
@@ -17414,7 +17421,7 @@
     (pin "1" (uuid a661a9e8-6ae6-464e-bdee-f975dff47b78))
     (pin "2" (uuid fc1f6d80-0fab-4939-bc11-dbe74c28c295))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J68") (unit 1)
         )
@@ -17445,7 +17452,7 @@
     (pin "1" (uuid 049124f8-1178-422d-b0da-950ff61163e6))
     (pin "2" (uuid 941f975c-5f1f-4d48-8a52-11850b589697))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R34") (unit 1)
         )
@@ -17475,7 +17482,7 @@
     )
     (pin "1" (uuid 23623887-12e2-411a-92c8-5df755d06026))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR035") (unit 1)
         )
@@ -17508,7 +17515,7 @@
     (pin "" (uuid ab005888-3e5b-4ad4-aca0-bd0c821065db))
     (pin "" (uuid 70d039cd-8604-48f5-a358-c4726c6c22ee))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J19") (unit 1)
         )
@@ -17539,7 +17546,7 @@
     (pin "1" (uuid 14c66980-53b5-4cfa-998f-7de768105747))
     (pin "2" (uuid ec87de5c-7389-469c-a1fc-f4b41d1d3c53))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R15") (unit 1)
         )
@@ -17571,7 +17578,7 @@
     (pin "2" (uuid e830912b-dff7-45c9-9616-bbba5815b1e7))
     (pin "3" (uuid 5830b35b-5d39-497a-a490-5b47fc5ef75f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J69") (unit 1)
         )
@@ -17601,7 +17608,7 @@
     )
     (pin "1" (uuid 844b0d6d-182f-4a3c-a23d-8aaf37bc7b11))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR065") (unit 1)
         )
@@ -17632,7 +17639,7 @@
     (pin "1" (uuid a62c5d6d-0283-4def-a06e-650b9b8dc180))
     (pin "2" (uuid fc260438-b2ba-4e25-8720-d5f109e82cc9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J67") (unit 1)
         )
@@ -17663,7 +17670,7 @@
     (pin "1" (uuid 932971ed-6682-426c-9564-218b8aa58a54))
     (pin "2" (uuid 4c21fb45-a960-498b-90ab-b0d4c6a7b05e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "L1") (unit 1)
         )
@@ -17699,7 +17706,7 @@
     (pin "1" (uuid c33d2890-513a-4a1b-909c-c0329c423933))
     (pin "2" (uuid 75486c21-f329-4a89-9331-d6c39cc379bd))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D14") (unit 1)
         )
@@ -17730,7 +17737,7 @@
     (pin "1" (uuid ec58938d-2650-4b81-9822-c6a907aecfa8))
     (pin "2" (uuid 7621f205-981a-4e77-beef-e68641fb7c43))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C31") (unit 1)
         )
@@ -17763,7 +17770,7 @@
     (pin "" (uuid 8d65dcec-bf0f-450d-a0e3-9b34c3409365))
     (pin "" (uuid 28c8b064-fad3-4fad-a5fd-866601980d32))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J41") (unit 1)
         )
@@ -17794,7 +17801,7 @@
     (pin "1" (uuid eccfb6f1-38dc-475e-bb3f-72d2983b6254))
     (pin "2" (uuid 17556e4e-0a74-4df3-8107-da78b08070f5))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C1") (unit 1)
         )
@@ -17836,7 +17843,7 @@
     (pin "" (uuid 32d488fe-74f5-4aca-8e07-3b4c595d1832))
     (pin "" (uuid 8a414686-1a82-4913-b5fd-300b26eaf61d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U18") (unit 1)
         )
@@ -17867,7 +17874,7 @@
     (pin "1" (uuid aa7ea51b-01cb-4047-a62e-51072e4b4d09))
     (pin "2" (uuid 28e005a4-8873-4a80-ba61-02e5d811d673))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M11") (unit 1)
         )
@@ -17898,7 +17905,7 @@
     (pin "1" (uuid f45486f2-2977-464c-9ff0-020339f90c53))
     (pin "2" (uuid 55fd829e-86df-4524-97da-1ccfbde9b131))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C34") (unit 1)
         )
@@ -17929,7 +17936,7 @@
     (pin "1" (uuid 21d32a49-eeab-47da-aa2f-a2ea0663aede))
     (pin "2" (uuid 438c3c08-4dc4-4d90-beba-68604f2f6fa0))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C43") (unit 1)
         )
@@ -17964,7 +17971,7 @@
     (pin "5" (uuid 1660c5e5-9349-415f-9e92-708f12dd4ab6))
     (pin "6" (uuid 8b20477e-eeae-4ac1-9494-9f5d431b8a33))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "SW4") (unit 1)
         )
@@ -17995,7 +18002,7 @@
     (pin "1" (uuid b844a502-4b99-445c-82e8-8eb60ad30f93))
     (pin "2" (uuid cdae31df-69f3-449f-998b-d88825e371ea))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M3") (unit 1)
         )
@@ -18027,7 +18034,7 @@
     (pin "2" (uuid cd8bf943-5a96-450d-a4ac-cbfb54bb47f6))
     (pin "3" (uuid 8751740d-b0a3-4fc2-90e6-bac7b828a994))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J30") (unit 1)
         )
@@ -18059,7 +18066,7 @@
     (pin "2" (uuid 9dba3a1b-cc6e-4691-aa07-42b338362ed1))
     (pin "3" (uuid 03497228-1604-4c8f-b6a3-b1255dc522e5))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J64") (unit 1)
         )
@@ -18091,7 +18098,7 @@
     (pin "2" (uuid 0621c27b-b0c7-47d1-9c05-ad4434c60a7f))
     (pin "3" (uuid adf9f0aa-6334-4f18-8027-33738aed3d33))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J1") (unit 1)
         )
@@ -18121,7 +18128,7 @@
     )
     (pin "1" (uuid 0cec1b5c-6e01-49fc-ba0f-06fa41fad0f1))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR023") (unit 1)
         )
@@ -18154,7 +18161,7 @@
     (pin "" (uuid dc5985fd-9518-4a55-950d-f2f7b0200dbe))
     (pin "" (uuid 7a8b6852-796a-424b-b161-10254102e084))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J24") (unit 1)
         )
@@ -18185,7 +18192,7 @@
     (pin "1" (uuid 95364070-4a27-4459-8401-f6a4ddf1e3e4))
     (pin "2" (uuid c069ac23-7321-42bc-8713-fcd023afdb28))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R39") (unit 1)
         )
@@ -18215,7 +18222,7 @@
     )
     (pin "1" (uuid c83d950c-8f77-4d8c-96ac-4809727c92eb))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR013") (unit 1)
         )
@@ -18246,7 +18253,7 @@
     (pin "1" (uuid 6eec7b67-8637-4b7e-8063-b3df8479b95c))
     (pin "2" (uuid cae9fe91-8099-4a74-a2a7-bf14b4506bb7))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "Y1") (unit 1)
         )
@@ -18283,7 +18290,7 @@
     (pin "4" (uuid 536c0a10-e63b-4be8-8484-2a10e82413ae))
     (pin "8" (uuid bd50f76f-03ed-4bc0-9c84-177716a0681b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U25") (unit 2)
         )
@@ -18314,7 +18321,7 @@
     (pin "1" (uuid d499159e-577d-4a82-8656-e474d826fe5e))
     (pin "2" (uuid ab559f1a-713e-4add-97ad-1425673d23a3))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D10") (unit 1)
         )
@@ -18345,7 +18352,7 @@
     (pin "1" (uuid 08a32f30-69cf-4290-8021-ebc542b7bb96))
     (pin "2" (uuid 7ca57c93-607f-4d07-b379-4138a5c41364))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J10") (unit 1)
         )
@@ -18375,7 +18382,7 @@
     )
     (pin "1" (uuid 079f9f81-bfc2-4b41-be7c-9fc420003a1f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR063") (unit 1)
         )
@@ -18405,7 +18412,7 @@
     )
     (pin "1" (uuid 0c3867c7-2c9b-4ee7-81b0-bfd3beca67ba))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR066") (unit 1)
         )
@@ -18435,7 +18442,7 @@
     )
     (pin "1" (uuid 6b802985-1488-42b7-b4c8-11ec5d78c945))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR011") (unit 1)
         )
@@ -18465,7 +18472,7 @@
     )
     (pin "1" (uuid d2133c48-c0e5-43db-aa32-19b342ef0b6a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR058") (unit 1)
         )
@@ -18496,7 +18503,7 @@
     (pin "1" (uuid 403bad1e-a2bf-4b32-abf3-54c865710086))
     (pin "2" (uuid 81821c2f-0abf-490a-b634-9ac024d391a0))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J4") (unit 1)
         )
@@ -18526,7 +18533,7 @@
     )
     (pin "1" (uuid c6cde383-fcc0-417e-b7fc-857a245e071d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR056") (unit 1)
         )
@@ -18557,7 +18564,7 @@
     (pin "1" (uuid 94781f27-9b14-4774-ab00-421661057cc9))
     (pin "2" (uuid e84ee930-a3b9-4f2e-ac42-a5abc765e589))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C8") (unit 1)
         )
@@ -18590,7 +18597,7 @@
     (pin "3" (uuid ce238b8f-986a-4afb-a5f4-4c6813233a58))
     (pin "4" (uuid f8a3749f-c2f4-4bd7-87d8-e6634adbdb1a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J5") (unit 1)
         )
@@ -18621,7 +18628,7 @@
     (pin "1" (uuid 90c6d030-abec-4c23-8024-14d96c33f27f))
     (pin "2" (uuid bcddf70d-cbde-4701-9c1d-6465c21db004))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J11") (unit 1)
         )
@@ -18652,7 +18659,7 @@
     (pin "1" (uuid ebf6192f-c6cc-4e63-afc1-2142df01300d))
     (pin "2" (uuid 0045cfe1-8f64-4404-b599-5467133a654c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J50") (unit 1)
         )
@@ -18683,7 +18690,7 @@
     (pin "1" (uuid cecd4797-e42d-4bf5-9fb5-149eca1ed4b1))
     (pin "2" (uuid 073aae8e-25f3-4b9d-87aa-ab77ade33950))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R16") (unit 1)
         )
@@ -18714,7 +18721,7 @@
     (pin "1" (uuid c639f31d-6973-41ce-a7d5-2ccfc48a036f))
     (pin "2" (uuid c0273bdd-a131-4c1b-8468-517b4d00b6fc))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R52") (unit 1)
         )
@@ -18745,7 +18752,7 @@
     (pin "1" (uuid 2ea21a35-3ec3-45b9-9332-68a7cb288a0f))
     (pin "2" (uuid 6e7f701e-4703-4ac0-9c7b-47beaf650a1a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R12") (unit 1)
         )
@@ -18781,7 +18788,7 @@
     (pin "1" (uuid 4fcf2625-02d6-4aa2-be77-9334d92b4cc8))
     (pin "2" (uuid 9509ab32-6bad-4019-9ec5-b264c9f1553b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C32") (unit 1)
         )
@@ -18812,7 +18819,7 @@
     (pin "1" (uuid c6a7c046-5c56-4aff-a2b2-33c4db1b1fb0))
     (pin "2" (uuid a1795598-19b8-4d42-90e1-f615d6f7dfab))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M1") (unit 1)
         )
@@ -18843,7 +18850,7 @@
     (pin "1" (uuid 536dfe8e-e2ed-45c4-b7b9-cbd59f9f9278))
     (pin "2" (uuid e4df9488-5ab0-4596-9b89-c9f132e234f8))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R21") (unit 1)
         )
@@ -18874,7 +18881,7 @@
     (pin "1" (uuid 67b0788c-2c7c-4a05-8daa-3ad2add7510f))
     (pin "2" (uuid 88d67087-9798-45ae-8bdb-8f2a78f3d735))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D23") (unit 1)
         )
@@ -18904,7 +18911,7 @@
     )
     (pin "1" (uuid e3686085-0f03-4f6f-bc27-14c4308b8a68))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR027") (unit 1)
         )
@@ -18935,7 +18942,7 @@
     (pin "1" (uuid 1ff99e31-c13c-4b2d-9228-d9910f564503))
     (pin "2" (uuid 9670269f-9b8f-45c6-a368-8d2ec5b00f73))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D20") (unit 1)
         )
@@ -18966,7 +18973,7 @@
     (pin "1" (uuid 968556fe-8a1c-4f00-91b1-861d1d4ad86d))
     (pin "2" (uuid fcc1e5ff-b668-42fa-b4f1-7c8390151cc2))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C16") (unit 1)
         )
@@ -18997,7 +19004,7 @@
     (pin "1" (uuid e02ec730-1071-4ec0-9ea8-9f5153ee869f))
     (pin "2" (uuid ae8001a3-2be7-46d6-b425-ad15c1d58d5a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C15") (unit 1)
         )
@@ -19048,7 +19055,7 @@
     (pin "1" (uuid f723a1a5-c2eb-43ce-bb5f-7e8430ed073d))
     (pin "2" (uuid 009e2721-97fc-4e15-8c78-0e4007f99cab))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "RV2") (unit 1)
         )
@@ -19079,7 +19086,7 @@
     (pin "1" (uuid 4f5dd7f0-9442-4573-ae94-1976b622a668))
     (pin "2" (uuid 2ff70194-13aa-4bd6-bf64-6b0896a86b17))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C26") (unit 1)
         )
@@ -19110,7 +19117,7 @@
     (pin "1" (uuid 22daf083-8f88-4c94-8763-df863b1620c1))
     (pin "2" (uuid 8a341123-f1e2-4ca5-852d-55361e586ebf))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M5") (unit 1)
         )
@@ -19141,7 +19148,7 @@
     (pin "1" (uuid 0778644f-9147-43fe-bace-4f57411608ec))
     (pin "2" (uuid e8b8fce9-77b0-4fb8-83fc-63d64278ee4f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R19") (unit 1)
         )
@@ -19186,7 +19193,7 @@
     (pin "8" (uuid 62d6b43a-1ff2-4772-be5f-5e5b44548065))
     (pin "9" (uuid 58ea3a7c-a4eb-409f-a107-cebe1463630f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U8") (unit 1)
         )
@@ -19217,7 +19224,7 @@
     (pin "1" (uuid b1abaf6d-87e6-493a-a1b4-7dc90ed9bdf1))
     (pin "2" (uuid ecf60faf-1100-473d-9414-7438e149b4b1))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R42") (unit 1)
         )
@@ -19248,7 +19255,7 @@
     (pin "1" (uuid 73cb16b3-41c1-41f9-a32f-c56a2bf1ee84))
     (pin "2" (uuid 94e2e4b1-e974-44c9-af25-9269cacf75bd))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "JP1") (unit 1)
         )
@@ -19279,7 +19286,7 @@
     (pin "1" (uuid bd66376a-47fe-429e-81df-2f3d40a848f0))
     (pin "2" (uuid 5cb047a3-3306-4bbd-bb78-a07637460d84))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J66") (unit 1)
         )
@@ -19309,7 +19316,7 @@
     )
     (pin "1" (uuid a61525cb-ac7b-4a8c-922d-0d0c162d8e57))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR012") (unit 1)
         )
@@ -19340,7 +19347,7 @@
     (pin "1" (uuid 5d56906b-19a0-40c5-9bd0-50538421a2f6))
     (pin "2" (uuid a2b5b12e-9f4c-4001-90b0-11986a5c172e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C18") (unit 1)
         )
@@ -19371,7 +19378,7 @@
     (pin "1" (uuid c0a4b7ce-44ea-4ab0-bbb8-09c58e334ebc))
     (pin "2" (uuid 640db5f4-1877-4ee0-9a66-8d719785e2cb))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R2") (unit 1)
         )
@@ -19403,7 +19410,7 @@
     (pin "2" (uuid 0a31419c-b7f9-4767-84ff-2cf7a37d6946))
     (pin "3" (uuid e3608da4-03c8-46a9-9802-fe110ffa4388))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "RV4") (unit 1)
         )
@@ -19433,7 +19440,7 @@
     )
     (pin "1" (uuid a151660a-4147-4fc7-8d64-4b69c2ac0f36))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR049") (unit 1)
         )
@@ -19463,7 +19470,7 @@
     )
     (pin "1" (uuid 3dd7093a-60a3-4a49-9d88-0e38e993dcd1))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR046") (unit 1)
         )
@@ -19493,7 +19500,7 @@
     )
     (pin "1" (uuid 530530d6-a5a9-4ec3-aa1a-6e7f03fe54f1))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR01") (unit 1)
         )
@@ -19524,7 +19531,7 @@
     (pin "1" (uuid c85ddfee-c180-4c29-a815-edb329ecfb70))
     (pin "2" (uuid c1d2dafc-94f1-4933-9435-763498f479b8))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D18") (unit 1)
         )
@@ -19554,7 +19561,7 @@
     )
     (pin "1" (uuid 59b9fc84-c102-4379-a1b9-3618b31886df))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR053") (unit 1)
         )
@@ -19584,7 +19591,7 @@
     )
     (pin "1" (uuid c23bd8c6-5e40-4721-beb1-6d6f49cc4cf9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR070") (unit 1)
         )
@@ -19615,7 +19622,7 @@
     (pin "1" (uuid 6e672264-e418-4eab-a3b2-6e219009ac09))
     (pin "2" (uuid 3adcf72a-e671-4608-a0b5-b486631041d6))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C36") (unit 1)
         )
@@ -19646,7 +19653,7 @@
     (pin "1" (uuid 9960819e-251d-4ab4-85c5-5406416eaf35))
     (pin "2" (uuid ee15eb21-c2ee-41d8-857b-d74eaed90f6e))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R31") (unit 1)
         )
@@ -19676,7 +19683,7 @@
     )
     (pin "1" (uuid 529ebbe0-970e-4698-9546-6d69c79b56bc))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR024") (unit 1)
         )
@@ -19710,7 +19717,7 @@
     (pin "4" (uuid e32952ae-851c-4508-87d9-cc5252d88151))
     (pin "5" (uuid d0bc52f9-db4a-412a-82a0-95d440d3cba9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U21") (unit 1)
         )
@@ -19741,7 +19748,7 @@
     (pin "1" (uuid f07106c8-ae41-484e-a90f-7258a4094ea4))
     (pin "2" (uuid 2c24de10-684f-4375-ae84-f9679777bb0b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R45") (unit 1)
         )
@@ -19774,7 +19781,7 @@
     (pin "" (uuid 01b11790-0b19-4e69-a8c3-059989ec3080))
     (pin "" (uuid 4fc88c83-4f1b-4031-93d4-e21dc7ef24ac))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J72") (unit 1)
         )
@@ -19805,7 +19812,7 @@
     (pin "1" (uuid f4f5fb8f-f05c-4b32-8745-9c8a9ee20269))
     (pin "2" (uuid f1452aed-ac3c-484b-ad22-debcfaffeb8b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J22") (unit 1)
         )
@@ -19835,7 +19842,7 @@
     )
     (pin "1" (uuid 7da4d4e9-ee53-4521-a11a-bc4b7fadddd6))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR028") (unit 1)
         )
@@ -19867,7 +19874,7 @@
     (pin "2" (uuid 5c7ef511-2743-43b9-bf54-884b9acb269e))
     (pin "3" (uuid 41b7256e-6a1f-446c-8559-66316bea9395))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "M7") (unit 1)
         )
@@ -19898,7 +19905,7 @@
     (pin "1" (uuid b66d4d48-961b-4d18-b985-a3b50affea84))
     (pin "2" (uuid b144e232-a5c3-44e4-85d1-fba367439e18))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D21") (unit 1)
         )
@@ -19929,7 +19936,7 @@
     (pin "1" (uuid 9ae728f1-4cac-4dda-bf00-fe0a4cab4d06))
     (pin "2" (uuid 28923e48-b349-42ac-b918-1c19bde2df95))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C5") (unit 1)
         )
@@ -19965,7 +19972,7 @@
     (pin "1" (uuid 4cb3f2f8-0e48-458e-b436-ff65fe83eb81))
     (pin "2" (uuid 94da2d58-14f2-458b-87f2-fde051b6e3d3))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R10") (unit 1)
         )
@@ -19995,7 +20002,7 @@
     )
     (pin "1" (uuid 31a2b3a7-2c1a-447b-ba65-e0129b45a0a9))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR014") (unit 1)
         )
@@ -20027,7 +20034,7 @@
     (pin "2" (uuid 07ed3b46-3d82-4120-bb60-fdafe07bffaf))
     (pin "3" (uuid a1bee1cd-935a-4ded-bc7f-5aedb11adb2a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J65") (unit 1)
         )
@@ -20057,7 +20064,7 @@
     )
     (pin "1" (uuid 6827c0ff-118d-447e-aecc-d6ca7558180f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR054") (unit 1)
         )
@@ -20089,7 +20096,7 @@
     (pin "2" (uuid 7508f069-63fc-42b3-9c82-5741cbc5e38f))
     (pin "3" (uuid 65f9b940-11a2-46c4-910a-453e9621b6f3))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "RV5") (unit 1)
         )
@@ -20120,7 +20127,7 @@
     (pin "1" (uuid 6fbef576-d09d-470c-81e9-95d0221274e1))
     (pin "2" (uuid 10e5bc17-a2c3-4a9b-bdb8-265e447d4620))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "JP4") (unit 1)
         )
@@ -20146,7 +20153,7 @@
     (pin "1" (uuid 3fd57f2a-7373-4d7d-98c7-b60dfc3ed0db))
     (pin "2" (uuid 808d0d8d-4ea0-48a5-9e8a-96e6bcb0ddb1))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R4") (unit 1)
         )
@@ -20177,7 +20184,7 @@
     (pin "1" (uuid 3b2aa5a6-c2e0-4cef-8007-41c71dda2f45))
     (pin "2" (uuid 8902990f-d8e5-4754-b109-0fc5094246ca))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C41") (unit 1)
         )
@@ -20207,7 +20214,7 @@
     )
     (pin "1" (uuid 90c9fb67-47c5-4630-9417-42559811da31))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR010") (unit 1)
         )
@@ -20238,7 +20245,7 @@
     (pin "1" (uuid 9fc9bda3-a4e7-4939-9a28-6853f630e42a))
     (pin "2" (uuid fd8b5788-b311-4a01-ac95-ecf09c037b35))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R3") (unit 1)
         )
@@ -20269,7 +20276,7 @@
     (pin "1" (uuid ecab3532-9225-4dd1-a990-bd6cc626775a))
     (pin "2" (uuid 67950a85-7fdd-4911-ba63-574611f9b377))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C7") (unit 1)
         )
@@ -20300,7 +20307,7 @@
     (pin "1" (uuid cf22b0bc-6ea5-419f-b7ec-7009a785610a))
     (pin "2" (uuid 96540d42-b18d-454f-b577-358d1d8addc1))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J9") (unit 1)
         )
@@ -20337,7 +20344,7 @@
     (pin "1" (uuid f5ab6659-a999-4867-b3aa-1caf639c1a58))
     (pin "2" (uuid c2a82891-e6ed-4d4c-aaf6-070bd48def62))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D9") (unit 1)
         )
@@ -20379,7 +20386,7 @@
     (pin "1" (uuid 9e883716-7a61-4cf8-b91e-0851530f4a32))
     (pin "2" (uuid 0f63f053-60fa-49e0-93da-6e6940b48dbe))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D8") (unit 1)
         )
@@ -20410,7 +20417,7 @@
     (pin "1" (uuid 3e7f33b6-0799-42f5-9b2b-ca671ea5fc78))
     (pin "2" (uuid 40d854c8-420f-4a8c-8229-bf86adb52bc6))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C9") (unit 1)
         )
@@ -20447,7 +20454,7 @@
     (pin "2" (uuid 62474915-7b11-4c33-a3ba-89840b9b4559))
     (pin "3" (uuid e3af8ffa-d079-41dd-87cc-56c9fb48fe2f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "Q1") (unit 1)
         )
@@ -20478,7 +20485,7 @@
     (pin "" (uuid 5e474f05-3e3e-4490-bf7f-ebb8e2db212b))
     (pin "" (uuid bb5fdeaa-d546-46cf-a2c1-06242066c79b))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J12") (unit 1)
         )
@@ -20510,7 +20517,7 @@
     (pin "2" (uuid dbd49164-1918-4450-8103-5927108f8c70))
     (pin "3" (uuid 1ae1c22d-1012-4cee-8208-e8f3ba7a6ab8))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J32") (unit 1)
         )
@@ -20556,7 +20563,7 @@
     (pin "1" (uuid 8bc177f1-1280-4bc3-a90a-3e3cc0aaf281))
     (pin "2" (uuid 900de09d-052e-43bf-ab87-21618fc7540a))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "RV1") (unit 1)
         )
@@ -20586,7 +20593,7 @@
     )
     (pin "1" (uuid 8082c3d5-0aeb-4b14-81a2-9b4671fe2043))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR067") (unit 1)
         )
@@ -20623,7 +20630,7 @@
     (pin "4" (uuid 536c0a10-e63b-4be8-8484-2a10e82413b0))
     (pin "8" (uuid bd50f76f-03ed-4bc0-9c84-177716a0681d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U26") (unit 2)
         )
@@ -20660,7 +20667,7 @@
     (pin "7" (uuid 82c0d4c2-d13b-4679-98d9-b51c89d17aa5))
     (pin "8" (uuid fc9a86ab-762c-4795-95c9-9db8b7070427))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U16") (unit 1)
         )
@@ -20691,7 +20698,7 @@
     (pin "1" (uuid 2104bc02-25bd-4a80-83d8-ad0d11b4983c))
     (pin "2" (uuid 1aa5efd1-dbb0-4631-a7af-9b64c780fc1c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "F1") (unit 1)
         )
@@ -20722,7 +20729,7 @@
     (pin "1" (uuid 28d8d271-5d57-46a6-b1bc-748d8998f6ad))
     (pin "2" (uuid d13ab0f4-6f31-49f0-836b-0171501727e4))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "D15") (unit 1)
         )
@@ -20752,7 +20759,7 @@
     )
     (pin "1" (uuid df6bb371-ab1b-4af9-822e-b03e998223ef))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR051") (unit 1)
         )
@@ -20782,7 +20789,7 @@
     )
     (pin "1" (uuid fbbdbc86-5d01-4790-8453-db9fc27c53b5))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR019") (unit 1)
         )
@@ -20819,7 +20826,7 @@
     (pin "" (uuid a0c3ffcf-ec8a-477d-bd3e-897a1a663f6c))
     (pin "" (uuid f40af831-bb66-4b25-b278-9846a00f7d8c))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U10") (unit 1)
         )
@@ -20850,7 +20857,7 @@
     (pin "1" (uuid 3c1694b9-a3ae-4e26-86b9-2d80cd0dc21c))
     (pin "2" (uuid d68d642d-d1d7-4036-8083-235033d37b68))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J17") (unit 1)
         )
@@ -20880,7 +20887,7 @@
     )
     (pin "1" (uuid b9702c2d-4e65-44c2-ab44-0b9a991de866))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR021") (unit 1)
         )
@@ -20913,7 +20920,7 @@
     (pin "" (uuid 6abf94ba-888d-4048-98d1-9c4318dc3cf5))
     (pin "" (uuid 18c2790d-c040-4156-afb7-2446b946115f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J21") (unit 1)
         )
@@ -20943,7 +20950,7 @@
     )
     (pin "1" (uuid dc024500-ea31-4095-89c9-1954ffa409fd))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR032") (unit 1)
         )
@@ -20976,7 +20983,7 @@
     (pin "" (uuid 4ee4faf0-5861-481e-87fc-fe730b6c531d))
     (pin "" (uuid 53ceb2ee-c1fb-4bd0-94a2-888c211994d8))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "J38") (unit 1)
         )
@@ -21007,7 +21014,7 @@
     (pin "1" (uuid 416e9fc2-5e52-44ea-a8fd-6d8dfcde36a4))
     (pin "2" (uuid a8aedc88-c143-4450-aada-a8ae4489c742))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R49") (unit 1)
         )
@@ -21038,7 +21045,7 @@
     (pin "1" (uuid 2ef613c0-8458-4c8f-b404-9279457ef1d8))
     (pin "2" (uuid 835295a7-3e2d-44d8-a8a5-bbed5ca35472))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R35") (unit 1)
         )
@@ -21069,7 +21076,7 @@
     (pin "1" (uuid d8ed545e-ee48-4817-87a5-5117a02e7498))
     (pin "2" (uuid 687cdb7f-9735-4234-b76c-f309b20f59c5))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "R14") (unit 1)
         )
@@ -21107,7 +21114,7 @@
     (pin "3" (uuid 994ce82f-6157-4dda-9733-3529e3f5ceb3))
     (pin "4" (uuid dad6734a-aebf-425a-86c8-8fe341deb720))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "SW1") (unit 1)
         )
@@ -21138,7 +21145,7 @@
     (pin "1" (uuid ec7dc3bf-82d4-4e6a-9f8e-f9b584220e9e))
     (pin "2" (uuid a7232d4c-4eb3-403a-b0be-d86f429fb00f))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "C6") (unit 1)
         )
@@ -21170,7 +21177,7 @@
     (pin "2" (uuid 316628cd-1a13-40b5-91e6-bc38a5ec3882))
     (pin "3" (uuid 9c4bf8a7-d448-4b5c-8f5a-af18d15c2642))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "RV6") (unit 1)
         )
@@ -21200,7 +21207,7 @@
     )
     (pin "1" (uuid 731e7b1a-1f28-4a7a-b149-b001ccdaf457))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "#PWR03") (unit 1)
         )
@@ -21241,7 +21248,7 @@
     (pin "" (uuid bd11d485-c3d1-4fb4-b1d4-64d7f0700870))
     (pin "" (uuid c0a1c918-e2a7-4098-beac-db587980503d))
     (instances
-      (project "System Circuit Low Level Rough"
+      (project "System Circuit v1.0"
         (path "/0ffc1089-0886-413e-af76-1828c479e126"
           (reference "U7") (unit 1)
         )

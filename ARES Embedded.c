@@ -142,14 +142,12 @@ volatile uint8_t	DepBinLoading	= 1;
 
 #define TOP_40HZ	50000
 
-#define DRIVE_L		OCR1A
-#define DRIVE_R		OCR1B
-
-#define DEPOS_TILT	OCR1C
-
-#define EX_ACTUATOR	OCR4A
-#define EX_DRIVE	OCR4B
-#define EX_DESCEND	OCR4C
+#define DRIVE_L		OCR1A	// pin 11
+#define DRIVE_R		OCR1B	// pin 12
+#define DEPO_TILT	OCR1C	// pin 13
+#define EXC_TILT	OCR4A	// pin 6
+#define EXC_CHAIN	OCR4B	// pin 7
+#define EXC_HEIGHT	OCR4C	// pin 8
 
 
 volatile	uint8_t DIRencoder = 0X00;
@@ -158,30 +156,28 @@ volatile	char	key		   =    0;
 //-----WATCHDOG OVERRIDE MACROS---------------------------//
 
 #define		WATCH_DOG_EN		(TIMSK5|=(1<<TOIE5));	// EN timer5 overflow interrupt
-#define		HeelDog							  0;	
-volatile	uint8_t		WatchToken =		  0;
+volatile	uint8_t		WatchToken = 0;
 
 //-----Communication Protocol-----------------------------//
 
 #define MAX_MSG_LENGTH					5		// max # of words in a msg
 #define CMD_BYTE						0
 
-volatile uint8_t D_PAD_ABXY[8]		=	{0};					//button bit field 1 for Dpad up/down/left/right, A, B, X, Y
-volatile uint8_t TrigBumpStrtSlct[8]	=	{0};				//button bit field 2 for l/r triggers, l/r bumpers, L3, R3, start, select
-volatile uint8_t jack_rip			=	0;					//logitech (butt)on lolz
+volatile uint8_t buttons[8]		=	{0};					// button bit field
+
 
 
 //---------Function Declarations----------//
 void serial_transmit (uint8_t data);
 void printBin8(uint8_t stuff);		
-
+void stop_linear_actuators();
+//----------------------------------------//
 
 typedef struct message						// struct holding variables related to messages (a data Tx)
 {
 		volatile uint8_t werd_count;		
 		volatile uint8_t data[MAX_MSG_LENGTH];						//array to store all the words in a message
 } message;
-
 
 
 //enum message_type												// data[0]=the message type
@@ -197,12 +193,83 @@ typedef struct message						// struct holding variables related to messages (a d
 volatile struct message heard_msg;		// creates a message struct instance
 
 
+void signal_linear_actuators()
+{
+	switch (heard_msg.data[1])
+	{
+		case 0x80:					// exc chain back  X
+			EXC_CHAIN = RVRS_DUTY16;
+			serial_transmit('c');
+			serial_transmit('b');			
+		break;
+			
+			
+		case 0x40:					// exc height down  A
+			EXC_HEIGHT = FWD_DUTY16;
+			serial_transmit('e');
+			serial_transmit('d');
+			break;
+			
+			
+		case 0x20:					// exc chain fwd  B
+			EXC_CHAIN = FWD_DUTY16;
+			serial_transmit('c');
+			serial_transmit('f');
+		break;
+			
+			
+		case 0x10:					// exc height up  Y
+			EXC_HEIGHT = RVRS_DUTY16;
+			serial_transmit('e');
+			serial_transmit('u');
+		break;
+		
+		
+		case 0x08:					// depo tilt fwd  LB
+			DEPO_TILT = FWD_DUTY16;
+			serial_transmit('d');
+			serial_transmit('f');
+		break;
+		
+		
+		case 0x04:					// exc tilt fwd  RB
+			EXC_TILT = FWD_DUTY16;
+			serial_transmit('e');
+			serial_transmit('f');
+		break;
+		
+		
+		case 0x02:					// depo tilt back  LT
+			DEPO_TILT = RVRS_DUTY16;
+			serial_transmit('d');
+			serial_transmit('b');
+		break;
+		
+		
+		case 0x01:					// exc tilt back  RT
+			EXC_TILT = RVRS_DUTY16;
+			serial_transmit('e');
+			serial_transmit('b');
+		break;
+			
+		
+		default:
+			serial_transmit('s');
+			serial_transmit('t');
+			serial_transmit('a');
+			serial_transmit('h');
+			serial_transmit('p');
+			stop_linear_actuators();
+		break;
+			
+	}
+	
+}
+
+
 void MSG_handler ()		// points to the addr of a message struct
 {
 	//check_sum()&data[CHK_SUM]); here					//best be a good reason
-	
-	serial_transmit('\n');
-	serial_transmit('\r');
 		
 	serial_transmit('m');
 	serial_transmit('s');
@@ -210,126 +277,83 @@ void MSG_handler ()		// points to the addr of a message struct
 	serial_transmit(':');
 	serial_transmit(' ');
 	
-	uint8_t msg_type = heard_msg.data[0];		// gets msg_type from the message's index 0
+	uint8_t msg_type = heard_msg.data[0];		// gets msg_type
 	//msg_type = '2';
 
 	switch(msg_type)				// decodes the message, based on what type of message it is
 	{
 	
-	case '0':											// message was a kill command
-		//TODO handle_kill();									//Destroy the Child
-	break;
+		//case '0':											// message was a kill command
+			////TODO handle_kill();									//Destroy the Child
+		//break;
 	
 	
-	case '1':										// message was for buttons
+		case '1':										// message was for buttons
 	
-		serial_transmit('\t');
-	
-		serial_transmit('b');
-		serial_transmit('u');
-		serial_transmit('t');
-		serial_transmit('t');
+			serial_transmit('b');
+			serial_transmit('u');
+			serial_transmit('t');
+			serial_transmit('t');
 
-		serial_transmit('\n');
-		serial_transmit('\r');
+			serial_transmit('\t');		
+
+			//for(uint8_t i = 0; i < 8; i++)
+			//{
+				//buttons[i]	=	((heard_msg.data[1] >> i) & 1);			// bangs bits out of the byte and into the buttons array
+			//}
 		
-
-		for(uint8_t i = 0; i < 8; i++)
-		{
-			D_PAD_ABXY[i]	=	((heard_msg.data[1] >> i) & 1);			//Bangin Bits out from werd 1
-			TrigBumpStrtSlct[i]	=	((heard_msg.data[2] >> i) & 1);		//Bangin Bits out from werd 2
-		}
-	
-		jack_rip		=	heard_msg.data[3];				//idk- def enough room for both
-															//jack's on that door.
-		// throw data[4] out the door
-
-		// TODO signal_linear_actuators()		now that we have the values, make them control the linear actuators
-	break;
-	
-	
-	case '2':								// message was for the left joystick
-		// heard_msg.werd_count = 5;	// addr werd + 4 data werds 
-	
-		serial_transmit('j');
-		serial_transmit('o');
-		serial_transmit('y');
-
-		serial_transmit('\t');
-		
-		// sets duty cycles of the left & right motors
-		DRIVE_L = (heard_msg.data[1] << 8) | heard_msg.data[2];
-		DRIVE_R = (heard_msg.data[3] << 8) | heard_msg.data[4];
-
-		for (uint8_t i = 0; i < 5; i++)
-		{
-			printBin8(heard_msg.data[i]);
-			serial_transmit(' ');
+			// throw data[2,3,4] out the door
 			
-		}
+			signal_linear_actuators();
 		
-		serial_transmit('\n');
-		serial_transmit('\r');
-	
-		//if (DRIVE_L == 3000 && DRIVE_R == 3000)
-		////if (heard_msg.data[1] == '0' && heard_msg.data[2] == '0' && heard_msg.data[3] == '0' && heard_msg.data[4] == '0')
-		//{
-			//serial_transmit('d');
-			//serial_transmit('e');
-			//serial_transmit('a');
-			//serial_transmit('d');
-		//
-		//}
-		//else
-		//{
-			//printBin8(heard_msg.data[0]);
-			//serial_transmit(' ');
-			//printBin8(heard_msg.data[1]);
-			//serial_transmit(' ');
-			//printBin8(heard_msg.data[2]);
-			//serial_transmit(' ');
-			//printBin8(heard_msg.data[3]);
-			//serial_transmit(' ');
-			//printBin8(heard_msg.data[4]);
-//
-			//serial_transmit(' ');
-		//
-			//serial_transmit(heard_msg.data[0]);
-			//serial_transmit(heard_msg.data[1]);
-			//serial_transmit(heard_msg.data[2]);
-			//serial_transmit(heard_msg.data[3]);
-			//serial_transmit(heard_msg.data[4]);
-			//serial_transmit('\n');
-			//serial_transmit('\r');
-		//
-		//
-		//}
-	
-	break;
+		break;
 	
 	
-	default:											// if the msg_type is not a recognizable value
-		//didnt_hear(boo_hoo);								// message is bunk, dump it, we're doing connectionless Tx
-		serial_transmit('\t');
-		serial_transmit('\t');
+		case '2':								// message was for the left joystick
+			// heard_msg.werd_count = 5;	// addr werd + 4 data werds 
 	
-		serial_transmit('d');
-		serial_transmit('f');
-		serial_transmit('l');
-		serial_transmit('t');
+			serial_transmit('j');
+			serial_transmit('o');
+			serial_transmit('y');
+
+			serial_transmit('\t');
+		
+			// sets duty cycles of the left & right motors
+			DRIVE_L = (heard_msg.data[1] << 8) | heard_msg.data[2];
+			DRIVE_R = (heard_msg.data[3] << 8) | heard_msg.data[4];
+
+			for (uint8_t i = 0; i < 5; i++)
+			{
+				printBin8(heard_msg.data[i]);
+				serial_transmit(' ');
+			}
 	
-		serial_transmit('\n');
-		serial_transmit('\r');
+		break;
+	
+	
+		default:											// if the msg_type is not a recognizable value
+			//didnt_hear(boo_hoo);								// message is bunk, dump it, we're doing connectionless Tx
+			serial_transmit('\t');
+			serial_transmit('\t');
+	
+			serial_transmit('d');
+			serial_transmit('f');
+			serial_transmit('l');
+			serial_transmit('t');
 
 		break;
-	}
-
-	heard_msg.data[0] = 0;		// reset vals to 0
-	heard_msg.data[1] = 0;
-	heard_msg.data[2] = 0;
-	heard_msg.data[3] = 0;
-	heard_msg.data[4] = 0;
-
+		}
+		
+		serial_transmit('\n');
+		serial_transmit('\n');
+		serial_transmit('\r');
+		
+		heard_msg.data[0] = 0;		// reset vals to 0
+		heard_msg.data[1] = 0;
+		heard_msg.data[2] = 0;
+		heard_msg.data[3] = 0;
+		heard_msg.data[4] = 0;
+	
 }
 
 
@@ -357,8 +381,6 @@ void serial_transmit (uint8_t data)	//Tx serial
 	while (!( UCSR0A & (1<<UDRE0)));		//w8 b4 read;
 											//UDREn is read when 1
 	UDR0 = data; 							//write the data in register
-	
-	
 }
 
 
@@ -504,13 +526,19 @@ void use_HX711()
 	
 }
 
-void init_DIR()		// initialize all motor direction to be stopped
+void stop_motors()		// initialize all motor direction to be stopped
 {
 	DRIVE_L		= STOP_DUTY16;
 	DRIVE_R		= STOP_DUTY16;
-	EX_ACTUATOR	= STOP_DUTY16;
-	EX_DRIVE	= STOP_DUTY16;
-	EX_DESCEND	= STOP_DUTY16;
+}
+
+
+void stop_linear_actuators() 
+{
+	DEPO_TILT = STOP_DUTY16;
+	EXC_TILT = STOP_DUTY16;
+	EXC_CHAIN = STOP_DUTY16;
+	EXC_HEIGHT = STOP_DUTY16;
 }
 
 //void setDIR_serial(char input)		// set motor direction based on serial data Rx'd from Jetson
@@ -569,51 +597,51 @@ void init_DIR()		// initialize all motor direction to be stopped
 	//
 	//else if (input == '1')
 	//{
-		//EX_ACTUATOR = RVRS_DUTY16;
+		//EXC_TILT = RVRS_DUTY16;
 		//tosend='D';							//down
 	//}
 	//
 	//else if (input == '2')
 	//{
-		//EX_ACTUATOR = STOP_DUTY16;
+		//EXC_TILT = STOP_DUTY16;
 		//tosend='S';							//stop
 	//}
 	//
 	//else if (input == '3')
 	//{
-		//EX_ACTUATOR =	FWD_DUTY16;
+		//EXC_TILT =	FWD_DUTY16;
 		//tosend='U';							//up
 	//}
 	//
 	//else if (input == '7' && DepBinLoading)
 	//{
-		//EX_DRIVE = FWD_DUTY16;
+		//EXC_CHAIN = FWD_DUTY16;i
 		//tosend='W';							//CW
 	//}
 	//else if (input == '8')
 	//{
-		//EX_DRIVE =	RVRS_DUTY16;
+		//EXC_CHAIN =	RVRS_DUTY16;
 		//tosend='C';							//CCW
 	//}
 	//else if (input == '9')
 	//{
-		//EX_DRIVE = STOP_DUTY16;
+		//EXC_CHAIN = STOP_DUTY16;
 		//tosend='S';							//stop
 	//}
 	//
 	//else if (input == 'j')
 	//{
-		//DEPOS_TILT = FWD_DUTY16;
+		//DEPO_TILT = FWD_DUTY16;
 		//tosend='U';							//up
 	//}
 	//else if (input == 'k')
 	//{
-		//DEPOS_TILT = STOP_DUTY16;
+		//DEPO_TILT = STOP_DUTY16;
 		//tosend='S';							//stop
 	//}
 	//else if (input == 'l')
 	//{
-		//DEPOS_TILT = RVRS_DUTY16;
+		//DEPO_TILT = RVRS_DUTY16;
 		//tosend='D';							//down
 	//}
 	//
@@ -639,7 +667,8 @@ ISR (TIMER5_OVF_vect)
 	
 	if(WatchToken == 240)					//kill operations
 	{
-		init_DIR();
+		stop_motors();
+		stop_linear_actuators();
 		
 		WatchToken = 0;
 
@@ -743,13 +772,13 @@ void ADC_init()								//Analogue Digital Conversion Set
 
 //ISR(INT5_vect)								//for North
 //{
-	//init_DIR();								//Halt Motion
+	//stop_motors();								//Halt Motion
 	//NorthIsClear ^= 1;						//toggle flag
 //}
 //
 //ISR(INT4_vect)								//For South
 //{
-	//init_DIR();								//Halt Motion
+	//stop_motors();								//Halt Motion
 	//SouthIsClear ^= 1;						//toggle flag
 //}
 
@@ -778,37 +807,36 @@ ISR (USART0_RX_vect)
 	
 	WatchToken = 0;		// reset watchdog count
 	
-	if (heard_msg.werd_count < (MAX_MSG_LENGTH-1))	
+		
+	heard_msg.data[heard_msg.werd_count] = UDR0;
+	
+	serial_transmit(heard_msg.werd_count + '0');
+	serial_transmit(' ');
+	printBin8(heard_msg.data[heard_msg.werd_count]);
+	serial_transmit(' ');
+	serial_transmit(heard_msg.data[heard_msg.werd_count]);
+	serial_transmit(' ');
+	//printBin8(UCSR0A);
+	
+	serial_transmit('\n');
+	serial_transmit('\r');
+	
+	heard_msg.werd_count++;
+
+	
+	//if ((UCSR0A >> DOR0) & 1) == 1))		// if Data Overrun has occurred (RX buffer is full)
+	//{
+		//heard_msg.werd_count = 0;	// reset Arduino to expect msg_type next and do not use previous data received
+		//serial_transmit('>');		// alert Jetson that it should send msg_type next
+	//}
+	
+	
+	if (heard_msg.werd_count >= MAX_MSG_LENGTH)		// handle msg & reset werd_count
 	{
-		heard_msg.data[heard_msg.werd_count] = UDR0;
-		
-		serial_transmit(heard_msg.werd_count + '0');
-		serial_transmit(' ');
-		printBin8(heard_msg.data[heard_msg.werd_count]);
-		serial_transmit(' ');
-		serial_transmit(heard_msg.data[heard_msg.werd_count]);
-		serial_transmit('\n');
-		serial_transmit('\r');
-		
-		heard_msg.werd_count++;
+		MSG_handler(&heard_msg);
+		heard_msg.werd_count = 0;
 	}
 	
-	else      // getting last data byte & jumping to msg_handler
-	{
-		heard_msg.data[heard_msg.werd_count] = UDR0;
-		
-		serial_transmit(heard_msg.werd_count + '0');
-		serial_transmit(' ');
-		printBin8(heard_msg.data[heard_msg.werd_count]);
-		serial_transmit(' ');
-		serial_transmit(heard_msg.data[heard_msg.werd_count]);
-		serial_transmit('\n');
-		serial_transmit('\r');
-		
-		MSG_handler(&heard_msg);
-		heard_msg.werd_count = 0;		// reset count
-
-	}
 	
 	sei();
 }
@@ -819,7 +847,8 @@ int main(void)
 {
 	gpio_init();
 	//Prox_ISR_EN();
-	init_DIR();
+	stop_motors();
+	stop_linear_actuators();
 	
 	uart_init();
 	serial_transmit('i');
