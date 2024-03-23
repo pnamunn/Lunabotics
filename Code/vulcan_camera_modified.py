@@ -64,8 +64,9 @@ def gen_frames2():
 
 def gen_frames3():
     cap = cv2.VideoCapture(0)       #the number is to choose the webcam
-    fpsLimit = 1.0/30 # denominator = fps cap
+    fpsLimit = 1.0/15 # denominator = fps cap
     startTime = time.time()    
+
     while True:
         nowTime = time.time()
         if (float(nowTime - startTime)) > fpsLimit:     #wait for enough time to pass
@@ -73,17 +74,19 @@ def gen_frames3():
             if not ret:
                 break
             gray_img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)      #convert to gray
-            ret, buffer = cv2.imencode('.jpg', gray_img)           #encode the thing
-        
+            encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 15]      #number = encode quality
+            ret, buffer = cv2.imencode('.jpg', frame, encode_param)           #encode the thing
+
             frame = buffer.tobytes()
             yield (b'--frame\r\n'                                       #idk how this line really works but it outputs the frame we just got
-                b'Content-Type: image/jpeg\r\n\r\n' + gray_img + b'\r\n')  # concat frame one by one and show result
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
             startTime = time.time()
+            
         
 
 
 
-@app.route('/depth')        #add the the string to end of url to use
+@app.route('/depth')        #add the string to end of url to use
 def depth():
     return Response(gen_frames2(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -96,4 +99,4 @@ def webcam():
     return Response(gen_frames3(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    app.run(host='10.130.238.62', port=8000, threaded=True)     #on web browser connect to ip:port
+    app.run(host='10.130.17.64', port=8000, threaded=True)     #on web browser connect to ip:port
