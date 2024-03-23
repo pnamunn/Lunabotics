@@ -101,7 +101,6 @@ class GamepadSubber(Node):
                 self.joystick_math(self.axes_values[0], self.axes_values[1])   
                 self.send_motor_data(self.left,self.right)
 
-
             else:       # if left joystick is inside of deadzone
                 self.send_motor_data(3000, 3000)
 
