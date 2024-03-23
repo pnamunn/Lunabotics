@@ -211,7 +211,7 @@ void MSG_handler ()		// points to the addr of a message struct
 	serial_transmit(' ');
 	
 	uint8_t msg_type = heard_msg.data[0];		// gets msg_type from the message's index 0
-	msg_type = '2';
+	//msg_type = '2';
 
 	switch(msg_type)				// decodes the message, based on what type of message it is
 	{
@@ -222,12 +222,7 @@ void MSG_handler ()		// points to the addr of a message struct
 	
 	
 	case '1':										// message was for buttons
-		//TODO handle_butts();									//handle them hammy's
-																// send them where they need to go
 	
-		// heard_msg.werd_count = 3;	// addr werd + 2 data werds
-	
-		serial_transmit('\t');
 		serial_transmit('\t');
 	
 		serial_transmit('b');
@@ -241,8 +236,8 @@ void MSG_handler ()		// points to the addr of a message struct
 
 		for(uint8_t i = 0; i < 8; i++)
 		{
-			D_PAD_ABXY[i]	=	((heard_msg.data[1] >> i) & 1);	//Bangin Bits out from werd 1
-			TrigBumpStrtSlct[i]	=	((heard_msg.data[2] >> i) & 1);	//Bangin Bits out from werd 2
+			D_PAD_ABXY[i]	=	((heard_msg.data[1] >> i) & 1);			//Bangin Bits out from werd 1
+			TrigBumpStrtSlct[i]	=	((heard_msg.data[2] >> i) & 1);		//Bangin Bits out from werd 2
 		}
 	
 		jack_rip		=	heard_msg.data[3];				//idk- def enough room for both
@@ -636,33 +631,34 @@ void init_DIR()		// initialize all motor direction to be stopped
 	//
 //}
 
-void BewareOfDog()			//watchdog
+
+
+ISR (TIMER5_OVF_vect)
 {
+	cli();
+	
 	if(WatchToken == 240)					//kill operations
 	{
 		init_DIR();
 		
-		WatchToken	=		HeelDog			//Job Done
+		WatchToken = 0;
 
-		//serial_transmit('\n');				
-		//
-		//serial_transmit('Z');				//notify Terminal
-		//serial_transmit('O');
-		//serial_transmit('I');
-		//serial_transmit('N');
-		//serial_transmit('K');
-		//serial_transmit('S');
-//
-		//serial_transmit('\n');				//Print nxt on
-		//serial_transmit('\r');				//new line
+		serial_transmit('\n');
+		
+		serial_transmit('Z');				//notify Terminal
+		serial_transmit('O');
+		serial_transmit('I');
+		serial_transmit('N');
+		serial_transmit('K');
+		serial_transmit('S');
+
+		serial_transmit('\n');				//Print nxt on
+		serial_transmit('\r');				//new line
 	}
 	
-	WatchToken++;							//Condition Count
-}
-
-ISR(TIMER5_OVF_vect)
-{
-	BewareOfDog();
+	WatchToken++;
+	
+	sei();
 }
 
 void timer1_init()							//For Drive n Dep
@@ -780,26 +776,17 @@ ISR (USART0_RX_vect)
 {
 	cli();									//disable interrupts
 	
+	WatchToken = 0;		// reset watchdog count
+	
 	if (heard_msg.werd_count < (MAX_MSG_LENGTH-1))	
 	{
-		//while ( !(UCSR0A & (1<<RXC0)) );
 		heard_msg.data[heard_msg.werd_count] = UDR0;
 		
-		//printBin8(UDR0);
 		serial_transmit(heard_msg.werd_count + '0');
-		//serial_transmit(' ');
-	    //term_Send_Val_as_Digits(heard_msg.werd_count);
 		serial_transmit(' ');
-		
 		printBin8(heard_msg.data[heard_msg.werd_count]);
-		
-		//printBin8(UDR0);
 		serial_transmit(' ');
-
-		//printBin8(UDR0);
 		serial_transmit(heard_msg.data[heard_msg.werd_count]);
-		//printBin8(UDR0);
-		//
 		serial_transmit('\n');
 		serial_transmit('\r');
 		
@@ -808,15 +795,13 @@ ISR (USART0_RX_vect)
 	
 	else      // getting last data byte & jumping to msg_handler
 	{
-		//while ( !(UCSR0A & (1<<RXC0)) );
 		heard_msg.data[heard_msg.werd_count] = UDR0;
-		//delay();		// delay so Jetson has time to start ser.read() listening on serial port
+		
 		serial_transmit(heard_msg.werd_count + '0');
 		serial_transmit(' ');
 		printBin8(heard_msg.data[heard_msg.werd_count]);
 		serial_transmit(' ');
 		serial_transmit(heard_msg.data[heard_msg.werd_count]);
-				
 		serial_transmit('\n');
 		serial_transmit('\r');
 		
