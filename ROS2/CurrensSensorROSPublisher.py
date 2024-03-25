@@ -1,8 +1,10 @@
 import serial
 import rclpy
 from rclpy.node import Node
-import time
-from std_msgs.msg import String
+#import time
+import struct
+from std_msgs.msg import String 
+import array
 #from diagnostic_msgs import KeyValue.msg
 
 #Service node will recieve an error message from the client
@@ -13,28 +15,50 @@ class CurrentSensorPublisher(Node):
     def __init__(self):
         super().__init__('CurrentPublisher')
         #create a publisher node of type= KeyValue, topic= current, callback= current_callback, 
-        self.publisher_ = self.create_publisher(String, 'current', 10)
+        self.publisher_ = self.create_publisher(String, 'current', 50)
         
         self.get_logger().info("Pubber node has been created")
         
-        timer_period = 0.5  # seconds
+        self.ser = serial.Serial('/dev/ttyACM0', 115200, bytesize=8, timeout = 1) #TODO find out of this is correct port
+
+        timer_period = 2  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
 
     def timer_callback(self): #only publish if a problem arrises
         #TODO fix Serial
-        #ser = serial.Serial('/dev/ttyACM0', 9600, timeout = 1) #TODO find out of this is correct port
         msg = String()
-        msg.data = 'LeftBack'                               #name of wheel with problem
+        data = 'LeftBack'                               #name of wheel with problem
         #request.value = 0                           
-        volts = 1
-        if volts > 1: #if less than an amp of current alert 
-            msg = ('Problem with wheel "%s", current sesnor is reading "%s"volts.' %msg.data %volts)
-            self.publisher_.publish(msg)
-            self.get_logger().info(msg)
+        #volts = 0.1
+        current = self.ser.read_until() 
+
+        
+        # check = str(volts)
+        # i = 0
+        # while check[i] != '\\':
+        #     i += 1
+        # number = check[2:i]
+        #self.get_logger().info(number)
+
+        # testNum = float(number)
+        # print(testNum)
+       # check = int.from_bytes(volts, "big")
+       # arr = array.array('f')
+     #  arr.frombytes(volts)
+        #float_number = struct.unpack('f', volts[0-4])
+        self.get_logger().info(current)
+     #  arr = int(volts)
+        #self.get_logger().info(check)
+        
+        
+        # if testNum > 2: #if greater then 2 volts
+        #     msg.data = 'Problem with wheel "' + data + '", current sesnor is reading "'+ str(volts) + '"volts.'
+        #     self.publisher_.publish(msg)
+        #     self.get_logger().info(msg.data)
 
 
-        #time.wait(1)
+        #time.wait(2)
 
 def main(args=None):
     rclpy.init(args=args)           #get rclpy library
