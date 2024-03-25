@@ -13,6 +13,7 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from bitarray import bitarray
+import time
 
 
 # Node that subs to /joy pubber
@@ -25,9 +26,14 @@ class GamepadSubber(Node):
         ''' Creates a subber node of msg_type=Joy, topic_name=joy, callback_function=joy_callback() '''
         self.subber = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
 
-        self.get_logger().info("GamepadSubber(Node) instance created")
+        # TODO make cod autodetect correct port for Arduino Mega
+        # self.usb_port = "/dev/tty/ACM0"
+        # self.get_logger().info(f"GamepadSubber(Node) instance created.\nUsing {} for serial comm to Arduino.")
 
-        self.ser = serial.Serial('/dev/ttyACM0', 112500, bytesize=8, timeout=2)      # serial to Arduino Mega
+        self.get_logger().info("GamepadSubber(Node) instance created.")
+
+
+        self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega
 
         self._deadzone = 0.1
         self.curr_joy = [0, 0]  # holds left & right motor vals
@@ -67,19 +73,19 @@ class GamepadSubber(Node):
                 self.get_logger().info(f'Joystick moving')
         
                 self.send(b'2')     # send message_type 2
-                # time.sleep(0.4)
+                time.sleep(0.05)
                 
                 self.send((left_high).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
+                time.sleep(0.05)
 
                 self.send((left_low).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
+                time.sleep(0.05)
 
                 self.send((right_high).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
+                time.sleep(0.05)
 
                 self.send((right_low).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
+                time.sleep(0.05)
 
             ########### output to ROS terminal ####
             self.get_logger().info(f'Left = {self.left_motor}  {format(self.left_motor, "016b")}')
@@ -166,10 +172,19 @@ class GamepadSubber(Node):
 
         if (self.last_butt != self.button_values):
             self.send(b'1')     # send message_type 1
+            time.sleep(0.05)
+
             self.send(bytes(self.button_values))       # converts bit array to byte and sends
+            time.sleep(0.05)
+
             self.send(b'0')     # send filler bytes
-            self.send(b'0')     
-            self.send(b'0')     
+            time.sleep(0.05)
+
+            self.send(b'0')
+            time.sleep(0.05)
+
+            self.send(b'0')
+            time.sleep(0.05)     
             
             # self.get_logger().info(f'Vals: {self.button_values}')
             # self.get_logger().info(f'Sent: {bytes(self.button_values)}')
