@@ -5,6 +5,10 @@ from rclpy.node import Node
 import struct
 from std_msgs.msg import String 
 import array
+#import time
+import struct
+from std_msgs.msg import String 
+import array
 #from diagnostic_msgs import KeyValue.msg
 
 #Service node will recieve an error message from the client
@@ -22,6 +26,9 @@ class CurrentSensorPublisher(Node):
         self.ser = serial.Serial('/dev/ttyACM0', 115200, bytesize=8, timeout = 1) #TODO find out of this is correct port
 
         timer_period = 2  # seconds
+        self.ser = serial.Serial('/dev/ttyACM0', 115200, bytesize=8, timeout = 1) #TODO find out of this is correct port
+
+        timer_period = 2  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
 
@@ -31,31 +38,29 @@ class CurrentSensorPublisher(Node):
         data = 'LeftBack'                               #name of wheel with problem
         #request.value = 0                           
         #volts = 0.1
-        current = self.ser.read_until() 
-
-        
-        # check = str(volts)
-        # i = 0
-        # while check[i] != '\\':
-        #     i += 1
-        # number = check[2:i]
+        volts = self.ser.read_until() 
+        check = str(volts)
+        i = 0
+        while check[i] != '\\':
+            i += 1
+        number = check[2:i]
         #self.get_logger().info(number)
 
-        # testNum = float(number)
-        # print(testNum)
+        testNum = float(number)
+        print(testNum)
        # check = int.from_bytes(volts, "big")
        # arr = array.array('f')
      #  arr.frombytes(volts)
         #float_number = struct.unpack('f', volts[0-4])
-        self.get_logger().info(current)
+        self.get_logger().info(volts)
      #  arr = int(volts)
         #self.get_logger().info(check)
         
         
-        # if testNum > 2: #if greater then 2 volts
-        #     msg.data = 'Problem with wheel "' + data + '", current sesnor is reading "'+ str(volts) + '"volts.'
-        #     self.publisher_.publish(msg)
-        #     self.get_logger().info(msg.data)
+        if testNum > 2: #if greater then 2 volts
+            msg.data = 'Problem with wheel "' + data + '", current sesnor is reading "'+ str(volts) + '"volts.'
+            self.publisher_.publish(msg)
+            self.get_logger().info(msg.data)
 
 
         #time.wait(2)
