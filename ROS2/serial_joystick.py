@@ -33,7 +33,7 @@ class GamepadSubber(Node):
         self.get_logger().info("GamepadSubber(Node) instance created.")
 
 
-        self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega
+        self.ser = serial.Serial('/dev/ttyACM1', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega
 
         self._deadzone = 0.1
         self.curr_joy = [0, 0]  # holds left & right motor vals
@@ -67,25 +67,25 @@ class GamepadSubber(Node):
 
         if (self.curr_joy != self.last_joy):
 
-            if (self.left_motor == 3000 and self.right_motor == 3000):
+            if (self.left_motor == 2999 and self.right_motor == 2999):
                 self.get_logger().info(f'In deadzone')
             else:
                 self.get_logger().info(f'Joystick moving')
         
-                self.send(b'2')     # send message_type 2
-                time.sleep(0.05)
-                
-                self.send((left_high).to_bytes(1, byteorder="big"))
-                time.sleep(0.05)
+            self.send(b'2')     # send message_type 2
+            time.sleep(0.05)
+            
+            self.send((left_high).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
 
-                self.send((left_low).to_bytes(1, byteorder="big"))
-                time.sleep(0.05)
+            self.send((left_low).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
 
-                self.send((right_high).to_bytes(1, byteorder="big"))
-                time.sleep(0.05)
+            self.send((right_high).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
 
-                self.send((right_low).to_bytes(1, byteorder="big"))
-                time.sleep(0.05)
+            self.send((right_low).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
 
             ########### output to ROS terminal ####
             self.get_logger().info(f'Left = {self.left_motor}  {format(self.left_motor, "016b")}')
@@ -124,8 +124,8 @@ class GamepadSubber(Node):
                 self.right_motor = self.diff
 
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
-        self.left_motor = int( (self.left_motor * 1000) + 3000 )
-        self.right_motor = int( (self.right_motor * 1000) + 3000 ) 
+        self.left_motor = int( (self.left_motor * 1000) + 2999 )
+        self.right_motor = int( (self.right_motor * 1000) + 2999 ) 
             
         ''' Sends the motor's duty cycle values to the Arduino '''
         self.send(self.right_motor & 0b0000_1111)   # send right_motor low
@@ -165,8 +165,8 @@ class GamepadSubber(Node):
 
         # if left joystick is within deadzone
         else:       
-            self.left_motor = 3000
-            self.right_motor = 3000
+            self.left_motor = 2999
+            self.right_motor = 2999
 
             self.send_duty_vals()
 
