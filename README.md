@@ -1,11 +1,21 @@
-# Lunabotics 2024 - team ARES for SDSU
+# NASA Lunabotics 2024 - Team ARES for SDSU
 
-Take note that we're currently using these distros:  Ubuntu 20.04 LTS, ROS2 foxy
+Using Ubuntu 20.04 LTS on Jetson & laptop.  ROS2 foxy on Jetson & ROS2 humble on laptop.
+Python packages needed for controls:  rclpy, pyserial, sensor_msgs, bitarray
+Python packages needed for Vulcan video stream:  cv2, pyrealsense2, flask, numpy
 
 
-## To learn more about how to use Linux terminals & the CLI (Command Line Interface):
- - This [website](https://linuxjourney.com/lesson/the-shell) is a good place to start.
- - You can also try playing this [interactive terminal game](https://hub.ovh2.mybinder.org/user/nthiery-bashcrawl-rol3vedn/lab) (1/10, not very fun), or just use its terminal as a playground for trying out 
- the commands you learn.
- - Google "common Linux commands"!
- If you want your own real Linux system to mess around with, I can get you a Raspberry Pi to SSH to, just let me know.
+## Rover telecoms set up:
+`ros2 run joy joy_node` on laptop
+
+`ros2 run serial_gamepad` on Jetson
+
+`ros2 run current sensor pubber` on Jetson
+
+`ros2 run current sensor subber` on laptop
+
+run vulcan video stream on Jetson
+
+connect to appropriate IP address to view video stream on laptop
+
+Optional:  Use `minicom -D /dev/<arduino_USB_port> -b 500000` on the Jetson to serial monitor the Arduino Mega
