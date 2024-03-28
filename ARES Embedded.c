@@ -134,20 +134,21 @@ volatile uint8_t	DepBinLoading	= 1;
 #define FPWM_3B_OUT		(DDRL	|=	(1<<PINL4));
 #define FPWM_3C_OUT		(DDRL	|=	(1<<PINL5));
 
+
 //-----SABERTOOTH CONTROLLER MACROS-------------------------//
 
-#define FWD_DUTY16	 4000
-#define STOP_DUTY16	 3000
-#define RVRS_DUTY16  2000
+#define FWD_DUTY16	 3999
+#define STOP_DUTY16	 2999
+#define RVRS_DUTY16  1999
+					  
+#define TOP_40HZ	49999
 
-#define TOP_40HZ	50000
-
-#define DRIVE_L		OCR1A	// pin 11
-#define DRIVE_R		OCR1B	// pin 12
-#define DEPO_TILT	OCR1C	// pin 13
-#define EXC_TILT	OCR4A	// pin 6
-#define EXC_CHAIN	OCR4B	// pin 7
-#define EXC_HEIGHT	OCR4C	// pin 8
+#define DRIVE_L		OCR1A	// pin 11, PB5
+#define DRIVE_R		OCR1B	// pin 12, PB6
+#define DEPO_TILT	OCR5B	// pin 39, PL4
+#define EXC_TILT	OCR4A	// pin 6, PH3
+#define EXC_CHAIN	OCR4B	// pin 7, PH4
+#define EXC_HEIGHT	OCR4C	// pin 8, PH5
 
 
 volatile	uint8_t DIRencoder = 0X00;
@@ -469,7 +470,7 @@ void gpio_init()							//in's and out's
 	FPWM_2C_OUT
 	
 	//FPWM_3A_OUT
-	//FPWM_3B_OUT
+	FPWM_3B_OUT
 	//FPWM_3C_OUT
 }
 
