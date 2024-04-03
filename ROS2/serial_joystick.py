@@ -32,8 +32,8 @@ class GamepadSubber(Node):
 
         self.get_logger().info("GamepadSubber(Node) instance created.")
 
-
-        self.ser = serial.Serial('/dev/ttyACM1', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega
+        # read() & read_until() timeout = 20s  (will read until num expected bytes or until timeout expires, whichever comes first)
+        self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=20)      # serial to Arduino Mega (baud rate 500000)
 
         self._deadzone = 0.1
         self.curr_joy = [0, 0]  # holds left & right motor vals
@@ -57,9 +57,9 @@ class GamepadSubber(Node):
         self.curr_joy[0] = self.left_motor
         self.curr_joy[1] = self.right_motor
 
-        right_low = (self.right_motor & 0b0000_0000_1111_1111)
+        right_low = (self.right_motor & 0b0000_0000_0000_0000_0000_0000_1111_1111)
         right_high = (self.right_motor >> 8)
-        left_low = (self.left_motor & 0b0000_0000_1111_1111)
+        left_low = (self.left_motor & 0b0000_0000_0000_0000_0000_0000_1111_1111)
         left_high = (self.left_motor >> 8)
 
 
