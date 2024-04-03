@@ -5,6 +5,10 @@ from rclpy.node import Node
 import struct
 from std_msgs.msg import String 
 import array
+#import time
+import struct
+from std_msgs.msg import String 
+import array
 #from diagnostic_msgs import KeyValue.msg
 
 #Service node will recieve an error message from the client
@@ -19,6 +23,9 @@ class CurrentSensorPublisher(Node):
         
         self.get_logger().info("Pubber node has been created")
         
+        self.ser = serial.Serial('/dev/ttyACM0', 115200, bytesize=8, timeout = 1) #TODO find out of this is correct port
+
+        timer_period = 2  # seconds
         self.ser = serial.Serial('/dev/ttyACM0', 115200, bytesize=8, timeout = 1) #TODO find out of this is correct port
 
         timer_period = 2  # seconds

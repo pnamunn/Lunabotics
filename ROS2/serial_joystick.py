@@ -13,6 +13,7 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
 from bitarray import bitarray
+import time
 
 
 # Node that subs to /joy pubber
@@ -25,17 +26,20 @@ class GamepadSubber(Node):
         ''' Creates a subber node of msg_type=Joy, topic_name=joy, callback_function=joy_callback() '''
         self.subber = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
 
-        self.get_logger().info("GamepadSubber(Node) instance created")
+        # TODO make cod autodetect correct port for Arduino Mega
+        # self.usb_port = "/dev/tty/ACM0"
+        # self.get_logger().info(f"GamepadSubber(Node) instance created.\nUsing {} for serial comm to Arduino.")
 
-        self.ser = serial.Serial('/dev/ttyACM0', 112500, bytesize=8, timeout=2)      # serial to Arduino Mega
+        self.get_logger().info("GamepadSubber(Node) instance created.")
+
+
+        self.ser = serial.Serial('/dev/ttyACM1', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega
 
         self._deadzone = 0.1
         self.curr_joy = [0, 0]  # holds left & right motor vals
         self.last_joy = [0, 0]  # holds left & right motor vals
 
         self.last_butt = bytearray([0, 0, 0, 0, 0, 0, 0, 0])   # holds self.button_values array
-
-       
 
         self.left_motor = 0
         self.right_motor = 0
@@ -61,25 +65,25 @@ class GamepadSubber(Node):
 
         if (self.curr_joy != self.last_joy):
 
-            if (self.left_motor == 3000 and self.right_motor == 3000):
+            if (self.left_motor == 2999 and self.right_motor == 2999):
                 self.get_logger().info(f'In deadzone')
             else:
                 self.get_logger().info(f'Joystick moving')
         
-                self.send(b'2')     # send message_type 2
-                # time.sleep(0.4)
-                
-                self.send((left_high).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
+            self.send(b'2')     # send message_type 2
+            time.sleep(0.05)
+            
+            self.send((left_high).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
 
-                self.send((left_low).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
+            self.send((left_low).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
 
-                self.send((right_high).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
+            self.send((right_high).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
 
-                self.send((right_low).to_bytes(1, byteorder="big"))
-                # time.sleep(0.4)
+            self.send((right_low).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
 
             ########### output to ROS terminal ####
             self.get_logger().info(f'Left = {self.left_motor}  {format(self.left_motor, "016b")}')
@@ -118,15 +122,8 @@ class GamepadSubber(Node):
                 self.right_motor = self.diff
 
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
-        self.left_motor = int( (self.left_motor * 1000) + 3000 )
-        self.right_motor = int( (self.right_motor * 1000) + 3000 ) 
-            
-        ''' Sends the motor's duty cycle values to the Arduino '''
-        self.send(self.right_motor & 0b0000_1111)   # send right_motor low
-        self.send(self.right_motor >> 8)            # send right_motor high
-        self.send(self.left_motor & 0b0000_1111)   # send left_motor low
-        self.send(self.left_motor >> 8)            # send left_motor high
-
+        self.left_motor = int( (self.left_motor * 1000) + 2999 )
+        self.right_motor = int( (self.right_motor * 1000) + 2999 ) 
 
 
 
@@ -159,17 +156,26 @@ class GamepadSubber(Node):
 
         # if left joystick is within deadzone
         else:       
-            self.left_motor = 3000
-            self.right_motor = 3000
+            self.left_motor = 2999
+            self.right_motor = 2999
 
             self.send_duty_vals()
 
         if (self.last_butt != self.button_values):
             self.send(b'1')     # send message_type 1
+            time.sleep(0.05)
+
             self.send(bytes(self.button_values))       # converts bit array to byte and sends
+            time.sleep(0.05)
+
             self.send(b'0')     # send filler bytes
-            self.send(b'0')     
-            self.send(b'0')     
+            time.sleep(0.05)
+
+            self.send(b'0')
+            time.sleep(0.05)
+
+            self.send(b'0')
+            time.sleep(0.05)     
             
             # self.get_logger().info(f'Vals: {self.button_values}')
             # self.get_logger().info(f'Sent: {bytes(self.button_values)}')
