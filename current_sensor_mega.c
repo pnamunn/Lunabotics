@@ -31,17 +31,17 @@ void ADC_init() {
 	ADCSRA |= (1<<ADSC);	// start first conversion
 }
 
-void UART1_init() {
-	UBRR1H = 0;
-	UBRR1L = 8;   	// for baud rate of 115200
-	UCSR1B = (1<<TXEN1) | (1<<RXEN1);		// enable transmitter, 8 bit size is default
+void UART_init() {
+	UBRR0H = 0;
+	UBRR0L = 8;   	// for baud rate of 115200
+	UCSR0B = (1<<TXEN0) | (1<<RXEN0);		// enable transmitter, 8 bit size is default
 	// enable receiver
-	UCSR1C = (1<<UCSZ10) | (1<<UCSZ11);
+	UCSR0C = (1<<UCSZ00) | (1<<UCSZ01);
 }
 
 void serial_transmit(uint8_t data) {
-	while (!(UCSR1A & (1<<UDRE1)));
-	UDR1 = data;
+	while (!(UCSR0A & (1<<UDRE0)));
+	UDR0 = data;
 }
 
 void printFloat(float num) {
@@ -171,7 +171,7 @@ int main(void)
 {
 	sei();				// enable interrupts
 	
-	UART1_init();
+	UART_init();
 	ADC_init();
 	DDRF &= ~(1<<1); //  Input PF1, ADC1 (for mega)
 	
