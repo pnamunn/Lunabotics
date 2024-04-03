@@ -12,7 +12,7 @@ def generate_launch_description():
          parameters=[
             {'camera_info_url' : 'package://gscam/examples/uncalibrated_parameters.ini'},
             {'gscam_config' : 'udpsrc port=5000 ! application/x-rtp,media=video,clock-rate=90000,encoding-name=H264,payload=96 \
-             ! rtph264depay ! h264parse ! autovideosink'},
+             ! rtph264depay ! video/x-h265 ! h264parse ! autovideosink'},
 # Pipeline is: 
 # v4l2 source with sync timestamps on  ->  outputs x-raw video  ->  takes all color out of the x-raw video
 #  ->  x-raw video is encoded into jpegs  ->  sequential jpegs are muxed into a buffer  ->  jpegs are demuxed  ->  outputs jpegs for sink
