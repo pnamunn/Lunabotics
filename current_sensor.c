@@ -1,5 +1,5 @@
 /*
- * current_sensor.c
+ * current_sensor_mega.c
  *
  * Created: 2/12/2024 2:10:36 PM
  * Author : 
@@ -14,11 +14,12 @@
 #define arr_size 10
 float voltage = 0.0;
 float current = 0.0;
+float sum1 = 0.0;
 float sum2 = 0.0;
-float sum3 = 0.0;
 volatile int i = 0;
+volatile int j = 0;
+volatile uint16_t array1[arr_size] = {0};
 volatile uint16_t array2[arr_size] = {0};
-volatile uint16_t array3[arr_size] = {0};
 
 void ADC_init() {
 	ADCSRA |= (1<<ADEN);	// enable ADC
@@ -26,29 +27,23 @@ void ADC_init() {
 	ADCSRA |= (1<<ADIE);	// enable ADC conversion complete interrupt
 	ADCSRA |= (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2); // prescale 128 
 	ADMUX |= (1<<REFS0);	// AVcc is our reference voltage
-	ADMUX |= (1<<MUX1);		// ADC2, PC2
+	ADMUX |= (1<<MUX0);		// ADC1, PF1
 	ADCSRA |= (1<<ADSC);	// start first conversion
 }
 
-void UART_init() {
-	UBRR0L = 8;   				// for baud rate of 115200
-	UCSR0B |= (1<<TXEN0);		// enable transmitter, 8 bit size is default
-	UCSR0B |= (1<<RXEN0);		// enable receiver
+void UART1_init() {
+	UBRR1H = 0;
+	UBRR1L = 8;   	// for baud rate of 115200
+	UCSR1B = (1<<TXEN1) | (1<<RXEN1);		// enable transmitter, 8 bit size is default
+	// enable receiver
+	UCSR1C = (1<<UCSZ10) | (1<<UCSZ11);
 }
 
 void serial_transmit(uint8_t data) {
-	while (!(UCSR0A & (1<<UDRE0)));
-	UDR0 = data;
+	while (!(UCSR1A & (1<<UDRE1)));
+	UDR1 = data;
 }
-//void other_serial_transmit(unsigned char data[]) {
-	//int i = 0;
-    //while (data[i] != '\0') {
-	    //while (!(UCSR0A & (1<<UDRE0)));   				// used for debugging, ignore
-		//UDR0 = data[i];
-		//i++; }
-//}
 
-// format is XXXX.XXX 
 void printFloat(float num) {
 	uint16_t integer_part = num;
 	uint16_t decimal_part = (num - integer_part)*1000;
@@ -113,17 +108,17 @@ ISR (ADC_vect) {
 	ADC_high = ADCH;
 	ADC_full = (ADC_high << 8) | ADC_low;
 	
-	if ((ADMUX & 0x0F) == 2) {
-		sum2 = sum2 - array2[i] + ADC_full;
-		array2[i] = ADC_full;
+	if ((ADMUX & 0x0F) == 1) {
+		sum1 = sum1 - array1[i] + ADC_full;
+		array1[i] = ADC_full;
 		i = (i+1) % arr_size;
-		ADC_full = sum2 / arr_size;
+		ADC_full = sum1 / arr_size;
 		
 		voltage = (Vcc / 1024.0)*ADC_full;
 		voltage = fabs(voltage - (Vcc / 2.0));
 		current = voltage*9.752;	// 1/0.11 * 1000 --> new sensitivity with amplifier
 		
-		serial_transmit('I');
+		serial_transmit('M');
 		serial_transmit('1');
 		serial_transmit(':');
 		
@@ -137,21 +132,22 @@ ISR (ADC_vect) {
 		_delay_ms(150);
 		serial_transmit('\n');
 		
-		ADMUX = 0b01000011;		// switch to ADC3
+		
+		ADMUX = 0b01000010;		// switch to ADC2
 	}
-	else if ((ADMUX & 0x0F) == 3) {
-		sum3 = sum3 - array3[i] + ADC_full;
-		array3[i] = ADC_full;
-		i = (i+1) % arr_size;
+	else if ((ADMUX & 0x0F) == 2) {
+		sum2 = sum2 - array2[i] + ADC_full;
+		array2[i] = ADC_full;
+		j = (j+1) % arr_size;
 		ADC_full = sum2 / arr_size;
 		
 		voltage = (Vcc / 1024.0)*ADC_full;
 		voltage = fabs(voltage - (Vcc / 2.0));
 		current = voltage*9.752;	
 		
-		serial_transmit('I');
-		serial_transmit('2');	
-		serial_transmit(':');	
+		serial_transmit('M');
+		serial_transmit('2');
+		serial_transmit(':');
 		
 		if (ADC_full < 512) {
 			serial_transmit('-');
@@ -163,10 +159,10 @@ ISR (ADC_vect) {
 		_delay_ms(150);
 		serial_transmit('\n');
 		
-		ADMUX = 0b01000010;		// switch to ADC2
+		ADMUX = 0b01000001;		// switch back to ADC1
 	}
 	else {
-		ADMUX = 0b01000010;		// else set to ADC2
+		ADMUX = 0b01000001;		// else set to ADC1
 	}	
 }
 	
@@ -175,9 +171,9 @@ int main(void)
 {
 	sei();				// enable interrupts
 	
-	UART_init();
+	UART1_init();
 	ADC_init();
-	DDRC &= ~(1<<2);	// Input PC2, ADC2 (for uno)
+	DDRF &= ~(1<<1); //  Input PF1, ADC1 (for mega)
 	
 	ADCSRA |= (1<<ADSC);	// start first conversion
     while (1) 
