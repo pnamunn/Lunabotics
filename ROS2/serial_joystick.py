@@ -129,6 +129,9 @@ class GamepadSubber(Node):
 
     def joy_callback(self, msg):
         ''' Callback function grabs some of the values being published by /joy topic and sends serially to Arduino. '''
+        
+        sensor_data = self.ser.read_until()
+        self.get_logger().info(f'Rxed from Arduino: {sensor_data}')
 
         self.button_values = msg.buttons
         # self.get_logger().info(f'Subber received buttons = {self.button_values}')
