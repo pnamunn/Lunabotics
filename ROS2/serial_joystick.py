@@ -41,8 +41,6 @@ class GamepadSubber(Node):
 
         self.last_butt = bytearray([0, 0, 0, 0, 0, 0, 0, 0])   # holds self.button_values array
 
-       
-
         self.left_motor = 0
         self.right_motor = 0
 
@@ -126,13 +124,6 @@ class GamepadSubber(Node):
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
         self.left_motor = int( (self.left_motor * 1000) + 2999 )
         self.right_motor = int( (self.right_motor * 1000) + 2999 ) 
-            
-        ''' Sends the motor's duty cycle values to the Arduino '''
-        self.send(self.right_motor & 0b0000_1111)   # send right_motor low
-        self.send(self.right_motor >> 8)            # send right_motor high
-        self.send(self.left_motor & 0b0000_1111)   # send left_motor low
-        self.send(self.left_motor >> 8)            # send left_motor high
-
 
 
 
