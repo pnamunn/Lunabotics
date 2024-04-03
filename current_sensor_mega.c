@@ -32,9 +32,11 @@ void ADC_init() {
 }
 
 void UART1_init() {
-	UBRR1L = 8;   				// for baud rate of 115200
-	UCSR1B |= (1<<TXEN1);		// enable transmitter, 8 bit size is default
-	UCSR1B |= (1<<RXEN1);		// enable receiver
+	UBRR1H = 0;
+	UBRR1L = 8;   	// for baud rate of 115200
+	UCSR1B = (1<<TXEN1) | (1<<RXEN1);		// enable transmitter, 8 bit size is default
+	// enable receiver
+	UCSR1C = (1<<UCSZ10) | (1<<UCSZ11);
 }
 
 void serial_transmit(uint8_t data) {
@@ -115,22 +117,22 @@ ISR (ADC_vect) {
 		voltage = (Vcc / 1024.0)*ADC_full;
 		voltage = fabs(voltage - (Vcc / 2.0));
 		current = voltage*9.752;	// 1/0.11 * 1000 --> new sensitivity with amplifier
+		if (current > 18.8 || current < 18.4) {
+			serial_transmit('M');
+			serial_transmit('1');
+			serial_transmit(':');
+			
+			if (ADC_full < 512) {
+				serial_transmit('-');
+			}
+			
+			printFloat(current);
+			serial_transmit(' ');
+			serial_transmit('A');
+			_delay_ms(150);
+			serial_transmit('\n');
 		
-		serial_transmit('M');
-		serial_transmit('1');
-		serial_transmit(':');
-		
-		if (ADC_full < 512) {
-			serial_transmit('-');
 		}
-		
-		printFloat(current);
-		serial_transmit(' ');
-		serial_transmit('A');
-		_delay_ms(150);
-		serial_transmit('\n');
-		
-		
 		ADMUX = 0b01000010;		// switch to ADC2
 	}
 	else if ((ADMUX & 0x0F) == 2) {
@@ -142,21 +144,21 @@ ISR (ADC_vect) {
 		voltage = (Vcc / 1024.0)*ADC_full;
 		voltage = fabs(voltage - (Vcc / 2.0));
 		current = voltage*9.752;	
-		
-		serial_transmit('M');
-		serial_transmit('2');
-		serial_transmit(':');
-		
-		if (ADC_full < 512) {
-			serial_transmit('-');
+		if (current > 18.8 || current < 18.4) {
+			serial_transmit('M');
+			serial_transmit('2');
+			serial_transmit(':');
+			
+			if (ADC_full < 512) {
+				serial_transmit('-');
+			}
+			
+			printFloat(current);
+			serial_transmit(' ');
+			serial_transmit('A');
+			_delay_ms(150);
+			serial_transmit('\n');
 		}
-		
-		printFloat(current);
-		serial_transmit(' ');
-		serial_transmit('A');
-		_delay_ms(150);
-		serial_transmit('\n');
-		
 		ADMUX = 0b01000001;		// switch back to ADC1
 	}
 	else {
