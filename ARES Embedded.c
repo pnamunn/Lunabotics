@@ -271,6 +271,12 @@ void signal_linear_actuators()
 void MSG_handler ()		// points to the addr of a message struct
 {
 	//check_sum()&data[CHK_SUM]); here					//best be a good reason
+	
+	/*
+	The watch dog is 5 or 6 seconds, so if it takes 5 to get here- which it doesn't-
+	then we'd have bigger problems. That said, it's annoying but we should clear tokens
+	every message switch condition that's valid
+	*/
 		
 	serial_transmit('m');
 	serial_transmit('s');
@@ -306,6 +312,8 @@ void MSG_handler ()		// points to the addr of a message struct
 			// throw data[2,3,4] out the door
 			
 			signal_linear_actuators();
+			
+			//WatchToken = 0;		//here
 		
 		break;
 	
@@ -329,6 +337,7 @@ void MSG_handler ()		// points to the addr of a message struct
 				serial_transmit(' ');
 			}
 	
+		//WatchToken = 0;		//here
 		break;
 	
 	
@@ -341,7 +350,7 @@ void MSG_handler ()		// points to the addr of a message struct
 			serial_transmit('f');
 			serial_transmit('l');
 			serial_transmit('t');
-
+		//WatchToken != 0;			//notably NOT here... I'ma sleep now \("/ )/
 		break;
 		}
 		
@@ -807,7 +816,11 @@ ISR (USART0_RX_vect)
 	cli();									//disable interrupts
 	
 	WatchToken = 0;		// reset watchdog count
-	
+	/*
+	If a bad message propagates in this area, and keeps
+	triggering the ISR before a string of messages is
+	received, the watch dog won't stop the vehicle...
+	*/
 		
 	heard_msg.data[heard_msg.werd_count] = UDR0;
 	
