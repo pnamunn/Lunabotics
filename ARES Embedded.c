@@ -89,8 +89,15 @@ volatile uint8_t	SouthIsClear = 1;
 #define GAIN32					2
 #define GAIN64					3
 
-volatile uint32_t	hx711_data		= 0;
-volatile uint8_t	DepBinLoading	= 1;
+volatile uint32_t	hx711_data			= 0;
+volatile uint16_t	sense_read			= 0;
+volatile uint8_t	tare_flag			= 0;
+volatile uint16_t	known_grams			= 516;
+volatile uint16_t	known_bit			= 270;
+volatile uint16_t	grams				= 0;
+volatile uint16_t	Tare_it_bruh		= 0;
+volatile uint16_t	known_Delta_Ref		= 0;			//Associative bits to 516 Grams
+volatile uint8_t	DepBinLoading		= 1;
 
 //-----TIMER 1 FAST PWM SETTING MACROS----------------------//
 
@@ -137,22 +144,22 @@ volatile uint8_t	DepBinLoading	= 1;
 
 //-----SABERTOOTH CONTROLLER MACROS-------------------------//
 
-#define FWD_DUTY16	 3999
-#define STOP_DUTY16	 2999
-#define RVRS_DUTY16  1999
+#define FWD_DUTY16			3999
+#define STOP_DUTY16			2999
+#define RVRS_DUTY16			1999
 
 #define HALF_FWD_DUTY16		3499
 #define HALF_RVRS_DUTY16	2499
 
 					  
-#define TOP_40HZ	49999
+#define TOP_40HZ			49999
 
-#define DRIVE_L		OCR1A	// pin 11, PB5
-#define DRIVE_R		OCR1B	// pin 12, PB6
-#define DEPO_TILT	OCR5B	// pin 39, PL4
-#define EXC_TILT	OCR4A	// pin 6, PH3
-#define EXC_CHAIN	OCR4B	// pin 7, PH4
-#define EXC_HEIGHT	OCR4C	// pin 8, PH5
+#define DRIVE_L				OCR1A	// pin 11, PB5
+#define DRIVE_R				OCR1B	// pin 12, PB6
+#define DEPO_TILT			OCR5B	// pin 39, PL4
+#define EXC_TILT			OCR4A	// pin 6, PH3
+#define EXC_CHAIN			OCR4B	// pin 7, PH4
+#define EXC_HEIGHT			OCR4C	// pin 8, PH5
 
 
 volatile	uint8_t DIRencoder = 0X00;
@@ -196,6 +203,50 @@ typedef struct message						// struct holding variables related to messages (a d
 
 
 volatile struct message heard_msg;		// creates a message struct instance
+
+void tare_scale()
+{
+	tare_flag	=	1;
+}
+
+void term_Send_16_as_Digits(uint16_t val){
+	uint8_t digit = '0';
+	
+
+	
+	while(val >= 10000){
+		digit += 1;
+		val -= 10000;
+	}
+	serial_transmit(digit);
+	
+	digit = '0';
+	
+	while(val >= 1000){
+		digit += 1;
+		val -= 1000;
+	}
+	serial_transmit(digit);
+	
+	digit = '0';
+	
+	while(val >= 100){
+		digit += 1;
+		val -= 100;
+	}
+	serial_transmit(digit);
+	
+	digit = '0';
+	
+	while(val >= 10){
+		digit += 1;
+		val -= 10;
+	}
+	serial_transmit(digit);
+	
+	serial_transmit('0' + val);
+}
+
 
 
 void signal_linear_actuators()
@@ -350,8 +401,16 @@ void MSG_handler ()		// points to the addr of a message struct
 			serial_transmit('\t');		
 			
 			signal_linear_actuators();
+			if (heard_msg.data[2]==0x01)
+			{
+				tare_scale();	
+			}
 			
 			WatchToken = 0;
+			
+			while(HX711_DAT_PENDING)
+			use_HX711();
+			
 		
 		break;
 	
@@ -531,6 +590,7 @@ void gpio_init()							//in's and out's
 
 void use_HX711()
 {
+	cli	();
 	static uint8_t sensor_IP =1;
 
 	for (uint8_t i = 0; i < 24; i++)		//ACQUISITION
@@ -539,10 +599,10 @@ void use_HX711()
 		SCK_HIGH;
 		
 		
-		//asm volatile(" nop");				//62.5 nano seconds
-		//asm volatile(" nop");
-		//asm volatile(" nop");
-		//asm volatile(" nop");				//250th nano second
+		asm volatile(" nop");				//62.5 nano seconds
+		asm volatile(" nop");
+		asm volatile(" nop");
+		asm volatile(" nop");				//250th nano second
 		
 		
 		hx711_data   |= HX711_DATA_VALUE;		//3 ops to read
@@ -570,8 +630,35 @@ void use_HX711()
 	asm volatile(" nop");
 	asm volatile(" nop");				//250th nano second
 
-	sensor_IP = 0;
+	hx711_data >>= 1;
 
+	sensor_IP = 0;
+	hx711_data|=0xFF000000;
+	hx711_data = ~hx711_data;
+	hx711_data +=1;				//undo 2's comp
+	
+	hx711_data>>=8;
+	sense_read|=hx711_data;
+	
+	if (tare_flag)
+	{
+		Tare_it_bruh = sense_read;
+	}
+	
+	sense_read= sense_read-(Tare_it_bruh-3);
+	
+	//grams=(sense_read<<1);
+	
+	grams = ((uint32_t)sense_read*(uint32_t)known_grams)/275;
+	term_Send_16_as_Digits(grams);
+	serial_transmit('\n');				//Print nxt on
+	serial_transmit('\r');				//new line
+	
+	tare_flag=0;
+	sense_read		= 0;
+	hx711_data =0;
+
+sei();
 	
 }
 
@@ -589,126 +676,6 @@ void stop_linear_actuators()
 	EXC_CHAIN = STOP_DUTY16;
 	EXC_HEIGHT = STOP_DUTY16;
 }
-
-//void setDIR_serial(char input)		// set motor direction based on serial data Rx'd from Jetson
-//{
-	//char tosend='A';						//Place holder
-	//
-	////-----DRIVETRAIN COMMAND FUNCTIONS------------------------------//
-	//
-	//if(input=='a')
-	//{										//Crck Scrw L
-		//
-		//DRIVE_L = FWD_DUTY16;
-		//DRIVE_R = RVRS_DUTY16;
-		//
-		//DIRencoder = 0x01;					//Encrypt DIR set
-		//tosend='L';							//Encrypt State Measure
-		//
-	//}
-	//
-	//else if (input=='d')
-	//{										//Crck Scrw R
-		//DRIVE_L = RVRS_DUTY16;
-		//DRIVE_R= FWD_DUTY16;
-		//
-		//DIRencoder = 0X08;					//Encrypt DIR set
-		//tosend='R';							//Encrypt State Measure
-//
-	//}
-	//
-	//else if (input=='w' && NorthIsClear)
-	//{										//Forward
-		//DRIVE_L = FWD_DUTY16;
-		//DRIVE_R = FWD_DUTY16;
-		//
-		//DIRencoder	=	0X0D;				//Encrypt DIR set
-		//tosend		=	'F';				//Encrypt State Measure
-		//
-	//}
-	//
-	//else if (input=='s' && SouthIsClear)	//Backward
-	//{
-		//
-		//DRIVE_L = RVRS_DUTY16;
-		//DRIVE_R = RVRS_DUTY16;
-		//
-		//DIRencoder = 0X0C;					//Encrypt DIR set
-		//tosend='B';							//Encrypt State Measure
-	//}
-	//else if (input=='m')		// left joystick is in deadzone, Stop
-	//{
-		//DRIVE_L = STOP_DUTY16;
-		//DRIVE_R = STOP_DUTY16;
-	//}
-	//
-	////-----EXCAVATION COMMAND FUNCTIONS------------------------------//
-	//
-	//else if (input == '1')
-	//{
-		//EXC_TILT = RVRS_DUTY16;
-		//tosend='D';							//down
-	//}
-	//
-	//else if (input == '2')
-	//{
-		//EXC_TILT = STOP_DUTY16;
-		//tosend='S';							//stop
-	//}
-	//
-	//else if (input == '3')
-	//{
-		//EXC_TILT =	FWD_DUTY16;
-		//tosend='U';							//up
-	//}
-	//
-	//else if (input == '7' && DepBinLoading)
-	//{
-		//EXC_CHAIN = FWD_DUTY16;i
-		//tosend='W';							//CW
-	//}
-	//else if (input == '8')
-	//{
-		//EXC_CHAIN =	RVRS_DUTY16;
-		//tosend='C';							//CCW
-	//}
-	//else if (input == '9')
-	//{
-		//EXC_CHAIN = STOP_DUTY16;
-		//tosend='S';							//stop
-	//}
-	//
-	//else if (input == 'j')
-	//{
-		//DEPO_TILT = FWD_DUTY16;
-		//tosend='U';							//up
-	//}
-	//else if (input == 'k')
-	//{
-		//DEPO_TILT = STOP_DUTY16;
-		//tosend='S';							//stop
-	//}
-	//else if (input == 'l')
-	//{
-		//DEPO_TILT = RVRS_DUTY16;
-		//tosend='D';							//down
-	//}
-	//
-	//else
-	//{
-		//init_DIR();
-		//
-		//DIRencoder = 0X00;					//Encrypt DIR set
-		//tosend='S';							//Encrypt State Measure
-	//}
-	//
-	//serial_transmit(tosend);				//Send State to serial
-	//serial_transmit('\n');
-	//serial_transmit('\r');
-	//
-//}
-
-
 
 ISR (TIMER5_OVF_vect)		// Watchdog
 {
@@ -911,7 +878,8 @@ int main(void)
 	
     while (1) 
     {
-		
+		//while(HX711_DAT_PENDING)
+		//use_HX711();
     }
 	
 }
