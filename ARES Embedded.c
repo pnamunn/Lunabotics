@@ -140,6 +140,10 @@ volatile uint8_t	DepBinLoading	= 1;
 #define FWD_DUTY16	 3999
 #define STOP_DUTY16	 2999
 #define RVRS_DUTY16  1999
+
+#define HALF_FWD_DUTY16		3499
+#define HALF_RVRS_DUTY16	2499
+
 					  
 #define TOP_40HZ	49999
 
@@ -206,7 +210,7 @@ void signal_linear_actuators()
 			
 			
 		case 0x40:					// exc height down  A
-			EXC_HEIGHT = FWD_DUTY16;
+			EXC_HEIGHT = HALF_FWD_DUTY16;
 			serial_transmit('e');
 			serial_transmit('d');
 			break;
@@ -220,7 +224,7 @@ void signal_linear_actuators()
 			
 			
 		case 0x10:					// exc height up  Y
-			EXC_HEIGHT = RVRS_DUTY16;
+			EXC_HEIGHT = HALF_RVRS_DUTY16;
 			serial_transmit('e');
 			serial_transmit('u');
 		break;
@@ -234,7 +238,7 @@ void signal_linear_actuators()
 		
 		
 		case 0x04:					// exc tilt fwd  RB
-			EXC_TILT = FWD_DUTY16;
+			EXC_TILT = HALF_FWD_DUTY16;
 			serial_transmit('e');
 			serial_transmit('f');
 		break;
@@ -248,11 +252,52 @@ void signal_linear_actuators()
 		
 		
 		case 0x01:					// exc tilt back  RT
-			EXC_TILT = RVRS_DUTY16;
+			EXC_TILT = HALF_RVRS_DUTY16;
 			serial_transmit('e');
 			serial_transmit('b');
 		break;
 			
+		// Two buttons at once:
+		case 0x60:					// exc height down + exc chain fwd    A + B
+			EXC_HEIGHT = HALF_FWD_DUTY16;
+			EXC_CHAIN = HALF_FWD_DUTY16;
+			serial_transmit('e');
+			serial_transmit('d');
+			serial_transmit('&');
+			serial_transmit('c');
+			serial_transmit('f');
+		break;
+		
+		case 0x30:					// exc height up + exc chain fwd    Y + B
+			EXC_HEIGHT = HALF_RVRS_DUTY16;
+			EXC_CHAIN = HALF_FWD_DUTY16;
+			serial_transmit('e');
+			serial_transmit('u');
+			serial_transmit('&');
+			serial_transmit('c');
+			serial_transmit('f');
+		break;
+		
+		case 0xC0:					// exc height down + exc chain backward    A + X
+			EXC_HEIGHT = HALF_FWD_DUTY16;
+			EXC_CHAIN = HALF_RVRS_DUTY16;
+			serial_transmit('e');
+			serial_transmit('d');
+			serial_transmit('&');
+			serial_transmit('c');
+			serial_transmit('b');
+		break;
+		
+		case 0x90:					// exc height up + exc chain backward    Y + X
+			EXC_HEIGHT = HALF_RVRS_DUTY16;
+			EXC_CHAIN = HALF_RVRS_DUTY16;
+			serial_transmit('e');
+			serial_transmit('u');
+			serial_transmit('&');
+			serial_transmit('c');
+			serial_transmit('b');
+		break;
+		
 		
 		default:
 			serial_transmit('s');
@@ -303,17 +348,10 @@ void MSG_handler ()		// points to the addr of a message struct
 			serial_transmit('t');
 
 			serial_transmit('\t');		
-
-			//for(uint8_t i = 0; i < 8; i++)
-			//{
-				//buttons[i]	=	((heard_msg.data[1] >> i) & 1);			// bangs bits out of the byte and into the buttons array
-			//}
-		
-			// throw data[2,3,4] out the door
 			
 			signal_linear_actuators();
 			
-			//WatchToken = 0;		//here
+			WatchToken = 0;
 		
 		break;
 	
@@ -337,7 +375,8 @@ void MSG_handler ()		// points to the addr of a message struct
 				serial_transmit(' ');
 			}
 	
-		//WatchToken = 0;		//here
+			WatchToken = 0;		// reset watchdog count
+
 		break;
 	
 	
@@ -350,7 +389,7 @@ void MSG_handler ()		// points to the addr of a message struct
 			serial_transmit('f');
 			serial_transmit('l');
 			serial_transmit('t');
-		//WatchToken != 0;			//notably NOT here... I'ma sleep now \("/ )/
+
 		break;
 		}
 		
@@ -671,7 +710,7 @@ void stop_linear_actuators()
 
 
 
-ISR (TIMER5_OVF_vect)
+ISR (TIMER5_OVF_vect)		// Watchdog
 {
 	cli();
 	
@@ -679,9 +718,8 @@ ISR (TIMER5_OVF_vect)
 	{
 		stop_motors();
 		stop_linear_actuators();
-		
 		WatchToken = 0;
-
+		
 		serial_transmit('\n');
 		
 		serial_transmit('Z');				//notify Terminal
@@ -815,13 +853,6 @@ ISR (USART0_RX_vect)
 {
 	cli();									//disable interrupts
 	
-	WatchToken = 0;		// reset watchdog count
-	/*
-	If a bad message propagates in this area, and keeps
-	triggering the ISR before a string of messages is
-	received, the watch dog won't stop the vehicle...
-	*/
-		
 	heard_msg.data[heard_msg.werd_count] = UDR0;
 	
 	serial_transmit(heard_msg.werd_count + '0');
@@ -850,7 +881,6 @@ ISR (USART0_RX_vect)
 		MSG_handler(&heard_msg);
 		heard_msg.werd_count = 0;
 	}
-	
 	
 	sei();
 }
