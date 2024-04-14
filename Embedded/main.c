@@ -147,9 +147,6 @@ void stop_linear_actuators();
 
 //----------------------------------------
 
-
-
-
 typedef struct message						// struct holding variables related to messages (a data Tx)
 {
 	volatile uint8_t werd_count;
@@ -341,17 +338,17 @@ void MSG_handler ()		// points to the addr of a message struct
 			DRIVE_L = (heard_msg.data[1] << 8) | heard_msg.data[2];
 			DRIVE_R = (heard_msg.data[3] << 8) | heard_msg.data[4];
 
-			for (uint8_t i = 0; i < 5; i++)
-			{
-				printBin8(heard_msg.data[i]);
-				serial_transmit(' ');
-			}
+			//for (uint8_t i = 0; i < 5; i++)
+			//{
+				//printBin8(heard_msg.data[i]);
+				//serial_transmit(' ');
+			//}
 	
 			WatchToken = 0;		// reset watchdog count
 
 		break;
-	
-	
+		
+			
 		default:											// if the msg_type is not a recognizable value
 			//didnt_hear(boo_hoo);								// message is bunk, dump it, we're doing connectionless Tx
 			serial_transmit('\t');
@@ -376,6 +373,120 @@ void MSG_handler ()		// points to the addr of a message struct
 		heard_msg.data[4] = 0;
 	
 }
+
+
+uint8_t motor = 'L';
+
+void poll_current_sensors()
+{
+	switch (motor)
+	{
+		case 'L':		// Left drivetrain
+			if (current_alert_L.flag == 1)	// if there's an alert, print it without interruption
+			{
+				cli();
+				serial_transmit(current_alert_L.motor_num);			// which motor
+				serial_transmit(' ');
+				serial_transmit(current_alert_L.sign);			// sign
+				printFloat(current_alert_L.data);				// float value
+				sei();
+			}
+			motor = 'R';
+		break;
+		
+		case 'R':		// Right drivetrain
+			if (current_alert_R.flag == 1)	
+			{
+				cli();
+				serial_transmit(current_alert_R.motor_num);			// which motor
+				serial_transmit(' ');
+				serial_transmit(current_alert_R.sign);			// sign
+				printFloat(current_alert_R.data);				// float value
+				sei();
+			}
+			motor = 'C';
+		break;
+		
+		case 'C':		// Exc chain
+			if (current_alert_C.flag == 1)	
+			{
+				cli();
+				serial_transmit(current_alert_C.motor_num);			// which motor
+				serial_transmit(' ');
+				serial_transmit(current_alert_C.sign);			// sign
+				printFloat(current_alert_C.data);				// float value
+				sei();
+			}
+			motor = 'L';
+	}
+}
+
+
+uint8_t state;
+
+void driving_scheduler ()
+{
+	switch (state)
+	{
+		case '1':		// controls take priority
+		
+			state = 2;
+		break;
+	
+		case '2':		// check prox sensors
+			
+			
+			state = 3;
+		break;
+	
+		case '3':		// check current sensors
+			poll_current_sensors()
+			
+			state = 1;
+		break;
+		
+		default:
+			state = 1;
+		break;
+	}
+}
+
+
+
+void exc_and_dep_scheduler () 
+{
+	switch (state)
+	{
+		case '1':		// controls take priority
+	
+			state = 2;
+		break;
+	
+		case '2':		// check current sensors
+	
+	
+			state = 3;
+		break;
+	
+		case '3':		// check load cells
+			if (current_alert.flag == 1)
+			{
+				cli();
+				serial_transmit(current_alert.data[0]);			// which motor
+				serial_transmit(' ');
+				serial_transmit(current_alert.data[1]);			// sign
+				printFloat(current_alert.data[2]);				// float value
+			}
+			state = 1;
+		break;
+	
+		default:
+			state = 1;
+		break;
+	}
+	
+}
+
 
 
 //-----UART FUNCTIONS-------------------------------------//
@@ -672,6 +783,8 @@ int main(void)
 	serial_transmit('\n');
 	
 	heard_msg.werd_count = 0;
+	
+	state = 0;
 	
 	
 	DDRF &= ~(1<<1); //  makes PF1 an input for ADC1 (for mega)
