@@ -88,15 +88,51 @@ class GamepadSubber(Node):
             ########### output to ROS terminal ####
             self.get_logger().info(f'Left = {self.left_motor}  {format(self.left_motor, "016b")}')
             self.get_logger().info(f'Right = {self.right_motor}  {format(self.right_motor, "016b")}')
-            self.get_logger().info(f'lh = {format(left_high, "08b")}')
-            self.get_logger().info(f'll = {format(left_low, "08b")}')
-            self.get_logger().info(f'rh = {format(right_high, "08b")}')
-            self.get_logger().info(f'rl = {format(right_low, "08b")}')
+            # self.get_logger().info(f'lh = {format(left_high, "08b")}')
+            # self.get_logger().info(f'll = {format(left_low, "08b")}')
+            # self.get_logger().info(f'rh = {format(right_high, "08b")}')
+            # self.get_logger().info(f'rl = {format(right_low, "08b")}')
             ###############################################################
 
         self.last_joy[0] = self.left_motor
         self.last_joy[1] = self.right_motor
 
+    def exponential_drive_math(self, x, y):
+        a = 2.7
+        b = 3.3
+
+        x = -x      # Change bc gamepad's x axes are backwards
+
+        # Exponentiates x & y before doing arcade drive math
+        x = ((a/b)*x^3) + ((1 - (a/b))*x)
+        y = ((a/b)*y^3) + ((1 - (a/b))*y)
+
+        self.max = max(abs(y), abs(x))
+        self.sum = y + x
+        self.diff = y - x
+
+        if y >= 0:      # if y is positive
+            if x >= 0:      # if x is positive      # Quadrant 1
+                self.left_motor = self.max
+                self.right_motor = self.diff
+            else:       # if x is negative          # Quadrant 2
+                self.left_motor = self.sum
+                self.right_motor = self.max
+
+        else:   # if y is negative                  # Quadrant 4
+            if x >= 0:      # if x is positive
+                self.left_motor = self.sum
+                self.right_motor = -(self.max)
+            else:       # if x is negative          # Quadrant 3
+                self.left_motor = -(self.max)
+                self.right_motor = self.diff
+     
+        print(f"Exponential L = {self.left_motor}")
+        print(f"Exponential R = {self.right_motor}")
+
+        ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
+        self.left_motor = int( (self.left_motor * 1000) + 2999 )
+        self.right_motor = int( (self.right_motor * 1000) + 2999 ) 
 
 
     def arcade_drive_math(self, x, y):
@@ -120,6 +156,9 @@ class GamepadSubber(Node):
             else:       # if x is negative          # Quadrant 3
                 self.left_motor = -(self.max)
                 self.right_motor = self.diff
+
+        print(f"Arcade L = {self.left_motor}")
+        print(f"Arcade R = {self.right_motor}")
 
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
         self.left_motor = int( (self.left_motor * 1000) + 2999 )
@@ -151,7 +190,8 @@ class GamepadSubber(Node):
 
         # If left joystick is outside of deadzone
         if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
-            self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
+            self.arcade_drive_math(self.axes_values[0], self.axes_values[1])
+            self.exponential_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
             self.send_duty_vals()
 
         # if left joystick is within deadzone
