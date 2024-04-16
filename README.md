@@ -1,6 +1,6 @@
 # NASA Lunabotics 2024 - Team ARES for SDSU
 
-Using Ubuntu 20.04 LTS on Jetson & laptop.  ROS2 foxy on Jetson & ROS2 humble on laptop.
+Using Ubuntu 20.04 LTS on Jetson & Ubuntu 22.04 LTS on laptop.  ROS2 foxy on Jetson & ROS2 humble on laptop.
 Python packages needed for controls:  rclpy, pyserial, sensor_msgs, bitarray
 Python packages needed for Vulcan video stream:  cv2, pyrealsense2, flask, numpy
 
