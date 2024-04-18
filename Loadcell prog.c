@@ -12,17 +12,17 @@
 
 //-----HXX711 LOAD CELL MACROS------------------------------//
 
-#define SCK_SIG_OUT			 (DDRL |=	  (1<<PINL7));
-#define HX711_DAT_IN		 (DDRL &=	 ~(1<<PINL6));
+#define SCK_SIG_OUT			 (DDRL |=	  (1<<PINL6));
+#define HX711_DAT_IN		 (DDRL &=	 ~(1<<PINL7));
 
-#define HX711_DATA_LINE		  PINL6								//ORANGE
-#define HX711_DATA_RDY	   (!(PINL  &	  (1<<PINL6) )     )
-#define HX711_DAT_PENDING	 (PINL  &	  (1<<PINL6) )
-#define HX711_DATA_VALUE   ( (PINL  &	  (1<<PINL6) ) >> 4)
+#define HX711_DATA_LINE		  PINL7								//ORANGE
+#define HX711_DATA_RDY	   (!(PINL  &	  (1<<PINL7) )     )
+#define HX711_DAT_PENDING	 (PINL  &	  (1<<PINL7) )
+#define HX711_DATA_VALUE   ( (PINL  &	  (1<<PINL7) ) >> 4)
 
-#define SCK_LINE			  PINL7								//PURPLE
-#define SCK_HIGH			 (PORTL |=    (1<<PINL7) )
-#define SCK_LOW				 (PORTL &=   ~(1<<PINL7) )
+#define SCK_LINE			  PINL6								//PURPLE
+#define SCK_HIGH			 (PORTL |=    (1<<PINL6) )
+#define SCK_LOW				 (PORTL &=   ~(1<<PINL6) )
 
 #define GAIN128					1
 #define GAIN32					2
@@ -63,10 +63,7 @@ void uart_init (void)						//initialize UART
 	// Rx must be initialized first!
 	
 	UCSR0C	|=	(1<<	UCSZ00)
-			|	(1<<	UCSZ01);			//8-bit char size
-	
-
-
+			|	(1<<	UCSZ01);			//8-bit char size	
 }
 
 void serial_transmit (unsigned char data)	//Tx serial
