@@ -131,12 +131,6 @@ volatile	uint8_t		WatchToken = 0;
 //-----Communication Protocol-----------------------------//
 
 #define MAX_MSG_LENGTH					5		// max # of words in a msg
-#define CMD_BYTE						0
-
-volatile uint8_t buttons[8]		=	{0};					// button bit field
-
-//----------------------------------------------------------
-
 
 
 //---------Prototype Function Declarations----------//
@@ -172,109 +166,108 @@ void signal_linear_actuators()
 	switch (heard_msg.data[1])
 	{
 		case 0x80:					// exc chain back  X
-		EXC_CHAIN = RVRS_DUTY16;
-		serial_transmit('c');
-		serial_transmit('b');
+			EXC_CHAIN = RVRS_DUTY16;
+			serial_transmit('c');
+			serial_transmit('b');
 		break;
 		
 		
 		case 0x40:					// exc height down  A
-		EXC_HEIGHT = HALF_FWD_DUTY16;
-		serial_transmit('e');
-		serial_transmit('d');
+			EXC_HEIGHT = HALF_FWD_DUTY16;
+			serial_transmit('e');
+			serial_transmit('d');
 		break;
 		
 		
 		case 0x20:					// exc chain fwd  B
-		EXC_CHAIN = FWD_DUTY16;
-		serial_transmit('c');
-		serial_transmit('f');
+			EXC_CHAIN = FWD_DUTY16;
+			serial_transmit('c');
+			serial_transmit('f');
 		break;
 		
 		
 		case 0x10:					// exc height up  Y
-		EXC_HEIGHT = HALF_RVRS_DUTY16;
-		serial_transmit('e');
-		serial_transmit('u');
+			EXC_HEIGHT = HALF_RVRS_DUTY16;
+			serial_transmit('e');
+			serial_transmit('u');
 		break;
 		
 		
 		case 0x08:					// depo tilt fwd  LB
-		DEPO_TILT = FWD_DUTY16;
-		serial_transmit('d');
-		serial_transmit('f');
+			DEPO_TILT = FWD_DUTY16;
+			serial_transmit('d');
+			serial_transmit('f');
 		break;
 		
 		
 		case 0x04:					// exc tilt fwd  RB
-		EXC_TILT = HALF_FWD_DUTY16;
-		serial_transmit('e');
-		serial_transmit('f');
+			EXC_TILT = HALF_FWD_DUTY16;
+			serial_transmit('e');
+			serial_transmit('f');
 		break;
 		
 		
 		case 0x02:					// depo tilt back  LT
-		DEPO_TILT = RVRS_DUTY16;
-		serial_transmit('d');
-		serial_transmit('b');
+			DEPO_TILT = RVRS_DUTY16;
+			serial_transmit('d');
+			serial_transmit('b');
 		break;
 		
 		
 		case 0x01:					// exc tilt back  RT
-		EXC_TILT = HALF_RVRS_DUTY16;
-		serial_transmit('e');
-		serial_transmit('b');
+			EXC_TILT = HALF_RVRS_DUTY16;
+			serial_transmit('e');
+			serial_transmit('b');
 		break;
 		
 		// Two buttons at once:
 		case 0x60:					// exc height down + exc chain fwd    A + B
-		EXC_HEIGHT = HALF_FWD_DUTY16;
-		EXC_CHAIN = HALF_FWD_DUTY16;
-		serial_transmit('e');
-		serial_transmit('d');
-		serial_transmit('&');
-		serial_transmit('c');
-		serial_transmit('f');
+			EXC_HEIGHT = HALF_FWD_DUTY16;
+			EXC_CHAIN = HALF_FWD_DUTY16;
+			serial_transmit('e');
+			serial_transmit('d');
+			serial_transmit('&');
+			serial_transmit('c');
+			serial_transmit('f');
 		break;
 		
 		case 0x30:					// exc height up + exc chain fwd    Y + B
-		EXC_HEIGHT = HALF_RVRS_DUTY16;
-		EXC_CHAIN = HALF_FWD_DUTY16;
-		serial_transmit('e');
-		serial_transmit('u');
-		serial_transmit('&');
-		serial_transmit('c');
-		serial_transmit('f');
+			EXC_HEIGHT = HALF_RVRS_DUTY16;
+			EXC_CHAIN = HALF_FWD_DUTY16;
+			serial_transmit('e');
+			serial_transmit('u');
+			serial_transmit('&');
+			serial_transmit('c');
+			serial_transmit('f');
 		break;
 		
 		case 0xC0:					// exc height down + exc chain backward    A + X
-		EXC_HEIGHT = HALF_FWD_DUTY16;
-		EXC_CHAIN = HALF_RVRS_DUTY16;
-		serial_transmit('e');
-		serial_transmit('d');
-		serial_transmit('&');
-		serial_transmit('c');
-		serial_transmit('b');
+			EXC_HEIGHT = HALF_FWD_DUTY16;
+			EXC_CHAIN = HALF_RVRS_DUTY16;
+			serial_transmit('e');
+			serial_transmit('d');
+			serial_transmit('&');
+			serial_transmit('c');
+			serial_transmit('b');
 		break;
 		
 		case 0x90:					// exc height up + exc chain backward    Y + X
-		EXC_HEIGHT = HALF_RVRS_DUTY16;
-		EXC_CHAIN = HALF_RVRS_DUTY16;
-		serial_transmit('e');
-		serial_transmit('u');
-		serial_transmit('&');
-		serial_transmit('c');
-		serial_transmit('b');
+			EXC_HEIGHT = HALF_RVRS_DUTY16;
+			EXC_CHAIN = HALF_RVRS_DUTY16;
+			serial_transmit('e');
+			serial_transmit('u');
+			serial_transmit('&');
+			serial_transmit('c');
+			serial_transmit('b');
 		break;
 		
-		
 		default:
-		serial_transmit('s');
-		serial_transmit('t');
-		serial_transmit('a');
-		serial_transmit('h');
-		serial_transmit('p');
-		stop_linear_actuators();
+			serial_transmit('s');
+			serial_transmit('t');
+			serial_transmit('a');
+			serial_transmit('h');
+			serial_transmit('p');
+			stop_linear_actuators();
 		break;
 		
 	}
@@ -285,12 +278,7 @@ void signal_linear_actuators()
 void MSG_handler ()		// points to the addr of a message struct
 {
 	//check_sum()&data[CHK_SUM]); here					//best be a good reason
-	
-	/*
-	The watch dog is 5 or 6 seconds, so if it takes 5 to get here- which it doesn't-
-	then we'd have bigger problems. That said, it's annoying but we should clear tokens
-	every message switch condition that's valid
-	*/
+		
 		
 	serial_transmit('m');
 	serial_transmit('s');
@@ -375,21 +363,30 @@ void MSG_handler ()		// points to the addr of a message struct
 }
 
 
+void tx_current_sensor_data (current_alert x)
+{
+	cli();
+	serial_transmit('\n');
+	serial_transmit(x.motor);		
+	serial_transmit(' ');
+	serial_transmit(x.sign);			
+	printFloat(x.data);				
+	sei();
+}
+
+
 uint8_t motor = 'L';
 
-void poll_current_sensors()
+void poll_current_sensors()		// state machine that Round Robin checks the 3 current sensors' flags
 {
 	switch (motor)
 	{
 		case 'L':		// Left drivetrain
-			if (current_alert_L.flag == 1)	// if there's an alert, print it without interruption
+			if (current_alert_L.flag == 1)	// if there's an alert, immediately print it, non-preemptively
 			{
-				cli();
-				serial_transmit(current_alert_L.motor_num);			// which motor
-				serial_transmit(' ');
-				serial_transmit(current_alert_L.sign);			// sign
-				printFloat(current_alert_L.data);				// float value
-				sei();
+				tx_current_sensor_data(current_alert_L);
+				current_alert_L.flag = 0;
+				current_alert_L.data = 0;
 			}
 			motor = 'R';
 		break;
@@ -397,95 +394,95 @@ void poll_current_sensors()
 		case 'R':		// Right drivetrain
 			if (current_alert_R.flag == 1)	
 			{
-				cli();
-				serial_transmit(current_alert_R.motor_num);			// which motor
-				serial_transmit(' ');
-				serial_transmit(current_alert_R.sign);			// sign
-				printFloat(current_alert_R.data);				// float value
-				sei();
+				tx_current_sensor_data(current_alert_R);
+				current_alert_R.flag = 0;
+				current_alert_R.data = 0;
+				
 			}
 			motor = 'C';
 		break;
 		
 		case 'C':		// Exc chain
-			if (current_alert_C.flag == 1)	
-			{
-				cli();
-				serial_transmit(current_alert_C.motor_num);			// which motor
-				serial_transmit(' ');
-				serial_transmit(current_alert_C.sign);			// sign
-				printFloat(current_alert_C.data);				// float value
-				sei();
-			}
+			//if (current_alert_C.flag == 1)	
+			//{
+				//tx_current_sensor_data(current_alert_C);
+				//current_alert_C.flag = 0;
+
+			//}
 			motor = 'L';
-	}
-}
-
-
-uint8_t state;
-
-void driving_scheduler ()
-{
-	switch (state)
-	{
-		case '1':		// controls take priority
-		
-			state = 2;
-		break;
-	
-		case '2':		// check prox sensors
-			
-			
-			state = 3;
-		break;
-	
-		case '3':		// check current sensors
-			poll_current_sensors()
-			
-			state = 1;
 		break;
 		
 		default:
-			state = 1;
+			motor = 'L';
 		break;
 	}
 }
 
 
+//uint8_t state;
 
-void exc_and_dep_scheduler () 
-{
-	switch (state)
-	{
-		case '1':		// controls take priority
-	
-			state = 2;
-		break;
-	
-		case '2':		// check current sensors
-	
-	
-			state = 3;
-		break;
-	
-		case '3':		// check load cells
-			if (current_alert.flag == 1)
-			{
-				cli();
-				serial_transmit(current_alert.data[0]);			// which motor
-				serial_transmit(' ');
-				serial_transmit(current_alert.data[1]);			// sign
-				printFloat(current_alert.data[2]);				// float value
-			}
-			state = 1;
-		break;
-	
-		default:
-			state = 1;
-		break;
-	}
-	
-}
+//void driving_scheduler ()
+//{
+	//switch (state)
+	//{
+		//case '1':		// controls take priority
+		//
+			//state = 2;
+		//break;
+	//
+		//case '2':		// check prox sensors
+			//
+			//
+			//state = 3;
+		//break;
+	//
+		//case '3':		// check current sensors
+			//poll_current_sensors();
+			//
+			//state = 1;
+		//break;
+		//
+		//default:
+			//state = 1;
+		//break;
+	//}
+//}
+
+
+
+//void exc_and_dep_scheduler () 
+//{
+	//switch (state)
+	//{
+		//case '1':		// controls take priority
+	//
+			//state = 2;
+		//break;
+	//
+		//case '2':		// check current sensors
+	//
+	//
+			//state = 3;
+		//break;
+	//
+		//case '3':		// check load cells
+			//if (current_alert.flag == 1)
+			//{
+				//cli();
+				//serial_transmit(current_alert.data[0]);			// which motor
+				//serial_transmit(' ');
+				//serial_transmit(current_alert.data[1]);			// sign
+				//printFloat(current_alert.data[2]);				// float value
+			//}
+			//state = 1;
+		//break;
+	//
+		//default:
+			//state = 1;
+		//break;
+	//}
+	//
+//}
 
 
 
@@ -605,7 +602,7 @@ ISR (TIMER5_OVF_vect)
 {
 	cli();
 	
-	if(WatchToken == 240)					//kill operations
+	if(WatchToken == 240)					//kill operations every ~6 s
 	{
 		stop_motors();
 		stop_linear_actuators();
@@ -784,7 +781,8 @@ int main(void)
 	
 	heard_msg.werd_count = 0;
 	
-	state = 0;
+	
+	//state = 0;
 	
 	
 	DDRF &= ~(1<<1); //  makes PF1 an input for ADC1 (for mega)
@@ -794,7 +792,7 @@ int main(void)
 	
 	while (1)
 	{
-		
+		poll_current_sensors();
 	}
 	
 }

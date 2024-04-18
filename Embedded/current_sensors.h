@@ -9,6 +9,7 @@
 
 #define F_CPU 16000000UL   	 // 16MHz
 #include <util/delay.h>
+#include <stdbool.h>
 
 #include "serialTxfunctions.h"
 
@@ -29,32 +30,36 @@ volatile uint16_t array2[arr_size] = {0};
 
 typedef struct current_alert
 {
-	volatile bool flag = 0;
-	volatile uint8_t motor_num;
-	volatile uint8_t sign;
+	volatile bool flag;		// 1 if a threshold was reached
+	volatile uint8_t motor;		// which motor
+	volatile uint8_t sign;		// + or - sign
 	volatile float data;
 } current_alert;
 
 
-volatile struct current_alert current_alert_L;		// Left drivetrain current sensor
-current_alert_L.motor_num = 1;
+volatile struct current_alert current_alert_L = {0, 'L'};		// Left drivetrain current sensor
+//current_alert_L.motor = 'L';
 
-volatile struct current_alert current_alert_R;		// Right drivetrain current sensor
-current_alert_R.motor_num = 2;
+volatile struct current_alert current_alert_R = {0, 'R'};		// Right drivetrain current sensor
+//current_alert_R.motor = 2;
 
 
 
 
 void sensor_ADC_init() {
 	ADCSRA |= (1<<ADEN);	// enable ADC
-	ADCSRA |= (1<<ADATE);	// enable ADC auto trigger interrupt
+	ADCSRA |= (1<<ADATE);	// enable ADC auto trigger
+							// auto trigger source = free running mode
 	ADCSRA |= (1<<ADIE);	// enable ADC conversion complete interrupt
 	ADCSRA |= (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2); // prescale 128
 	ADMUX |= (1<<REFS0);	// AVcc is our reference voltage
 	ADMUX |= (1<<MUX0);		// ADC1, PF1
-	ADCSRA |= (1<<ADSC);	// start first conversion
+	ADCSRA |= (1<<ADSC);	// start first conversion; as long as this is 1, conversions will keep happening
 }
 
+
+//grabs ADC value from registers, finds the rolling average ADC value, normalizes the value,
+//then checks that value against the set thresholds, if within thresholds, flags & stores data
 
 ISR (ADC_vect) {
 	static uint16_t ADC_low = 0;
@@ -77,7 +82,7 @@ ISR (ADC_vect) {
 		current = voltage*9.752;	// 1/0.11 * 1000 --> new sensitivity with amplifier
 
 
-		if (current > 18.8 || current < 18.4) {		// Thresholds
+		if (current > 22.3) {		// Thresholds
 			current_alert_L.flag = 1;
 			
 			if (ADC_full < 512) {
@@ -119,7 +124,7 @@ ISR (ADC_vect) {
 		current = voltage*9.752;
 
 
-		if (current > 18.8 || current < 18.4) {		// Thresholds
+		if (current > 22.3) {		// Thresholds
 			current_alert_R.flag = 1;
 			
 			if (ADC_full < 512) {
