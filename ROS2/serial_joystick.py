@@ -98,14 +98,15 @@ class GamepadSubber(Node):
         self.last_joy[1] = self.right_motor
 
     def exponential_drive_math(self, x, y):
-        a = 2.7
-        b = 3.3
+        # a = 2.7
+        # b = 3.3
+        c = 0.81
 
         x = -x      # Change bc gamepad's x axes are backwards
 
         # Exponentiates x & y before doing arcade drive math
-        x = ((a/b)*x^3) + ((1 - (a/b))*x)
-        y = ((a/b)*y^3) + ((1 - (a/b))*y)
+        x = (c*x^3) + ((1 - c)*x)
+        y = (c*y^3) + ((1 - c)*y)
 
         self.max = max(abs(y), abs(x))
         self.sum = y + x
