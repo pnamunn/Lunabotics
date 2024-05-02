@@ -88,10 +88,10 @@ class GamepadSubber(Node):
             ########### output to ROS terminal ####
             self.get_logger().info(f'Left = {self.left_motor}  {format(self.left_motor, "016b")}')
             self.get_logger().info(f'Right = {self.right_motor}  {format(self.right_motor, "016b")}')
-            self.get_logger().info(f'lh = {format(left_high, "08b")}')
-            self.get_logger().info(f'll = {format(left_low, "08b")}')
-            self.get_logger().info(f'rh = {format(right_high, "08b")}')
-            self.get_logger().info(f'rl = {format(right_low, "08b")}')
+            # self.get_logger().info(f'lh = {format(left_high, "08b")}')
+            # self.get_logger().info(f'll = {format(left_low, "08b")}')
+            # self.get_logger().info(f'rh = {format(right_high, "08b")}')
+            # self.get_logger().info(f'rl = {format(right_low, "08b")}')
             ###############################################################
 
         self.last_joy[0] = self.left_motor
@@ -158,8 +158,8 @@ class GamepadSubber(Node):
         else:       
             self.left_motor = 2999
             self.right_motor = 2999
-
             self.send_duty_vals()
+
 
         if (self.last_butt != self.button_values):
             self.send(b'1')     # send message_type 1
@@ -190,6 +190,10 @@ def main(args=None):
     rclpy.init(args=args)       # inits rclpy library
 
     subber = GamepadSubber()    # creates a node instance
+
+    subber.left_motor = 2999
+    subber.right_motor = 2999
+    subber.send_duty_vals()
 
     rclpy.spin(subber)       # spins node (endlessly loops) until the user kills the node program (with Ctrl+C)
 
