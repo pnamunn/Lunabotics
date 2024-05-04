@@ -33,16 +33,23 @@ class GamepadSubber(Node):
         self.get_logger().info("GamepadSubber(Node) instance created.")
 
 
-        self.ser = serial.Serial('/dev/ttyACM1', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega
+        self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega
 
         self._deadzone = 0.1
+
         self.curr_joy = [0, 0]  # holds left & right motor vals
         self.last_joy = [0, 0]  # holds left & right motor vals
+
+        self.curr_gimb = [0, 0]  # holds left & right gimble vals
+        self.last_gimb = [0, 0]
 
         self.last_butt = bytearray([0, 0, 0, 0, 0, 0, 0, 0])   # holds self.button_values array
 
         self.left_motor = 0
         self.right_motor = 0
+
+        self.left_gimble = 0
+        self.right_gimble = 0
 
 
 
@@ -66,9 +73,9 @@ class GamepadSubber(Node):
         if (self.curr_joy != self.last_joy):
 
             if (self.left_motor == 2999 and self.right_motor == 2999):
-                self.get_logger().info(f'In deadzone')
+                self.get_logger().info(f'L deadzone')
             else:
-                self.get_logger().info(f'Joystick moving')
+                self.get_logger().info(f'L joystick moving')
         
             self.send(b'2')     # send message_type 2
             time.sleep(0.05)
@@ -86,16 +93,63 @@ class GamepadSubber(Node):
             time.sleep(0.05)
 
             ########### output to ROS terminal ####
-            self.get_logger().info(f'Left = {self.left_motor}  {format(self.left_motor, "016b")}')
-            self.get_logger().info(f'Right = {self.right_motor}  {format(self.right_motor, "016b")}')
-            self.get_logger().info(f'lh = {format(left_high, "08b")}')
-            self.get_logger().info(f'll = {format(left_low, "08b")}')
-            self.get_logger().info(f'rh = {format(right_high, "08b")}')
-            self.get_logger().info(f'rl = {format(right_low, "08b")}')
+            self.get_logger().info(f'L Left = {self.left_motor}')
+            self.get_logger().info(f'L Right = {self.right_motor}')
+            # self.get_logger().info(f'lh = {format(left_high, "08b")}')
+            # self.get_logger().info(f'll = {format(left_low, "08b")}')
+            # self.get_logger().info(f'rh = {format(right_high, "08b")}')
+            # self.get_logger().info(f'rl = {format(right_low, "08b")}')
             ###############################################################
 
         self.last_joy[0] = self.left_motor
         self.last_joy[1] = self.right_motor
+
+
+
+
+    def send_gimble_vals(self):
+        self.curr_gimb[0] = self.left_gimble
+        self.curr_gimb[1] = self.right_gimble
+
+        right_gimb_low = (self.right_gimble & 0b0000_0000_1111_1111)
+        right_gimb_high = (self.right_gimble >> 8)
+        left_gimb_low = (self.left_gimble & 0b0000_0000_1111_1111)
+        left_gimb_high = (self.left_gimble >> 8)
+
+
+        if (self.curr_gimb != self.last_gimb):
+
+            if (self.left_gimble == 2999 and self.right_gimble == 2999):
+                self.get_logger().info(f'R deadzone')
+            else:
+                self.get_logger().info(f'R joystick moving')
+        
+            self.send(b'3')     # send message_type 3
+            time.sleep(0.05)
+            
+            self.send((left_gimb_high).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
+
+            self.send((left_gimb_low).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
+
+            self.send((right_gimb_high).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
+
+            self.send((right_gimb_low).to_bytes(1, byteorder="big"))
+            time.sleep(0.05)
+
+            ########### output to ROS terminal ####
+            self.get_logger().info(f'R Left = {self.left_gimble}')
+            self.get_logger().info(f'R Right = {self.right_gimble}')
+            # self.get_logger().info(f'lh = {format(left_high, "08b")}')
+            # self.get_logger().info(f'll = {format(left_low, "08b")}')
+            # self.get_logger().info(f'rh = {format(right_high, "08b")}')
+            # self.get_logger().info(f'rl = {format(right_low, "08b")}')
+            ###############################################################
+
+        self.last_gimb[0] = self.left_gimble
+        self.last_gimb[1] = self.right_gimble
 
 
 
@@ -121,9 +175,78 @@ class GamepadSubber(Node):
                 self.left_motor = -(self.max)
                 self.right_motor = self.diff
 
+        print(f"Linear L = {self.left_motor}")
+        print(f"Linear R = {self.right_motor}")
+
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
         self.left_motor = int( (self.left_motor * 1000) + 2999 )
         self.right_motor = int( (self.right_motor * 1000) + 2999 ) 
+
+
+
+    def exponential_drive_math(self, x, y):
+        a = 2.7
+        b = 3.3
+
+        x = -x      # Change bc gamepad's x axes are backwards
+
+        # Exponentiates x & y before doing arcade drive math
+        x = ((a/b)*x**3) + ((1 - (a/b))*x)
+        y = ((a/b)*y**3) + ((1 - (a/b))*y)
+
+        self.max = max(abs(y), abs(x))
+        self.sum = y + x
+        self.diff = y - x
+        if y >= 0:      # if y is positive
+            if x >= 0:      # if x is positive      # Quadrant 1
+                self.left_motor = self.max
+                self.right_motor = self.diff
+            else:       # if x is negative          # Quadrant 2
+                self.left_motor = self.sum
+                self.right_motor = self.max
+        else:   # if y is negative                  # Quadrant 4
+            if x >= 0:      # if x is positive
+                self.left_motor = self.sum
+                self.right_motor = -(self.max)
+            else:       # if x is negative          # Quadrant 3
+                self.left_motor = -(self.max)
+                self.right_motor = self.diff
+     
+        print(f"Exponential L = {self.left_motor}")
+        print(f"Exponential R = {self.right_motor}")
+
+        ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
+        self.left_motor = int( (self.left_motor * 1000) + 2999 )
+        self.right_motor = int( (self.right_motor * 1000) + 2999 )
+    
+
+
+    def gimble_drive_math(self, x, y):
+        x = -x      # Change bc gamepad's x axes are backwards
+        self.max = max(abs(y), abs(x))
+        self.sum = y + x
+        self.diff = y - x
+
+        if y >= 0:      # if y is positive
+            if x >= 0:      # if x is positive      # Quadrant 1
+                self.left_gimble = self.max
+                self.right_gimble = self.diff
+            else:       # if x is negative          # Quadrant 2
+                self.left_gimble = self.sum
+                self.right_gimble = self.max
+
+        else:   # if y is negative                  # Quadrant 4
+            if x >= 0:      # if x is positive
+                self.left_gimble = self.sum
+                self.right_gimble = -(self.max)
+            else:       # if x is negative          # Quadrant 3
+                self.left_gimble = -(self.max)
+                self.right_gimble = self.diff
+
+        ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
+        self.left_gimble = int( (self.left_gimble * 1000) + 2999 )
+        self.right_gimble = int( (self.right_gimble * 1000) + 2999 ) 
+
 
 
 
@@ -146,21 +269,36 @@ class GamepadSubber(Node):
 
 
 
-        ''' Motor control using the Joysticks '''
+        ''' Motor control using the left joystick '''
         # TODO pull out curr_value/last value comparison out here so we can avoid doing computation here if there is no val difference
 
         # If left joystick is outside of deadzone
         if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
             self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
+            self.exponential_drive_math(self.axes_values[0], self.axes_values[1]) 
             self.send_duty_vals()
 
         # if left joystick is within deadzone
         else:       
             self.left_motor = 2999
             self.right_motor = 2999
-
             self.send_duty_vals()
 
+
+        ''' Gimble control using the right joystick '''
+        # If right joystick is outside of deadzone
+        if (self.axes_values[2] > self._deadzone or self.axes_values[2] < -(self._deadzone) or self.axes_values[3] > self._deadzone or self.axes_values[3] < -(self._deadzone)):
+            self.gimble_drive_math(self.axes_values[2], self.axes_values[3])    # calc left and right motor values
+            self.send_gimble_vals()
+
+        # if right joystick is within deadzone
+        else:       
+            self.left_gimble = 2999
+            self.right_gimble = 2999
+            self.send_gimble_vals()
+        
+
+        
         if (self.last_butt != self.button_values):
             self.send(b'1')     # send message_type 1
             time.sleep(0.05)
@@ -180,7 +318,6 @@ class GamepadSubber(Node):
             # self.get_logger().info(f'Vals: {self.button_values}')
             # self.get_logger().info(f'Sent: {bytes(self.button_values)}')
 
-
         self.last_butt = self.button_values
 
 
@@ -191,11 +328,20 @@ def main(args=None):
 
     subber = GamepadSubber()    # creates a node instance
 
+    # Initialize to stop
+    subber.left_motor = 2999
+    subber.right_motor = 2999
+    subber.send_duty_vals()
+
+    subber.left_gimble = 2999
+    subber.right_gimble = 2999
+    subber.send_gimble_vals()   
+
     rclpy.spin(subber)       # spins node (endlessly loops) until the user kills the node program (with Ctrl+C)
 
     subber.destroy_node()   
     rclpy.shutdown()
-    self.ser.close()
+    subber.ser.close()
 
 
 if __name__ == '__main__':
