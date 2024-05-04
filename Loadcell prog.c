@@ -7,7 +7,6 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <avr/eeprom.h>
 
 
 //-----HXX711 LOAD CELL MACROS------------------------------//
@@ -31,12 +30,17 @@
 volatile uint32_t	hx711_data			= 0;
 volatile uint16_t	sense_read			= 0;
 volatile uint8_t	tare_flag			= 0;
-volatile uint16_t	known_grams			= 516;
-volatile uint16_t	known_bit			= 270;
+volatile uint16_t	known_grams			= 3470;
+volatile uint16_t	known_bit			= 3720;
 volatile uint16_t	grams				= 0;
 volatile uint16_t	Tare_it_bruh		= 0;
 volatile uint16_t	known_Delta_Ref		= 0;			//Associative bits to 516 Grams
 volatile uint8_t	DepBinLoading		= 1;
+
+volatile uint16_t	LOL_log_dog[8]={0};
+volatile uint8_t	NOT_C_banger=0;
+volatile uint32_t	sum=0;
+
 
 void uart_init (void)						//initialize UART
 {
@@ -63,7 +67,10 @@ void uart_init (void)						//initialize UART
 	// Rx must be initialized first!
 	
 	UCSR0C	|=	(1<<	UCSZ00)
-			|	(1<<	UCSZ01);			//8-bit char size	
+			|	(1<<	UCSZ01);			//8-bit char size
+	
+
+
 }
 
 void serial_transmit (unsigned char data)	//Tx serial
@@ -125,7 +132,7 @@ void term_Send_16_as_Digits(uint16_t val){
 void gpio_init()							//in's and out's
 {
 	
-	PORTL |= (1<<6);	
+	PORTL |= (1<<7);	
 	SCK_SIG_OUT
 	HX711_DAT_IN
 	
@@ -211,14 +218,16 @@ int main(void)
 	gpio_init();
 
 	//uint16_t grams = 0;
-    /* Replace with your application code */
+
     while (1) 
     {
 		
 		
-		if(HX711_DATA_RDY)
+		if(HX711_DATA_RDY)				//could be expensive wrt time if in function invktn
 		{
-			use_HX711();
+			use_HX711();				//costs ~32us/1 read
+				
+			
 			hx711_data|=0xFF000000;
 			hx711_data = ~hx711_data;
 			hx711_data +=1;				//undo 2's comp
@@ -226,28 +235,55 @@ int main(void)
 			hx711_data>>=8;
 			sense_read|=hx711_data;
 			
+
 			if (tare_flag)
 			{
 				Tare_it_bruh = sense_read;
 			}
 			
-			sense_read= sense_read-(Tare_it_bruh-3);
+			sense_read= sense_read-(Tare_it_bruh);
 			
 			//grams=(sense_read<<1);
 			
-			grams = ((uint32_t)sense_read*(uint32_t)known_grams)/275;
-			term_Send_16_as_Digits(grams);
-			serial_transmit('\n');				//Print nxt on
-			serial_transmit('\r');				//new line
+			grams = ((uint32_t)sense_read*(uint32_t)known_grams)/known_bit;
 			
-			tare_flag=0;
-			sense_read		= 0;
-			hx711_data =0;
-			/*
-			if (grams>50000)
-			{
+			// subtract the oldest value,
+			//  because its about to be replaced
+			//   with the newest value
+			sum-=LOL_log_dog[NOT_C_banger];
+			
+			LOL_log_dog[NOT_C_banger]=grams;
+			
+			sum += LOL_log_dog[NOT_C_banger];
+			NOT_C_banger++;
+			
+			NOT_C_banger=NOT_C_banger%8;
+
+			grams=sum>>3;
+			//lopass avg opt1
+
+			
+			
+			
+			//term_Send_16_as_Digits(grams);
+			
+			//term_Send_16_as_Digits(sense_read);
+			
+			//serial_transmit('\n');				//Print nxt on
+			//serial_transmit('\r');				//new line
+			
+
+			
+			if (grams>50000)						//more resillience could be had here to 
+			{										//hold if valid weigh brings close to 50kg
 				grams = 0;
+				
 				term_Send_16_as_Digits(grams);
+				
+				sense_read=0;
+				
+				//term_Send_16_as_Digits(sense_read);
+				
 				
 				serial_transmit('G');				//notify Terminal
 				serial_transmit('R');
@@ -260,19 +296,30 @@ int main(void)
 			}
 			else
 			{
+			
+			//lopass avg opt2
+			
 			    term_Send_16_as_Digits(grams);
+				
+				//term_Send_16_as_Digits(sense_read);
 				
 				serial_transmit('G');				//notify Terminal
 				serial_transmit('R');
 				serial_transmit('A');
 				serial_transmit('M');
 				serial_transmit('S');
-					serial_transmit('\n');				//Print nxt on
-					serial_transmit('\r');				//new line
-			sense_read		= 0;
+				serial_transmit('\n');				//Print nxt on
+				serial_transmit('\r');				//new line
+			
+				sense_read		= 0;
+			
 			}
 			
-			*/
+			
+		
+			tare_flag=0;
+			sense_read		= 0;
+			hx711_data =0;
 		
 		}
 	}
