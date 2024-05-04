@@ -120,7 +120,6 @@ volatile uint8_t	DepBinLoading	= 1;
 #define FPWM_4B_OUT		(DDRE	|=	(1<<PINE4));
 #define FPWM_4C_OUT		(DDRE	|=	(1<<PINE5));
 
-
 //-----TIMER 4 FAST PWM SETTING MACROS----------------------//
 
 #define T4A_COM_HI		(TCCR4A	|=  (1<<COM4A1)	| (1<<COM4B1)| (1<<COM4C1));
@@ -161,11 +160,11 @@ volatile uint8_t	DepBinLoading	= 1;
 
 #define TOP_40HZ	39999
 
-#define DRIVE_L		OCR1A	// pin 11, PB5
+#define DRIVE_L		OCR1A	// Arduino pin 11, PB5
 #define DRIVE_R		OCR1B	// pin 12, PB6
-#define SERVO_L		OCR1C	// pin 26, PB7
+#define SERVO_L		OCR1C	// pin 13, PB7
 #define SERVO_R		OCR3A	// pin 5, PE3
-#define DEPO_TILT	OCR5B	// pin 39, PL4
+#define DEPO_TILT	OCR5B	// pin 45, PL4
 #define EXC_TILT	OCR4A	// pin 6, PH3
 #define EXC_CHAIN	OCR4B	// pin 7, PH4
 #define EXC_HEIGHT	OCR4C	// pin 8, PH5
@@ -439,6 +438,7 @@ void uart_init (void)						//initialize UART
 	
 	UCSR0C	|=	(1<<	UCSZ00)
 			|	(1<<	UCSZ01);			//8-bit char size
+			
 
 }
 
@@ -535,9 +535,13 @@ void gpio_init()							//in's and out's
 	FPWM_2B_OUT
 	FPWM_2C_OUT
 	
-	//FPWM_3A_OUT
+	FPWM_3A_OUT
 	FPWM_3B_OUT
-	//FPWM_3C_OUT
+	FPWM_3C_OUT
+	
+	FPWM_4A_OUT
+	FPWM_4B_OUT
+	FPWM_4C_OUT
 }
 
 //void Prox_ISR_EN()							//EXT interrupt
@@ -597,6 +601,8 @@ void stop_motors()		// initialize all motor direction to be stopped
 {
 	DRIVE_L		= STOP_DUTY16;
 	DRIVE_R		= STOP_DUTY16;
+	SERVO_L		= STOP_DUTY16;
+	SERVO_R		= STOP_DUTY16;
 }
 
 
@@ -940,6 +946,7 @@ int main(void)
 	serial_transmit('\n');
 	
 	timer1_init();
+	timer3_init();
 	timer4_init();
 	timer5_init();
 	heard_msg.werd_count = 0;
