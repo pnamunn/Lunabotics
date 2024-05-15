@@ -179,8 +179,8 @@ class GamepadSubber(Node):
         print(f"Linear R = {self.right_motor}")
 
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
-        self.left_motor = int( (self.left_motor * 1000) + 2999 )
-        self.right_motor = int( (self.right_motor * 1000) + 2999 ) 
+        self.left_motor = int( (self.left_motor * 500) + 2999 )
+        self.right_motor = int( (self.right_motor * 500) + 2999 ) 
 
 
 
@@ -189,8 +189,12 @@ class GamepadSubber(Node):
         x = -x      # Change bc gamepad's x axes are backwards
 
         # Exponentiates x & y before doing arcade drive math
-        x = ((c)*x**3) + ((1 - (c))*x)
-        y = ((c)*y**3) + ((1 - (c))*y)
+        if x > 0:
+            x = 0.1 + (c*x**3) + ((0.9 - c)*x)
+        else:
+            x = -0.1 + (c*x**3) + ((0.9 - c)*x)
+
+        y = (c*y**3) + ((1 - c)*y)
 
         self.max = max(abs(y), abs(x))
         self.sum = y + x
@@ -273,7 +277,6 @@ class GamepadSubber(Node):
         # If left joystick is outside of deadzone
         if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
             self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
-            self.exponential_drive_math(self.axes_values[0], self.axes_values[1]) 
             self.send_duty_vals()
 
         # if left joystick is within deadzone

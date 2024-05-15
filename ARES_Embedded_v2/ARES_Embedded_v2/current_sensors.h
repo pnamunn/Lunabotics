@@ -48,13 +48,13 @@ volatile struct current_alert current_alert_R = {0, 'R'};		// Right drivetrain c
 
 void sensor_ADC_init() {
 	ADCSRA |= (1<<ADEN);	// enable ADC
-	ADCSRA |= (1<<ADATE);	// enable ADC auto trigger
-							// auto trigger source = free running mode
+							// ADATE bit is initialized to 0 for manual conversion
+							// manually trigger using ADSC
 	ADCSRA |= (1<<ADIE);	// enable ADC conversion complete interrupt
 	ADCSRA |= (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2); // prescale 128
 	ADMUX |= (1<<REFS0);	// AVcc is our reference voltage
 	ADMUX |= (1<<MUX0);		// ADC1, PF1
-	ADCSRA |= (1<<ADSC);	// start first conversion; as long as this is 1, conversions will keep happening
+	//ADCSRA |= (1<<ADSC);	// start first conversion; as long as this is 1, conversions will keep happening
 }
 
 
