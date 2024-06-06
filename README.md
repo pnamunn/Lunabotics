@@ -1,5 +1,7 @@
-# NASA Lunabotics 2024 - Team ARES for SDSU
+# NASA Lunabotics 2024 Competition - Team ARES for SDSU
+![Rover picture](rover.jpg)
 
+## Distros used:
 Using Ubuntu 20.04 LTS on Jetson & Ubuntu 22.04 LTS on laptop.  ROS2 foxy on Jetson & ROS2 humble on laptop.  Different ROS2 versions shouldn't affect their ability to work together over a network.  
 Python packages needed for controls:  rclpy, pyserial, sensor_msgs, bitarray  
 Python packages needed for modified Vulcan video stream:  cv2, pyrealsense2, flask, numpy  

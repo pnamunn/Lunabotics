@@ -283,7 +283,7 @@ class GamepadSubber(Node):      # node that subs to /joy pubber
 
     def normalize_for_half_duty(self):
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values,
-        but due to the ESC's max current constaints, can only run these motors at half speeds maximum '''
+        but due to the ESC's max current constaints, only run these motors at half speeds maximum '''
         self.left_motor = int( (self.left_motor * 500) + 2999 ) 
         self.right_motor = int( (self.right_motor * 500) + 2999 )
 
