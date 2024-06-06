@@ -80,12 +80,12 @@ class GamepadSubber(Node):
         # self.right_gimble = 0
 
 
-
     def send(self, cmd):        # Used to serial Tx
         if (type(cmd) == str):
             self.ser.write(cmd.encode())
         elif (type(cmd) == bytes):
             self.ser.write(cmd)
+        time.sleep(0.05)    # small delay to accommidate small Arduino Rx buffer (prevent data overrun)
 
 
     def send_duty_vals(self):
@@ -105,20 +105,11 @@ class GamepadSubber(Node):
             else:
                 self.get_logger().info(f'L joystick moving')
         
-            self.send(b'2')     # send message_type 2
-            time.sleep(0.05)
-            
+            self.send(b'2')                      # send message_type 2
             self.send((left_high).to_bytes(1, byteorder="big"))
-            time.sleep(0.05)
-
             self.send((left_low).to_bytes(1, byteorder="big"))
-            time.sleep(0.05)
-
             self.send((right_high).to_bytes(1, byteorder="big"))
-            time.sleep(0.05)
-
             self.send((right_low).to_bytes(1, byteorder="big"))
-            time.sleep(0.05)
 
             ########### output to ROS terminal ####
             self.get_logger().info(f'L Left = {self.left_motor}')
@@ -131,8 +122,6 @@ class GamepadSubber(Node):
 
         self.last_joy[0] = self.left_motor
         self.last_joy[1] = self.right_motor
-
-
 
 
     def send_gimble_vals(self):
@@ -280,25 +269,18 @@ class GamepadSubber(Node):
         ''' Callback function grabs some of the values being published by /joy topic and sends serially to Arduino. '''
 
         self.button_values = msg.buttons
-        # self.get_logger().info(f'Subber received buttons = {self.button_values}')
-
-        # self.get_logger().info(f'button values = {self.button_values}')
         self.button_values.pop(11)      # gets last 4 unused buttons out of the array so button values is a 8 element array
         self.button_values.pop(10)
         self.button_values.pop(9)
         self.button_values.pop(8)
         self.button_values = bitarray(self.button_values)      # converts array into a byte array
-        # self.get_logger().info(f'after pops = {self.button_values}')
 
         self.axes_values = msg.axes
-        # self.get_logger().info(f'Subber received axes = {self.axes_values}')
-
-
 
         ''' Motor control using the left joystick '''
         # If left joystick is outside of deadzone
         if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
-            self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
+            self.arcade_drive_math(self.axes_values[0], self.axes_values[1])        # calc left and right motor values
             # self.exponential_drive_math(self.axes_values[0], self.axes_values[1]) 
             self.send_duty_vals()
 
@@ -322,22 +304,13 @@ class GamepadSubber(Node):
             self.send_gimble_vals()
         
 
-        
+        ''' Button controls '''
         if (self.last_butt != self.button_values):
-            self.send(b'1')     # send message_type 1
-            time.sleep(0.05)
-
+            self.send(b'1')                              # send message_type 1
             self.send(bytes(self.button_values))       # converts bit array to byte and sends
-            time.sleep(0.05)
-
-            self.send(b'0')     # send filler bytes
-            time.sleep(0.05)
-
+            self.send(b'0')                              # send filler bytes
             self.send(b'0')
-            time.sleep(0.05)
-
             self.send(b'0')
-            time.sleep(0.05)     
             
             # self.get_logger().info(f'Vals: {self.button_values}')
             # self.get_logger().info(f'Sent: {bytes(self.button_values)}')
@@ -352,7 +325,7 @@ def main(args=None):
 
     subber = GamepadSubber()    # creates a node instance
 
-    #   Joseph Notes
+    #   Joseph Addition
     #       Easier to change python than embedded on short timescale
     #       Irregular right side motor movements, unmeasured on scope
     #           but correlated to JoyNode connection time and not idle
@@ -361,11 +334,9 @@ def main(args=None):
     #           - Clear that buffer
     #           - In theory garbage and desynchronization can occur as intended if
     #               garbage in the buffer or some weird pyserial thing was the issue
-    #
-    #       idk what embedded error checking there is but potential UART moment
-    time.sleep((25.0/1000.0))           # MAY 11 ADDITION - Joseph
-    subber.ser.reset_output_buffer()    # MAY 11 ADDITION - Joseph
-    # END OF MY ADDITIONS HERE IDK HOW PYTHON WORKS :) <3
+    time.sleep((25.0/1000.0))          
+    subber.ser.reset_output_buffer()   
+    # END Joseph addition
 
     # Initialize to stop
     subber.left_motor = 2999
@@ -376,13 +347,12 @@ def main(args=None):
     subber.right_gimble = 2999
     subber.send_gimble_vals()   
 
-    #   Joseph Additions (but like the last ones)
+    #   Joseph Addition
     #       - Ensure output is properly flushed
-    #       - In theory all outputs subsequent to this should be synchronizd to
-    #           embedded UART ISR. We love blocking delays :)
     time.sleep((25.0/1000.0))
     subber.ser.reset_output_buffer()
-    # END OF MY ADDITIONS HERE I STILL DONT KNOW HOW PYTHON WORKS :) <3
+    # END Joseph addition
+
 
     rclpy.spin(subber)       # spins node (endlessly loops) until the user kills the node program (with Ctrl+C)
 
