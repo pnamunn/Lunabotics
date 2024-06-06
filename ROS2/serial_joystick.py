@@ -1,11 +1,45 @@
-''' Creates a node that converts gamepad input to rover motor commands. '''
+''' 
+Program:        serial_joystick.py
+Author:         Patricia Munn
 
-''' Takes in the 32 bit float values being published by /joy topic & converts 
-them to 8 bit ASCII values.  Then sends ASCII data serially to Arduino Nano. '''
+Use Case:       Runs on the Jetson Orin Nano on-board the rover.  Allows for
+                communication between the user in Mission Control and the rover
+                in the arena.  Takes joystick and button commands from the Logitech
+                gamepad plugged into the UI laptop before processing them & 
+                serially sending them to the Arduino Mega through UART, where
+                they will go as PWM signals to the motors & linear actuators.
 
-''' To use this code: Run joy_node on Linux laptop to publish /joy topic.
-Then run this code on the Jetson to create a gamepad_subber_node that will sub to the
-/joy topic.  Logitech F310 gamepad must be flipped to D mode & have the Mode button light OFF. '''
+                The left joystick controls the rover's drivetrain motors & the
+                buttonsmcontrol the excavation chain motormand the linear actuators.
+
+                A joy_node must be running on the UI laptop, with the Logitech 
+                F310 gamepad plugged in and flipped to D mode with the mode 
+                button light off.  Both the Jetson and the laptop must be on 
+                the same network for ROS2 to automatically allow communication 
+                between the 2 nodes running on different devices.
+
+
+Functionality:  First creates the gamepad_subber_node and sets it to subscribe
+                to a joy_node's /joy topic to receive the user input data coming
+                from the Logitech gamepad's joysticks and buttons.
+
+                This code's gamepad_subber_node then constantly monitors the
+                gamepad input coming from the joy_node and will process and send
+                new commands if they come.  If the left joystick moves outside the
+                deadzone, it's x & y axis values are translated to the proper
+                direction/speed and normalized to the Arduino's PWM range of
+                [3999, 1999] in the arcade_drive() function.  The duty values are
+                sent serially as 4 bytes with 1 message type byte.
+                The button values are sent as 1 byte with 3 useless filler bytes
+                and 1 message type byte.
+
+
+Documentation   https://pyserial.readthedocs.io/en/latest/pyserial_api.html#classes
+used:           https://xiaoxiae.github.io/Robotics-Simplified-Website/drivetrain-control/arcade-drive/#:~:text=%2C%20right_motor)-,Visualization,-Here%20is%20an
+
+
+
+'''
 
 
 import serial
@@ -26,30 +60,24 @@ class GamepadSubber(Node):
         ''' Creates a subber node of msg_type=Joy, topic_name=joy, callback_function=joy_callback() '''
         self.subber = self.create_subscription(Joy, 'joy', self.joy_callback, 10)
 
-        # TODO make cod autodetect correct port for Arduino Mega
-        # self.usb_port = "/dev/tty/ACM0"
-        # self.get_logger().info(f"GamepadSubber(Node) instance created.\nUsing {} for serial comm to Arduino.")
-
         self.get_logger().info("GamepadSubber(Node) instance created.")
-
-
         self.ser = serial.Serial('/dev/ttyACM0', 500000, bytesize=8, timeout=2)      # serial to Arduino Mega
 
         self._deadzone = 0.1
 
         self.curr_joy = [0, 0]  # holds left & right motor vals
-        self.last_joy = [0, 0]  # holds left & right motor vals
+        self.last_joy = [0, 0] 
 
-        self.curr_gimb = [0, 0]  # holds left & right gimble vals
-        self.last_gimb = [0, 0]
+        # self.curr_gimb = [0, 0]  # holds left & right gimble vals
+        # self.last_gimb = [0, 0]
 
         self.last_butt = bytearray([0, 0, 0, 0, 0, 0, 0, 0])   # holds self.button_values array
 
         self.left_motor = 0
         self.right_motor = 0
 
-        self.left_gimble = 0
-        self.right_gimble = 0
+        # self.left_gimble = 0
+        # self.right_gimble = 0
 
 
 
@@ -95,10 +123,10 @@ class GamepadSubber(Node):
             ########### output to ROS terminal ####
             self.get_logger().info(f'L Left = {self.left_motor}')
             self.get_logger().info(f'L Right = {self.right_motor}')
-            # self.get_logger().info(f'lh = {format(left_high, "08b")}')
-            # self.get_logger().info(f'll = {format(left_low, "08b")}')
-            # self.get_logger().info(f'rh = {format(right_high, "08b")}')
-            # self.get_logger().info(f'rl = {format(right_low, "08b")}')
+            # self.get_logger().info(f' lh = {format(left_high, "08b")}')
+            # self.get_logger().info(f' ll = {format(left_low, "08b")}')
+            # self.get_logger().info(f' rh = {format(right_high, "08b")}')
+            # self.get_logger().info(f' rl = {format(right_low, "08b")}')
             ###############################################################
 
         self.last_joy[0] = self.left_motor
@@ -154,7 +182,7 @@ class GamepadSubber(Node):
 
 
     def arcade_drive_math(self, x, y):
-        x = -x      # Change bc gamepad's x axes are backwards
+        x = -x      # Change bc gamepad's x axis is backwards
         self.max = max(abs(y), abs(x))
         self.sum = y + x
         self.diff = y - x
@@ -268,8 +296,6 @@ class GamepadSubber(Node):
 
 
         ''' Motor control using the left joystick '''
-        # TODO pull out curr_value/last value comparison out here so we can avoid doing computation here if there is no val difference
-
         # If left joystick is outside of deadzone
         if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
             self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
