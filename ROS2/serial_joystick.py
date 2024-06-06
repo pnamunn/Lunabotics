@@ -175,12 +175,12 @@ class GamepadSubber(Node):
                 self.left_motor = -(self.max)
                 self.right_motor = self.diff
 
-        print(f"Linear L = {self.left_motor}")
-        print(f"Linear R = {self.right_motor}")
+        # print(f"Linear L = {self.left_motor}")
+        # print(f"Linear R = {self.right_motor}")
 
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
-        self.left_motor = int( (self.left_motor * 1000) + 2999 )
-        self.right_motor = int( (self.right_motor * 1000) + 2999 ) 
+        self.left_motor = int( (self.left_motor * 500) + 2999 )
+        self.right_motor = int( (self.right_motor * 500) + 2999 ) 
 
 
 
@@ -214,8 +214,8 @@ class GamepadSubber(Node):
         print(f"Exponential R = {self.right_motor}")
 
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
-        self.left_motor = int( (self.left_motor * 1000) + 2999 )
-        self.right_motor = int( (self.right_motor * 1000) + 2999 )
+        self.left_motor = int( (self.left_motor * 1000) + 2499 )
+        self.right_motor = int( (self.right_motor * 1000) + 2499 )
     
 
 
@@ -273,7 +273,7 @@ class GamepadSubber(Node):
         # If left joystick is outside of deadzone
         if (self.axes_values[0] > self._deadzone or self.axes_values[0] < -(self._deadzone) or self.axes_values[1] > self._deadzone or self.axes_values[1] < -(self._deadzone)):
             self.arcade_drive_math(self.axes_values[0], self.axes_values[1])    # calc left and right motor values
-            self.exponential_drive_math(self.axes_values[0], self.axes_values[1]) 
+            # self.exponential_drive_math(self.axes_values[0], self.axes_values[1]) 
             self.send_duty_vals()
 
         # if left joystick is within deadzone
@@ -326,6 +326,21 @@ def main(args=None):
 
     subber = GamepadSubber()    # creates a node instance
 
+    #   Joseph Notes
+    #       Easier to change python than embedded on short timescale
+    #       Irregular right side motor movements, unmeasured on scope
+    #           but correlated to JoyNode connection time and not idle
+    #       If this runs underneath JoyNode:
+    #           - Stall for a sec to collect weird stuff or a few messages in buffer
+    #           - Clear that buffer
+    #           - In theory garbage and desynchronization can occur as intended if
+    #               garbage in the buffer or some weird pyserial thing was the issue
+    #
+    #       idk what embedded error checking there is but potential UART moment
+    time.sleep((25.0/1000.0))           # MAY 11 ADDITION - Joseph
+    subber.ser.reset_output_buffer()    # MAY 11 ADDITION - Joseph
+    # END OF MY ADDITIONS HERE IDK HOW PYTHON WORKS :) <3
+
     # Initialize to stop
     subber.left_motor = 2999
     subber.right_motor = 2999
@@ -334,6 +349,14 @@ def main(args=None):
     subber.left_gimble = 2999
     subber.right_gimble = 2999
     subber.send_gimble_vals()   
+
+    #   Joseph Additions (but like the last ones)
+    #       - Ensure output is properly flushed
+    #       - In theory all outputs subsequent to this should be synchronizd to
+    #           embedded UART ISR. We love blocking delays :)
+    time.sleep((25.0/1000.0))
+    subber.ser.reset_output_buffer()
+    # END OF MY ADDITIONS HERE I STILL DONT KNOW HOW PYTHON WORKS :) <3
 
     rclpy.spin(subber)       # spins node (endlessly loops) until the user kills the node program (with Ctrl+C)
 

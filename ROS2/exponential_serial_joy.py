@@ -246,8 +246,8 @@ class GamepadSubber(Node):
                 self.right_gimble = self.diff
 
         ''' Normalize motor values for the Arduino's 16 bit duty cycle values '''
-        self.left_gimble = int( (self.left_gimble * 1000) + 2999 )
-        self.right_gimble = int( (self.right_gimble * 1000) + 2999 ) 
+        self.left_gimble = int( (self.left_gimble * 1000) + 2499 )
+        self.right_gimble = int( (self.right_gimble * 1000) + 2499 ) 
 
 
 
@@ -330,6 +330,21 @@ def main(args=None):
 
     subber = GamepadSubber()    # creates a node instance
 
+    #   Joseph Notes
+    #       Easier to change python than embedded on short timescale
+    #       Irregular right side motor movements, unmeasured on scope
+    #           but correlated to JoyNode connection time and not idle
+    #       If this runs underneath JoyNode:
+    #           - Stall for a sec to collect weird stuff or a few messages in buffer
+    #           - Clear that buffer
+    #           - In theory garbage and desynchronization can occur as intended if
+    #               garbage in the buffer or some weird pyserial thing was the issue
+    #
+    #       idk what embedded error checking there is but potential UART moment
+    time.sleep((25.0/1000.0))           # MAY 11 ADDITION - Joseph
+    subber.ser.reset_output_buffer()    # MAY 11 ADDITION - Joseph
+    # END OF MY ADDITIONS HERE IDK HOW PYTHON WORKS :) <3
+
     # Initialize to stop
     subber.left_motor = 2999
     subber.right_motor = 2999
@@ -338,6 +353,14 @@ def main(args=None):
     subber.left_gimble = 2999
     subber.right_gimble = 2999
     subber.send_gimble_vals()   
+
+    #   Joseph Additions (but like the last ones)
+    #       - Ensure output is properly flushed
+    #       - In theory all outputs subsequent to this should be synchronizd to
+    #           embedded UART ISR. We love blocking delays :)
+    time.sleep((25.0/1000.0))
+    subber.ser.reset_output_buffer()
+    # END OF MY ADDITIONS HERE I STILL DONT KNOW HOW PYTHON WORKS :) <3
 
     rclpy.spin(subber)       # spins node (endlessly loops) until the user kills the node program (with Ctrl+C)
 
