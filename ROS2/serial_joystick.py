@@ -34,13 +34,12 @@ Functionality:  First creates the gamepad_subber_node and sets it to subscribe
                 and 1 message type byte.
 
 
-Documentation   https://pyserial.readthedocs.io/en/latest/pyserial_api.html#classes
-used:           https://xiaoxiae.github.io/Robotics-Simplified-Website/drivetrain-control/arcade-drive/#:~:text=%2C%20right_motor)-,Visualization,-Here%20is%20an
-
-
-
+Documentation   rclpy library   https://docs.ros2.org/foxy/api/rclpy/
+used:           Joy sensor_msgs   https://docs.ros2.org/foxy/api/sensor_msgs/msg/Joy.html
+                Pyserial library   https://pyserial.readthedocs.io/en/latest/pyserial_api.html#classes
+                Arcade Drive Interactive Quadrants   https://xiaoxiae.github.io/Robotics-Simplified-Website/drivetrain-control/arcade-drive/#:~:text=%2C%20right_motor)-,Visualization,-Here%20is%20an
+                Exponential Arcade Drive Math   https://www.desmos.com/calculator/i6en4qtdwg
 '''
-
 
 import serial
 import rclpy
@@ -50,8 +49,7 @@ from bitarray import bitarray
 import time
 
 
-# Node that subs to /joy pubber
-class GamepadSubber(Node):
+class GamepadSubber(Node):      # node that subs to /joy pubber
 
     def __init__(self):     # Constructor
 
