@@ -1,3 +1,0 @@
-In competition, ARES_Embedded.c, serial_joystick.py, and vulcan_camera_modified.py were used to control the rover. \
-\
-The code written in current_sensors.c, Loadcell prog.c, and Prox thing.c was finished & successfully got the current sensors, loadcell sensors, and proximity sensors working individually.  But the team did not have enough time to integrate all these items onto one microcontroller for the competition.

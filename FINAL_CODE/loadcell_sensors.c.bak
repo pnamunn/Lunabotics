@@ -2,7 +2,7 @@
  * HX711 DEV.c
  *
  * Created: 4/5/2024 6:55:09 PM
- * Author : Main
+ * Author : Stuart Pollmann
  */ 
 
 #include <avr/io.h>
